@@ -1,8 +1,13 @@
 package good.damn.filesharing
 
+import android.util.Log
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+
 class ByteUtils {
 
     companion object {
+        val TAG = "ByteUtils"
 
         fun integer(i: Int): UByteArray {
             return ubyteArrayOf(

@@ -28,7 +28,6 @@ class ServerActivity
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val port = 1250
         val ip = getLanIP()
 
@@ -70,7 +69,6 @@ class ServerActivity
         btnDrop.setOnClickListener {
             server.drop()
         }
-
         setContentView(rootLayout)
     }
 
@@ -87,7 +85,7 @@ class ServerActivity
         data: ByteArray
     ) {
         msgr.addMessage("${socket.remoteSocketAddress}\n"+
-                String(data,Charset.forName("UTF-8"))
+                String(data,msgr.getCharset())
         )
     }
 

@@ -72,9 +72,13 @@ class Server(port: Int) : Runnable {
             val inp = clientSocket.getInputStream()
             val outArr = ByteArrayOutputStream()
 
-            var n: Int
-
+            var n:Int
             while (true) {
+                Log.d(TAG, "listen: READ ${inp.available()}")
+                if (inp.available() == 0) {
+                    break
+                }
+
                 n = inp.read(buffer)
                 Log.d(TAG, "listen: $n ${buffer.contentToString()}")
                 if (n == -1) {
@@ -92,19 +96,18 @@ class Server(port: Int) : Runnable {
 
             val data = outArr.toByteArray()
             outArr.close()
-
-            inp.close()
-
             mServerListener?.onListenClient(
                 clientSocket,
                 data
             )
 
             out.write(resp)
-            out.close()
+            out.flush()
+            inp.close()
             mServerListener?.onDropClient(clientSocket)
             //clientSocket.close()
         } catch (e: SocketException) {
+            Log.d(TAG, "listen: ${e.message}")
             return false
         }
 

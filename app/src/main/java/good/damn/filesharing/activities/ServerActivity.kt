@@ -8,11 +8,10 @@ import android.view.Gravity
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.filesharing.ByteUtils
+import good.damn.filesharing.models.Messenger
 import good.damn.filesharing.models.Server
-import java.io.ByteArrayOutputStream
 import java.net.ServerSocket
 import java.net.Socket
 import java.nio.ByteOrder
@@ -24,9 +23,7 @@ class ServerActivity
 
     private val TAG = "ServerActivity"
 
-    private var mIndexString = 0
-
-    private lateinit var mTextViewMsg: TextView
+    private val msgr = Messenger()
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,12 +45,14 @@ class ServerActivity
         val btnDrop = Button(this)
         btnDrop.text = "Drop server"
 
-        mTextViewMsg = TextView(this)
-        mTextViewMsg.text = "----"
-        mTextViewMsg.textSize = 18f
-        mTextViewMsg.movementMethod = ScrollingMovementMethod()
-        mTextViewMsg.isVerticalScrollBarEnabled = true
-        mTextViewMsg.isHorizontalScrollBarEnabled = false
+        val textViewMsg = TextView(this)
+        textViewMsg.text = "----"
+        textViewMsg.textSize = 18f
+        textViewMsg.movementMethod = ScrollingMovementMethod()
+        textViewMsg.isVerticalScrollBarEnabled = true
+        textViewMsg.isHorizontalScrollBarEnabled = false
+
+        msgr.setTextView(textViewMsg)
 
         val rootLayout = LinearLayout(this)
         rootLayout.gravity = Gravity.CENTER
@@ -62,7 +61,7 @@ class ServerActivity
         rootLayout.addView(textViewIP,-1,-2)
         rootLayout.addView(btnCreate,-1,-2)
         rootLayout.addView(btnDrop,-1,-2)
-        rootLayout.addView(mTextViewMsg, -1,-1)
+        rootLayout.addView(textViewMsg, -1,-1)
 
         btnCreate.setOnClickListener {
             server.create()
@@ -76,33 +75,35 @@ class ServerActivity
     }
 
     override fun onCreateServer(server: ServerSocket) {
-        addMessage("Server started!")
+        msgr.addMessage("Server started!")
+    }
+
+    override fun onStartListen() {
+        msgr.addMessage("Listen clients...")
+    }
+
+    override fun onListenData(
+        socket: Socket,
+        data: ByteArray
+    ) {
+        msgr.addMessage("${socket.remoteSocketAddress}\n"+
+                String(data,Charset.forName("UTF-8"))
+        )
     }
 
     override fun onListenClient(
         socket: Socket,
         data: ByteArray
     ) {
-        val ip = socket.remoteSocketAddress
-        addMessage("$ip is connected")
+        msgr.addMessage("${socket.remoteSocketAddress}\n READY TO RESPONSE")
+    }
 
-        addMessage(String(data,Charset.
-            forName("UTF-8")))
-
-        addMessage("$ip is disconnected")
+    override fun onDropClient(socket: Socket) {
+        msgr.addMessage("${socket.remoteSocketAddress} is disconnected")
     }
 
     override fun onDropServer() {
-        addMessage("Server is dropped")
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun addMessage(
-        text: String
-    ) {
-        runOnUiThread {
-            mTextViewMsg.text = mTextViewMsg.text.toString() + "\n${mIndexString++}) " + text
-        }
+        msgr.addMessage("Server is dropped")
     }
 
     @OptIn(ExperimentalUnsignedTypes::class)

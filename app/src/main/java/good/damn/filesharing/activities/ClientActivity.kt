@@ -1,19 +1,23 @@
 package good.damn.filesharing.activities
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.text.method.ScrollingMovementMethod
 import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import good.damn.filesharing.models.Messenger
 import java.net.Socket
+import java.nio.charset.Charset
 
 class ClientActivity: AppCompatActivity() {
 
-    private lateinit var mTextViewMsg: TextView
+    private val msgr = Messenger()
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -24,10 +28,16 @@ class ClientActivity: AppCompatActivity() {
         editTextPort.hint = "Enter host port"
 
         val btnConnect = Button(this)
-        btnConnect.text = "Connect tp host"
+        btnConnect.text = "Connect to host"
 
-        mTextViewMsg = TextView(this)
-        mTextViewMsg.text = "-----"
+        val textViewMsg = TextView(this)
+        textViewMsg.text = "----"
+        textViewMsg.textSize = 18f
+        textViewMsg.movementMethod = ScrollingMovementMethod()
+        textViewMsg.isVerticalScrollBarEnabled = true
+        textViewMsg.isHorizontalScrollBarEnabled = false
+
+        msgr.setTextView(textViewMsg)
 
         btnConnect.setOnClickListener {
             connectToHost(
@@ -43,7 +53,7 @@ class ClientActivity: AppCompatActivity() {
         rootLayout.addView(editTextHost,-1,-2)
         rootLayout.addView(editTextPort,-1,-2)
         rootLayout.addView(btnConnect, -1,-2)
-        rootLayout.addView(mTextViewMsg,-1,-2)
+        rootLayout.addView(textViewMsg,-1,-2)
 
         setContentView(rootLayout)
     }
@@ -55,18 +65,18 @@ class ClientActivity: AppCompatActivity() {
     ) {
         Thread {
             val socket = Socket(host,port)
-            runOnUiThread {
-                addMessage("Connected to $host")
-            }
 
+            msgr.addMessage("Connected to $host")
 
+            val out = socket.getOutputStream()
 
+            out.write("Hello! I'm your client!".toByteArray(
+                Charset.forName("UTF-8")
+            ))
+
+            out.close()
+            socket.close()
         }.start()
     }
 
-    private fun addMessage(
-        text: String
-    ) {
-        mTextViewMsg.text = mTextViewMsg.text.toString() + text
-    }
 }

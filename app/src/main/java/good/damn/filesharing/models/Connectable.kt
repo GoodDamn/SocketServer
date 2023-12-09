@@ -11,6 +11,8 @@ interface Connectable {
 
     fun onGetResponse(data: ByteArray)
 
+    fun onSendBytes(): ByteArray
+
     fun connectToHost(
         ip: String,
         port: Int
@@ -23,9 +25,7 @@ interface Connectable {
             val out = socket.getOutputStream()
             val inp = socket.getInputStream()
 
-            out.write("Hello! I'm your client!".toByteArray(
-                Charset.forName("UTF-8")
-            ))
+            out.write(onSendBytes())
             out.flush()
 
             val outArr = ByteArrayOutputStream()

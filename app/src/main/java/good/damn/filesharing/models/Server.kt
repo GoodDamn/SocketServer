@@ -2,13 +2,10 @@ package good.damn.filesharing.models
 
 import android.util.Log
 import java.io.ByteArrayOutputStream
-import java.io.DataInputStream
-import java.io.IOException
 import java.net.ServerSocket
 import java.net.Socket
 import java.net.SocketException
 import java.nio.charset.Charset
-import java.util.*
 
 class Server(port: Int) : Runnable {
 
@@ -18,6 +15,30 @@ class Server(port: Int) : Runnable {
 
     private var mServer: ServerSocket? = null
     private var mServerListener: ServerListener? = null
+
+    private var mResponseText = byteArrayOf(48)
+
+    private val mCharset = Charset.forName("UTF-8")
+
+    override fun run() {
+        mServer = ServerSocket(mHostPort)
+        mServer?.reuseAddress = true
+
+        mServerListener?.onCreateServer(mServer!!)
+
+        val buffer = ByteArray(128)
+
+        while (listen(buffer)) {
+            // Listen...
+        }
+    }
+
+    fun setResponseText(
+        text: String
+    ) {
+        mResponseText = text
+            .toByteArray(mCharset)
+    }
 
     fun create() {
         Thread(this)
@@ -29,30 +50,6 @@ class Server(port: Int) : Runnable {
         mServerListener?.onDropServer()
     }
 
-    override fun run() {
-
-        mServer = ServerSocket(mHostPort)
-        mServer?.reuseAddress = true
-
-        mServerListener?.onCreateServer(mServer!!)
-
-        val buffer = ByteArray(128)
-
-        val charset = Charset.forName("UTF-8")
-        val st = ("<!DOCTYPE html>" +
-                "<html>" +
-                "<head>" +
-                "</head>" +
-                "<body> Yay! Now turn down and out)))" +
-                "</body>" +
-                "</html")
-            .toByteArray(charset)
-
-        while (listen(buffer, st)) {
-            // Listen...
-        }
-    }
-
     fun setOnServerListener(
         listener: ServerListener?
     ) {
@@ -60,8 +57,7 @@ class Server(port: Int) : Runnable {
     }
 
     private fun listen(
-        buffer: ByteArray,
-        resp: ByteArray
+        buffer: ByteArray
     ): Boolean {
 
         mServerListener?.onStartListen()
@@ -75,7 +71,7 @@ class Server(port: Int) : Runnable {
             var n:Int
             while (true) {
                 Log.d(TAG, "listen: READ ${inp.available()}")
-                if (inp.available() == 0) {
+                if (inp.available() < 2) {
                     break
                 }
 
@@ -84,14 +80,10 @@ class Server(port: Int) : Runnable {
                 if (n == -1) {
                     break
                 }
+
                 outArr.write(buffer, 0, n)
                 mServerListener?.onListenData(clientSocket, buffer)
 
-                if (buffer[n - 1] == 0.toByte()
-                    || buffer[n - 1] == 48.toByte()
-                ) {
-                    break
-                }
             }
 
             val data = outArr.toByteArray()
@@ -101,7 +93,7 @@ class Server(port: Int) : Runnable {
                 data
             )
 
-            out.write(resp)
+            out.write(mResponseText)
             out.flush()
             inp.close()
             mServerListener?.onDropClient(clientSocket)

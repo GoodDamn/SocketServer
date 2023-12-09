@@ -3,9 +3,12 @@ package good.damn.filesharing.activities
 import android.annotation.SuppressLint
 import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.text.method.ScrollingMovementMethod
 import android.view.Gravity
 import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -44,6 +47,9 @@ class ServerActivity
         val btnDrop = Button(this)
         btnDrop.text = "Drop server"
 
+        val editTextMsg = EditText(this)
+        editTextMsg.hint = "Message"
+
         val textViewMsg = TextView(this)
         textViewMsg.text = "----"
         textViewMsg.textSize = 18f
@@ -60,7 +66,24 @@ class ServerActivity
         rootLayout.addView(textViewIP,-1,-2)
         rootLayout.addView(btnCreate,-1,-2)
         rootLayout.addView(btnDrop,-1,-2)
+        rootLayout.addView(editTextMsg, -1, -2)
         rootLayout.addView(textViewMsg, -1,-1)
+
+        editTextMsg.addTextChangedListener(object:TextWatcher {
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                if (s == null) {
+                    return
+                }
+                server.setResponseText(s.toString())
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
         btnCreate.setOnClickListener {
             server.create()
@@ -69,6 +92,7 @@ class ServerActivity
         btnDrop.setOnClickListener {
             server.drop()
         }
+
         setContentView(rootLayout)
     }
 

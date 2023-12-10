@@ -16,7 +16,7 @@ class Server(port: Int) : Runnable {
     private var mServer: ServerSocket? = null
     private var mServerListener: ServerListener? = null
 
-    private var mResponseText = byteArrayOf(48)
+    private var mResponse = byteArrayOf(48)
 
     private val mCharset = Charset.forName("UTF-8")
 
@@ -26,17 +26,23 @@ class Server(port: Int) : Runnable {
 
         mServerListener?.onCreateServer(mServer!!)
 
-        val buffer = ByteArray(128)
+        val buffer = ByteArray(8192)
 
         while (listen(buffer)) {
             // Listen...
         }
     }
 
+    fun setResponse(
+        data: ByteArray
+    ) {
+        mResponse = data
+    }
+
     fun setResponseText(
         text: String
     ) {
-        mResponseText = text
+        mResponse = text
             .toByteArray(mCharset)
     }
 
@@ -68,13 +74,20 @@ class Server(port: Int) : Runnable {
             val inp = clientSocket.getInputStream()
             val outArr = ByteArrayOutputStream()
 
+            var attempts = 0
+            val maxAttempts = 10
+
             var n:Int
             while (true) {
                 Log.d(TAG, "listen: READ ${inp.available()}")
                 if (inp.available() < 2) {
-                    break
+                    attempts++
+                    if (attempts >= maxAttempts) {
+                        break
+                    }
+                    continue
                 }
-
+                attempts = 0
                 n = inp.read(buffer)
                 Log.d(TAG, "listen: $n ${buffer.contentToString()}")
                 if (n == -1) {
@@ -83,7 +96,6 @@ class Server(port: Int) : Runnable {
 
                 outArr.write(buffer, 0, n)
                 mServerListener?.onListenData(clientSocket, buffer)
-
             }
 
             val data = outArr.toByteArray()
@@ -93,13 +105,13 @@ class Server(port: Int) : Runnable {
                 data
             )
 
-            out.write(mResponseText)
+            out.write(mResponse)
             out.flush()
             inp.close()
             mServerListener?.onDropClient(clientSocket)
             //clientSocket.close()
         } catch (e: SocketException) {
-            Log.d(TAG, "listen: ${e.message}")
+            Log.d(TAG, "listen: EXCEPTION:  ${e.message}")
             return false
         }
 

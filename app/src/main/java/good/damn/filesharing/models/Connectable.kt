@@ -1,6 +1,7 @@
 package good.damn.filesharing.models
 
 import android.util.Log
+import good.damn.filesharing.utils.NetworkUtils
 import java.io.ByteArrayOutputStream
 import java.net.Socket
 import java.nio.charset.Charset
@@ -15,7 +16,8 @@ interface Connectable {
 
     fun connectToHost(
         ip: String,
-        port: Int
+        port: Int,
+        buffer: ByteArray
     ) {
         Thread {
             val socket = Socket(ip,port)
@@ -28,22 +30,9 @@ interface Connectable {
             out.write(onSendBytes())
             out.flush()
 
-            val outArr = ByteArrayOutputStream()
+            val inputData = NetworkUtils
+                .readBytes(inp, buffer)
 
-            val buffer = ByteArray(128)
-            var n:Int
-            while (true) {
-                Log.d("Connectable:", "connectToHost: READ ${inp.available()}")
-                n = inp.read(buffer)
-                if (n == -1) {
-                    break
-                }
-
-                outArr.write(buffer,0,n)
-            }
-
-            val inputData = outArr.toByteArray()
-            outArr.close()
             inp.close()
             out.close()
             socket.close()

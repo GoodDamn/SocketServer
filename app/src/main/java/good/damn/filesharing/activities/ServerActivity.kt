@@ -7,18 +7,16 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.ScrollingMovementMethod
 import android.view.Gravity
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import good.damn.filesharing.ByteUtils
+import good.damn.filesharing.utils.ByteUtils
 import good.damn.filesharing.models.Messenger
 import good.damn.filesharing.models.Server
+import good.damn.filesharing.models.launchers.ContentLauncher
+import good.damn.filesharing.utils.NetworkUtils
 import java.net.ServerSocket
 import java.net.Socket
 import java.nio.ByteOrder
-import java.nio.charset.Charset
 
 class ServerActivity
     : AppCompatActivity(),
@@ -31,11 +29,30 @@ class ServerActivity
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val port = 1250
         val ip = getLanIP()
 
         val server = Server(port)
         server.setOnServerListener(this)
+
+        val contentLauncher = ContentLauncher(this) { uri ->
+            if (uri == null) {
+                return@ContentLauncher
+            }
+            val inp = contentResolver.openInputStream(uri) ?: return@ContentLauncher
+
+            val data = NetworkUtils
+                .readBytes(inp)
+
+            inp.close()
+            server.setResponse(data)
+            Toast.makeText(
+                this,
+                "FILE IS PREPARED",
+                Toast.LENGTH_SHORT)
+                .show()
+        }
 
         val textViewIP = TextView(this)
         textViewIP.text = "Host: $ip\nPort: $port"
@@ -46,6 +63,9 @@ class ServerActivity
 
         val btnDrop = Button(this)
         btnDrop.text = "Drop server"
+
+        val btnResponseFile = Button(this)
+        btnResponseFile.text = "Select response file"
 
         val editTextMsg = EditText(this)
         editTextMsg.hint = "Message"
@@ -66,6 +86,7 @@ class ServerActivity
         rootLayout.addView(textViewIP,-1,-2)
         rootLayout.addView(btnCreate,-1,-2)
         rootLayout.addView(btnDrop,-1,-2)
+        rootLayout.addView(btnResponseFile, -1,-2)
         rootLayout.addView(editTextMsg, -1, -2)
         rootLayout.addView(textViewMsg, -1,-1)
 
@@ -84,6 +105,10 @@ class ServerActivity
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        btnResponseFile.setOnClickListener {
+            contentLauncher.launch("*/*")
+        }
 
         btnCreate.setOnClickListener {
             server.create()

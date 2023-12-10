@@ -1,8 +1,4 @@
-package good.damn.filesharing
-
-import android.util.Log
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
+package good.damn.filesharing.utils
 
 class ByteUtils {
 

@@ -39,10 +39,13 @@ class ClientView(context: Context) :
 
         msgr.setTextView(textViewMsg)
 
+        val buffer = ByteArray(8192)
+
         btnConnect.setOnClickListener {
             connectToHost(
                 mEditTextHost.text.toString(),
-                mEditTextPort.text.toString().toInt()
+                mEditTextPort.text.toString().toInt(),
+                buffer
             )
         }
 

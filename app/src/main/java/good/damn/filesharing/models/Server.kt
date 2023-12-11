@@ -34,7 +34,7 @@ class Server(port: Int) : Runnable {
 
         mServerListener?.onCreateServer(mServer!!)
 
-        val buffer = ByteArray(8192)
+        val buffer = ByteArray(1024*1024)
 
         while (listen(buffer)) {
             // Listen...
@@ -107,7 +107,9 @@ class Server(port: Int) : Runnable {
                 mAttempts = 0
 
                 n = inp.read(buffer)
-                Log.d(TAG, "listen: $n ${buffer.contentToString()}")
+
+                mServerListener?.onListenChunkData(buffer)
+
                 if (n == -1) {
                     break
                 }

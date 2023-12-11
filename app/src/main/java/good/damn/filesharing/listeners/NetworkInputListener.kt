@@ -5,10 +5,11 @@ import java.nio.charset.Charset
 
 interface NetworkInputListener {
 
+    @WorkerThread
     fun input(
         data: ByteArray
     ): Boolean {
-        if (data.isEmpty()) {
+        if (data.size < 2) {
             return false
         }
 
@@ -44,7 +45,10 @@ interface NetworkInputListener {
 
         return true
     }
-    
+
+    @WorkerThread
+    fun onListenChunkData(data: ByteArray)
+
     @WorkerThread
     fun onGetFile(data: ByteArray,offset:Int,fileName: String)
 

@@ -146,6 +146,11 @@ class ServerActivity
     }
 
     @WorkerThread
+    override fun onListenChunkData(data: ByteArray) {
+        msgr.addMessage(data.size.toString())
+    }
+
+    @WorkerThread
     override fun onGetFile(
         data: ByteArray,
         offset: Int,

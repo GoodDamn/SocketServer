@@ -1,7 +1,10 @@
 package good.damn.filesharing.models
 
 import android.util.Log
+import androidx.annotation.WorkerThread
+import good.damn.filesharing.listeners.NetworkInputListener
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.net.ServerSocket
 import java.net.Socket
 import java.net.SocketException
@@ -13,10 +16,15 @@ class Server(port: Int) : Runnable {
 
     private var mHostPort = port
 
+    private var mAttempts = 0
+    private val maxAttempts = 100
+
     private var mServer: ServerSocket? = null
     private var mServerListener: ServerListener? = null
 
+    private var mResponseType = 2 // text
     private var mResponse = byteArrayOf(48)
+    private var mResponseText = byteArrayOf(48)
 
     private val mCharset = Charset.forName("UTF-8")
 
@@ -34,15 +42,21 @@ class Server(port: Int) : Runnable {
     }
 
     fun setResponse(
-        data: ByteArray
+        data: ByteArray,
+        fileName: String
     ) {
+        mResponseType = 1
         mResponse = data
+        mResponseText = fileName
+            .toByteArray(mCharset)
     }
 
     fun setResponseText(
         text: String
     ) {
-        mResponse = text
+        mResponseType = 2
+        mResponse = byteArrayOf()
+        mResponseText = text
             .toByteArray(mCharset)
     }
 
@@ -74,20 +88,24 @@ class Server(port: Int) : Runnable {
             val inp = clientSocket.getInputStream()
             val outArr = ByteArrayOutputStream()
 
-            var attempts = 0
-            val maxAttempts = 10
+            mAttempts = 0
 
-            var n:Int
+            var n: Int
+
+            outArr.write(inp.read()) // type
+
             while (true) {
                 Log.d(TAG, "listen: READ ${inp.available()}")
-                if (inp.available() < 2) {
-                    attempts++
-                    if (attempts >= maxAttempts) {
+                if (inp.available() == 0) {
+                    mAttempts++
+                    if (mAttempts >= maxAttempts) {
                         break
                     }
                     continue
                 }
-                attempts = 0
+
+                mAttempts = 0
+
                 n = inp.read(buffer)
                 Log.d(TAG, "listen: $n ${buffer.contentToString()}")
                 if (n == -1) {
@@ -95,21 +113,22 @@ class Server(port: Int) : Runnable {
                 }
 
                 outArr.write(buffer, 0, n)
-                mServerListener?.onListenData(clientSocket, buffer)
             }
 
             val data = outArr.toByteArray()
             outArr.close()
-            mServerListener?.onListenClient(
-                clientSocket,
-                data
-            )
 
+            Log.d(TAG, "listen: ${data.contentToString()}")
+            
+            mServerListener?.input(data)
+
+            out.write(mResponseType)
+            out.write(mResponseText.size)
+            out.write(mResponseText)
             out.write(mResponse)
             out.flush()
-            inp.close()
             mServerListener?.onDropClient(clientSocket)
-            //clientSocket.close()
+
         } catch (e: SocketException) {
             Log.d(TAG, "listen: EXCEPTION:  ${e.message}")
             return false
@@ -118,12 +137,17 @@ class Server(port: Int) : Runnable {
         return true
     }
 
-    interface ServerListener {
+    interface ServerListener : NetworkInputListener {
+        @WorkerThread
         fun onCreateServer(server: ServerSocket)
+
+        @WorkerThread
         fun onStartListen()
-        fun onListenClient(socket: Socket, data: ByteArray)
+
+        @WorkerThread
         fun onDropClient(socket: Socket)
-        fun onListenData(socket: Socket, data: ByteArray)
+
+        @WorkerThread
         fun onDropServer()
     }
 }

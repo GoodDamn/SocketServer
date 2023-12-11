@@ -6,14 +6,18 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.Gravity
 import android.widget.*
+import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.filesharing.utils.ByteUtils
 import good.damn.filesharing.models.Messenger
 import good.damn.filesharing.models.Server
 import good.damn.filesharing.models.launchers.ContentLauncher
+import good.damn.filesharing.utils.FileUtils
 import good.damn.filesharing.utils.NetworkUtils
+import java.io.FileOutputStream
 import java.net.ServerSocket
 import java.net.Socket
 import java.nio.ByteOrder
@@ -37,16 +41,23 @@ class ServerActivity
         server.setOnServerListener(this)
 
         val contentLauncher = ContentLauncher(this) { uri ->
-            if (uri == null) {
+            val data = FileUtils
+                .read(uri,this)
+
+            if (data == null) {
+                Toast.makeText(
+                    this,
+                    "Something went wrong",
+                    Toast.LENGTH_SHORT)
+                    .show()
                 return@ContentLauncher
             }
-            val inp = contentResolver.openInputStream(uri) ?: return@ContentLauncher
 
-            val data = NetworkUtils
-                .readBytes(inp)
+            val p = uri!!.path!!
+            val t = "primary:"
+            val fileName = p.substring(p.indexOf(t)+t.length)
 
-            inp.close()
-            server.setResponse(data)
+            server.setResponse(data,fileName)
             Toast.makeText(
                 this,
                 "FILE IS PREPARED",
@@ -86,24 +97,27 @@ class ServerActivity
         rootLayout.addView(textViewIP,-1,-2)
         rootLayout.addView(btnCreate,-1,-2)
         rootLayout.addView(btnDrop,-1,-2)
+        rootLayout.addView(editTextMsg, -1,-2)
         rootLayout.addView(btnResponseFile, -1,-2)
-        rootLayout.addView(editTextMsg, -1, -2)
         rootLayout.addView(textViewMsg, -1,-1)
 
-        editTextMsg.addTextChangedListener(object:TextWatcher {
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                if (s == null) {
-                    return
-                }
+        editTextMsg.addTextChangedListener(object: TextWatcher {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 server.setResponseText(s.toString())
             }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
         })
 
         btnResponseFile.setOnClickListener {
@@ -121,34 +135,51 @@ class ServerActivity
         setContentView(rootLayout)
     }
 
+    @WorkerThread
     override fun onCreateServer(server: ServerSocket) {
         msgr.addMessage("Server started!")
     }
 
+    @WorkerThread
     override fun onStartListen() {
         msgr.addMessage("Listen clients...")
     }
 
-    override fun onListenData(
-        socket: Socket,
-        data: ByteArray
+    @WorkerThread
+    override fun onGetFile(
+        data: ByteArray,
+        offset: Int,
+        fileName: String
     ) {
-        msgr.addMessage("${socket.remoteSocketAddress}\n"+
-                String(data,msgr.getCharset())
-        )
+        val msg = FileUtils.writeToDoc(
+            fileName,
+            data,
+            offset)
+
+        if (msg != null) {
+            msgr.addMessage("SAVE PROCESS::EXCEPTION\n$msg")
+            return
+        }
+
+        msgr.addMessage("$fileName is saved to Documents")
     }
 
-    override fun onListenClient(
-        socket: Socket,
-        data: ByteArray
-    ) {
-        msgr.addMessage("${socket.remoteSocketAddress}\n READY TO RESPONSE")
+    @WorkerThread
+    override fun onGetText(msg: String) {
+        msgr.addMessage(msg)
     }
 
+    @WorkerThread
+    override fun onHttpGet() {
+        msgr.addMessage("HTTP-GET REQUEST")
+    }
+
+    @WorkerThread
     override fun onDropClient(socket: Socket) {
         msgr.addMessage("${socket.remoteSocketAddress} is disconnected")
     }
 
+    @WorkerThread
     override fun onDropServer() {
         msgr.addMessage("Server is dropped")
     }

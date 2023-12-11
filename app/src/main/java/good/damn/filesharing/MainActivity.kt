@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Gravity
 import android.widget.Button
 import android.widget.LinearLayout
-import good.damn.filesharing.activities.ClientActivity
 import good.damn.filesharing.activities.ServerActivity
 
 class MainActivity : AppCompatActivity() {
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnClient.setOnClickListener {
-            startActivity(ClientActivity::class.java)
+            //startActivity(ClientActivity::class.java)
         }
 
         val rootLayout = LinearLayout(this)

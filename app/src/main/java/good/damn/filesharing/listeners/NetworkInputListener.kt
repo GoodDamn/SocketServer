@@ -1,13 +1,16 @@
 package good.damn.filesharing.listeners
 
 import androidx.annotation.WorkerThread
+import java.io.InputStream
+import java.io.OutputStream
 import java.nio.charset.Charset
 
 interface NetworkInputListener {
 
     @WorkerThread
     fun input(
-        data: ByteArray
+        data: ByteArray,
+        out: OutputStream
     ): Boolean {
         if (data.size < 2) {
             return false
@@ -39,7 +42,7 @@ interface NetworkInputListener {
             }
 
             71 -> { // G (GET) http
-                onHttpGet()
+                onHttpGet(out)
             }
         }
 
@@ -56,6 +59,6 @@ interface NetworkInputListener {
     fun onGetText(msg: String)
 
     @WorkerThread
-    fun onHttpGet()
+    fun onHttpGet(out: OutputStream)
 
 }

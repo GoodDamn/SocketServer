@@ -18,6 +18,8 @@ import good.damn.filesharing.models.launchers.ContentLauncher
 import good.damn.filesharing.utils.FileUtils
 import good.damn.filesharing.utils.NetworkUtils
 import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 import java.net.ServerSocket
 import java.net.Socket
 import java.nio.ByteOrder
@@ -175,7 +177,7 @@ class ServerActivity
     }
 
     @WorkerThread
-    override fun onHttpGet() {
+    override fun onHttpGet(out: OutputStream) {
         msgr.addMessage("HTTP-GET REQUEST")
     }
 

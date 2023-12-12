@@ -8,6 +8,7 @@ import java.io.InputStream
 import java.net.ServerSocket
 import java.net.Socket
 import java.net.SocketException
+import java.net.SocketTimeoutException
 import java.nio.charset.Charset
 
 class Server(port: Int) : Runnable {
@@ -15,9 +16,6 @@ class Server(port: Int) : Runnable {
     private val TAG = "Server"
 
     private var mHostPort = port
-
-    private var mAttempts = 0
-    private val maxAttempts = 100
 
     private var mServer: ServerSocket? = null
     private var mServerListener: ServerListener? = null
@@ -34,7 +32,7 @@ class Server(port: Int) : Runnable {
 
         mServerListener?.onCreateServer(mServer!!)
 
-        val buffer = ByteArray(1024*1024)
+        val buffer = ByteArray(1024 * 1024)
 
         while (listen(buffer)) {
             // Listen...
@@ -83,28 +81,24 @@ class Server(port: Int) : Runnable {
         mServerListener?.onStartListen()
         try {
             val clientSocket = mServer!!.accept()
+            clientSocket.soTimeout = 15000
+
             val out = clientSocket.getOutputStream()
-
             val inp = clientSocket.getInputStream()
-            val outArr = ByteArrayOutputStream()
 
-            mAttempts = 0
+            val outArr = ByteArrayOutputStream()
 
             var n: Int
 
-            outArr.write(inp.read()) // type
+            val typeIn = inp.read()
+            outArr.write(typeIn) // type
 
             while (true) {
-                Log.d(TAG, "listen: READ ${inp.available()}")
+                Thread.sleep(1000)
+                Log.d(TAG, "listen: READ ${inp.available()} ${outArr.size()}")
                 if (inp.available() == 0) {
-                    mAttempts++
-                    if (mAttempts >= maxAttempts) {
-                        break
-                    }
-                    continue
+                    break
                 }
-
-                mAttempts = 0
 
                 n = inp.read(buffer)
 
@@ -120,21 +114,40 @@ class Server(port: Int) : Runnable {
             val data = outArr.toByteArray()
             outArr.close()
 
-            Log.d(TAG, "listen: ${data.contentToString()}")
-            
-            mServerListener?.input(data)
+            Log.d(TAG, "listen: DATA SIZE: ${data.size} RESPONSE TYPE: $typeIn")
 
-            out.write(mResponseType)
-            out.write(mResponseText.size)
-            out.write(mResponseText)
-            out.write(mResponse)
+            mServerListener?.input(data, out)
+
+            if (typeIn == 71) {
+                // for web-browser
+                val fileName = String(mResponseText, mCharset)
+                Log.d(TAG, "listen: FILE_NAME_HTTP_GET: $fileName")
+                out.write("HTTP/1.0 200 OK\r\n".toByteArray(mCharset))
+                out.write("Content-Length: ${mResponse.size}\r\n".toByteArray(mCharset))
+                out.write("Content-Type: application/octet-stream;\r\n".toByteArray(mCharset))
+                out.write(
+                    "Content-Disposition: inline; filename=\"$fileName\"\r\n".toByteArray(
+                        mCharset
+                    )
+                )
+                out.write("\r\n".toByteArray(mCharset))
+                out.write(mResponse)
+            } else {
+                out.write(mResponseType)
+                out.write(mResponseText.size)
+                out.write(mResponseText)
+                out.write(mResponse)
+            }
+
             out.flush()
             mServerListener?.onDropClient(clientSocket)
 
         } catch (e: SocketException) {
             Log.d(TAG, "listen: EXCEPTION:  ${e.message}")
             return false
-        }
+        } /*catch (e: SocketTimeoutException) {
+            Log.d(TAG, "listen: TIMED_OUT: ${e.message}")
+        }*/
 
         return true
     }

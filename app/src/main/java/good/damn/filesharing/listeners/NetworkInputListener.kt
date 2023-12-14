@@ -50,15 +50,23 @@ interface NetworkInputListener {
     }
 
     @WorkerThread
-    fun onListenChunkData(data: ByteArray)
+    fun onListenChunkData(
+        data: ByteArray,
+        readBytes:Int,
+        last: Int)
 
     @WorkerThread
-    fun onGetFile(data: ByteArray,offset:Int,fileName: String)
+    fun onGetFile(
+        data: ByteArray,
+        offset:Int,
+        fileName: String)
 
     @WorkerThread
-    fun onGetText(msg: String)
+    fun onGetText(
+        msg: String)
 
     @WorkerThread
-    fun onHttpGet(out: OutputStream)
+    fun onHttpGet(
+        out: OutputStream)
 
 }

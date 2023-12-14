@@ -81,7 +81,7 @@ class Server(port: Int) : Runnable {
         mServerListener?.onStartListen()
         try {
             val clientSocket = mServer!!.accept()
-            clientSocket.soTimeout = 15000
+            clientSocket.soTimeout = 9000
 
             val out = clientSocket.getOutputStream()
             val inp = clientSocket.getInputStream()
@@ -93,16 +93,17 @@ class Server(port: Int) : Runnable {
             val typeIn = inp.read()
             outArr.write(typeIn) // type
 
+            Thread.sleep(750)
             while (true) {
-                Thread.sleep(1000)
                 Log.d(TAG, "listen: READ ${inp.available()} ${outArr.size()}")
                 if (inp.available() == 0) {
                     break
                 }
 
                 n = inp.read(buffer)
-
-                mServerListener?.onListenChunkData(buffer)
+                Log.d(TAG, "listen: READ $n ${outArr.size()}")
+                mServerListener?.onListenChunkData(
+                    buffer, n, inp.available())
 
                 if (n == -1) {
                     break
@@ -139,15 +140,14 @@ class Server(port: Int) : Runnable {
                 out.write(mResponse)
             }
 
-            out.flush()
             mServerListener?.onDropClient(clientSocket)
-
+            out.close()
         } catch (e: SocketException) {
             Log.d(TAG, "listen: EXCEPTION:  ${e.message}")
             return false
-        } /*catch (e: SocketTimeoutException) {
+        } catch (e: SocketTimeoutException) {
             Log.d(TAG, "listen: TIMED_OUT: ${e.message}")
-        }*/
+        }
 
         return true
     }

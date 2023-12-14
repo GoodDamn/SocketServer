@@ -148,8 +148,12 @@ class ServerActivity
     }
 
     @WorkerThread
-    override fun onListenChunkData(data: ByteArray) {
-        msgr.addMessage(data.size.toString())
+    override fun onListenChunkData(
+        data: ByteArray,
+        readBytes: Int,
+        last: Int
+    ) {
+        msgr.addMessage("$readBytes $last")
     }
 
     @WorkerThread

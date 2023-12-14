@@ -202,6 +202,8 @@ class ServerActivity
 
         var ip = wifi.connectionInfo.ipAddress
 
+        Log.d(TAG, "getLanIP: WIFI_IP: $ip")
+
         if (ByteOrder.nativeOrder()
                 .equals(ByteOrder.LITTLE_ENDIAN)
         ) {

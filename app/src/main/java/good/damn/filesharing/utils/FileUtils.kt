@@ -61,7 +61,7 @@ class FileUtils {
                 fos.close()
             } catch (e: IOException) {
                 Log.d(TAG, "writeToDoc: EXCEPTION ${e.message}")
-                return e.message
+                return "${e.message} for ${file.path}"
             }
             return null
         }

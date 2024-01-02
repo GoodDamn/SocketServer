@@ -42,7 +42,7 @@ interface NetworkInputListener {
             }
 
             71 -> { // G (GET) http
-                onHttpGet(out)
+                onHttpGet(String(data,Charset.forName("UTF-8")))
             }
         }
 
@@ -67,6 +67,6 @@ interface NetworkInputListener {
 
     @WorkerThread
     fun onHttpGet(
-        out: OutputStream)
+        request: String)
 
 }

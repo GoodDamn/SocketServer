@@ -57,12 +57,18 @@ class ServerActivity
 
             val p = uri!!.path!!
             val t = "primary:"
-            val fileName = p.substring(p.indexOf(t)+t.length)
+            val filePath = p.substring(p.indexOf(t)+t.length)
+
+            val nameIndex = filePath.lastIndexOf("/")
+
+            val fileName = if (nameIndex == -1)
+                                filePath
+                           else filePath.substring(nameIndex+1)
 
             server.setResponse(data,fileName)
             Toast.makeText(
                 this,
-                "FILE IS PREPARED",
+                "FILE IS PREPARED $fileName",
                 Toast.LENGTH_SHORT)
                 .show()
         }
@@ -181,8 +187,11 @@ class ServerActivity
     }
 
     @WorkerThread
-    override fun onHttpGet(out: OutputStream) {
+    override fun onHttpGet(
+        request: String
+    ) {
         msgr.addMessage("HTTP-GET REQUEST")
+        msgr.addMessage(request)
     }
 
     @WorkerThread

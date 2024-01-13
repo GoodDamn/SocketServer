@@ -6,7 +6,6 @@ import android.net.LinkProperties
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
@@ -23,10 +22,6 @@ import good.damn.filesharing.models.Messenger
 import good.damn.filesharing.models.Server
 import good.damn.filesharing.models.launchers.ContentLauncher
 import good.damn.filesharing.utils.FileUtils
-import good.damn.filesharing.utils.NetworkUtils
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
 import java.net.ServerSocket
 import java.net.Socket
 import java.nio.ByteOrder
@@ -201,10 +196,12 @@ class ServerActivity
 
     @WorkerThread
     override fun onHttpGet(
-        request: String
-    ) {
+        request: String,
+        path: String
+    ): ByteArray {
         msgr.addMessage("HTTP-GET REQUEST")
         msgr.addMessage(request)
+        return FileUtils.fromDoc(path)
     }
 
     @WorkerThread

@@ -1,5 +1,6 @@
 package good.damn.filesharing.listeners
 
+import android.util.Log
 import androidx.annotation.WorkerThread
 import java.io.InputStream
 import java.io.OutputStream
@@ -10,7 +11,8 @@ interface NetworkInputListener {
     @WorkerThread
     fun input(
         data: ByteArray,
-        out: OutputStream
+        out: OutputStream,
+        onRetrievedFile: ((ByteArray)->Unit)
     ): Boolean {
         if (data.size < 2) {
             return false
@@ -42,7 +44,30 @@ interface NetworkInputListener {
             }
 
             71 -> { // G (GET) http
-                onHttpGet(String(data,Charset.forName("UTF-8")))
+                val httpMessage = String(
+                    data,
+                    Charset.forName("UTF-8")
+                )
+
+                val path = httpMessage
+                    .substring(
+                        5,
+                        httpMessage.indexOf(
+                            " ",
+                            5
+                        )
+                    )
+
+                Log.d("NetworkInputListener:", "input: $path")
+
+                onRetrievedFile(
+                    onHttpGet(
+                        httpMessage,
+                        path
+                    )
+                )
+
+
             }
         }
 
@@ -67,6 +92,8 @@ interface NetworkInputListener {
 
     @WorkerThread
     fun onHttpGet(
-        request: String)
+        request: String,
+        path: String
+    ) : ByteArray
 
 }

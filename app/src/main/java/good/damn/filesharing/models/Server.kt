@@ -81,7 +81,7 @@ class Server(port: Int) : Runnable {
         mServerListener?.onStartListen()
         try {
             val clientSocket = mServer!!.accept()
-            clientSocket.soTimeout = 9000
+            clientSocket.soTimeout = 13000
 
             val out = clientSocket.getOutputStream()
             val inp = clientSocket.getInputStream()
@@ -117,14 +117,18 @@ class Server(port: Int) : Runnable {
 
             Log.d(TAG, "listen: DATA SIZE: ${data.size} RESPONSE TYPE: $typeIn")
 
-            mServerListener?.input(data, out)
+            var response = mResponse
+
+            mServerListener?.input(data, out) {
+                response = it
+            }
 
             if (typeIn == 71) {
                 // for web-browser
                 val fileName = String(mResponseText, mCharset)
                 Log.d(TAG, "listen: FILE_NAME_HTTP_GET: $fileName")
                 out.write("HTTP/1.0 200 OK\r\n".toByteArray(mCharset))
-                out.write("Content-Length: ${mResponse.size}\r\n".toByteArray(mCharset))
+                out.write("Content-Length: ${response.size}\r\n".toByteArray(mCharset))
                 out.write("Content-Type: application/octet-stream;\r\n".toByteArray(mCharset))
                 out.write(
                     "Content-Disposition: inline; filename=\"$fileName\"\r\n".toByteArray(
@@ -132,7 +136,7 @@ class Server(port: Int) : Runnable {
                     )
                 )
                 out.write("\r\n".toByteArray(mCharset))
-                out.write(mResponse)
+                out.write(response)
             } else {
                 out.write(mResponseType)
                 out.write(mResponseText.size)

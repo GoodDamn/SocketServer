@@ -68,13 +68,17 @@ class ServerActivity
                 filePath
             else filePath.substring(nameIndex + 1)
 
-            server.setResponse(data, fileName)
+            FileUtils.writeToDoc(
+                fileName,
+                data,
+                0
+            )
+
             Toast.makeText(
                 this,
-                "FILE IS PREPARED $fileName",
+                "FILE IS COPIED $fileName",
                 Toast.LENGTH_SHORT
-            )
-                .show()
+            ).show()
         }
 
         val textViewIP = TextView(this)
@@ -105,6 +109,13 @@ class ServerActivity
 
         msgr.setTextView(textViewMsg)
 
+        val btnPutFile = Button(this)
+        btnPutFile.text = "Put file"
+        btnPutFile.setOnClickListener {
+            contentLauncher.launch("*/*")
+        }
+
+
         val rootLayout = LinearLayout(this)
         rootLayout.gravity = Gravity.CENTER
         rootLayout.orientation = LinearLayout.VERTICAL
@@ -113,7 +124,7 @@ class ServerActivity
         rootLayout.addView(btnCreate, -1, -2)
         rootLayout.addView(btnDrop, -1, -2)
         rootLayout.addView(editTextMsg, -1, -2)
-        rootLayout.addView(btnResponseFile, -1, -2)
+        rootLayout.addView(btnPutFile, -1, -2)
         rootLayout.addView(textViewMsg, -1, -1)
 
         editTextMsg.addTextChangedListener(object : TextWatcher {
@@ -196,12 +207,10 @@ class ServerActivity
 
     @WorkerThread
     override fun onHttpGet(
-        request: String,
-        path: String
-    ): ByteArray {
+        request: String
+    ) {
         msgr.addMessage("HTTP-GET REQUEST")
         msgr.addMessage(request)
-        return FileUtils.fromDoc(path)
     }
 
     @WorkerThread

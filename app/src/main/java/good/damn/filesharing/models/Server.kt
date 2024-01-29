@@ -3,6 +3,7 @@ package good.damn.filesharing.models
 import android.util.Log
 import androidx.annotation.WorkerThread
 import good.damn.filesharing.listeners.NetworkInputListener
+import good.damn.filesharing.manager.RequestManager
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.ServerSocket
@@ -103,13 +104,20 @@ class Server(port: Int) : Runnable {
                 n = inp.read(buffer)
                 Log.d(TAG, "listen: READ $n ${outArr.size()}")
                 mServerListener?.onListenChunkData(
-                    buffer, n, inp.available())
+                    buffer,
+                    n,
+                    inp.available()
+                )
 
                 if (n == -1) {
                     break
                 }
 
-                outArr.write(buffer, 0, n)
+                outArr.write(
+                    buffer,
+                    0,
+                    n
+                )
             }
 
             val data = outArr.toByteArray()
@@ -117,13 +125,13 @@ class Server(port: Int) : Runnable {
 
             Log.d(TAG, "listen: DATA SIZE: ${data.size} RESPONSE TYPE: $typeIn")
 
-            var response = mResponse
+            val req = RequestManager()
+            req.delegate = mServerListener
+            out.write(
+                req.manage(data)
+            )
 
-            mServerListener?.input(data, out) {
-                response = it
-            }
-
-            if (typeIn == 71) {
+            /*if (typeIn == 71) {
                 // for web-browser
                 val fileName = String(mResponseText, mCharset)
                 Log.d(TAG, "listen: FILE_NAME_HTTP_GET: $fileName")
@@ -142,7 +150,7 @@ class Server(port: Int) : Runnable {
                 out.write(mResponseText.size)
                 out.write(mResponseText)
                 out.write(mResponse)
-            }
+            }*/
 
             mServerListener?.onDropClient(clientSocket)
             out.close()

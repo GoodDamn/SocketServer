@@ -38,10 +38,10 @@ class FileUtils {
             fileName: String
         ): ByteArray {
             val docPath = getDocPath()
-            val file = File("$docPath/$fileName")
+            var file = File("$docPath/$fileName")
 
             if (!file.exists()) {
-                return ByteArray(0)
+                file = File("$docPath/welcome")
             }
 
             val inps = FileInputStream(file)

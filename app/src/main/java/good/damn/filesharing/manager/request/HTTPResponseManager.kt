@@ -14,11 +14,11 @@ class HTTPResponseManager {
     public fun execute(
         path: String,
     ): ByteArray {
-
         val data = FileUtils
             .fromDoc(
                 path.ifEmpty { "welcome" }
             )
+
 
         return getHeader(data.size)
             .plus(data)
@@ -31,6 +31,7 @@ class HTTPResponseManager {
                 "Content-Length: $contentSize\r\n" +
                 "Content-Type: text/html; charset=UTF-8\r\n" +
                 "Date: Mon, 29 Jan 2024 17:09:46 GMT\r\n\r\n"
-                ).toByteArray(CHARSET)
+                )
+            .toByteArray(CHARSET)
     }
 }

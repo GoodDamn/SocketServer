@@ -1,5 +1,6 @@
 package good.damn.filesharing.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.net.ConnectivityManager
 import android.net.LinkProperties
@@ -9,12 +10,14 @@ import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.Gravity
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.filesharing.utils.ByteUtils
@@ -25,6 +28,7 @@ import good.damn.filesharing.utils.FileUtils
 import java.net.ServerSocket
 import java.net.Socket
 import java.nio.ByteOrder
+import java.security.Permission
 
 @OptIn(ExperimentalUnsignedTypes::class)
 class ServerActivity
@@ -35,11 +39,17 @@ class ServerActivity
 
     private val msgr = Messenger()
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val port = 1250
+        val useSystem = Settings.System
+            .canWrite(this)
+
+        Log.d(TAG, "onCreate: SYSTEM_CAN_WRITE: $useSystem")
+
+        val port = 8080
 
         val server = Server(port)
         server.setOnServerListener(this)

@@ -20,7 +20,7 @@ class RequestManager {
         mFunctions.set(71) { // GET; G - 71 ASCII
             val httpMessage = String(
                 it,
-                Charset.forName("UTF-8")
+                CHARSET
             )
 
             delegate?.onHttpGet(httpMessage)

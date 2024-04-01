@@ -1,6 +1,5 @@
-package good.damn.filesharing.models.launchers
+package good.damn.filesharing.controllers.launchers
 
-import android.app.Activity
 import android.net.Uri
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher

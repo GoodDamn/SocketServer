@@ -1,11 +1,10 @@
-package good.damn.filesharing.models
+package good.damn.filesharing.controllers
 
 import android.util.Log
 import androidx.annotation.WorkerThread
 import good.damn.filesharing.listeners.NetworkInputListener
 import good.damn.filesharing.manager.RequestManager
 import java.io.ByteArrayOutputStream
-import java.io.InputStream
 import java.net.ServerSocket
 import java.net.Socket
 import java.net.SocketException
@@ -130,28 +129,6 @@ class Server(port: Int) : Runnable {
             out.write(
                 req.manage(data)
             )
-
-            /*if (typeIn == 71) {
-                // for web-browser
-                val fileName = String(mResponseText, mCharset)
-                Log.d(TAG, "listen: FILE_NAME_HTTP_GET: $fileName")
-                out.write("HTTP/1.0 200 OK\r\n".toByteArray(mCharset))
-                out.write("Content-Length: ${response.size}\r\n".toByteArray(mCharset))
-                out.write("Content-Type: application/octet-stream;\r\n".toByteArray(mCharset))
-                out.write(
-                    "Content-Disposition: inline; filename=\"$fileName\"\r\n".toByteArray(
-                        mCharset
-                    )
-                )
-                out.write("\r\n".toByteArray(mCharset))
-                out.write(response)
-            } else {
-                out.write(mResponseType)
-                out.write(mResponseText.size)
-                out.write(mResponseText)
-                out.write(mResponse)
-            }*/
-
             mServerListener?.onDropClient(clientSocket)
             out.close()
         } catch (e: SocketException) {

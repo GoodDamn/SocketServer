@@ -1,11 +1,8 @@
-package good.damn.filesharing.models
+package good.damn.filesharing.controllers
 
-import android.app.Activity
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import java.nio.charset.Charset
 
 class Messenger {

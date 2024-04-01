@@ -1,6 +1,5 @@
 package good.damn.filesharing.activities
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.net.ConnectivityManager
 import android.net.LinkProperties
@@ -21,14 +20,13 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.filesharing.utils.ByteUtils
-import good.damn.filesharing.models.Messenger
-import good.damn.filesharing.models.Server
-import good.damn.filesharing.models.launchers.ContentLauncher
+import good.damn.filesharing.controllers.Messenger
+import good.damn.filesharing.controllers.Server
+import good.damn.filesharing.controllers.launchers.ContentLauncher
 import good.damn.filesharing.utils.FileUtils
 import java.net.ServerSocket
 import java.net.Socket
 import java.nio.ByteOrder
-import java.security.Permission
 
 @OptIn(ExperimentalUnsignedTypes::class)
 class ServerActivity

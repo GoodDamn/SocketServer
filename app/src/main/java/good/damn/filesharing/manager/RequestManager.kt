@@ -17,7 +17,7 @@ class RequestManager {
     var delegate: NetworkInputListener? = null
 
     init {
-        mFunctions.set(71) { // GET; G - 71 ASCII
+        mFunctions[71] = { // GET; G - 71 ASCII
             val httpMessage = String(
                 it,
                 CHARSET
@@ -35,13 +35,12 @@ class RequestManager {
                 )
 
             val response = HTTPResponseManager()
-            return@set response
-                .execute(
-                    path
-                )
+            response.execute(
+                path
+            )
         }
 
-        mFunctions.set(1) { // File
+        mFunctions[1] = { // File
             val nameSize = it[1].toUByte()
             val fileName = String(it,
                 2,
@@ -56,19 +55,21 @@ class RequestManager {
 
             )
 
-            return@set ByteArray(0)
+            ByteArray(0)
         }
 
-        mFunctions.set(2) { // Text
-            val msgSize = it[1].toUByte()
+        mFunctions[2] = { // Text
+            val msgSize = it[1].toUByte() // 255 bytes
             val msg = String(it,
                 2,
                 msgSize.toInt(),
                 CHARSET
             )
 
-            delegate?.onGetText(msg)
-            return@set ByteArray(0)
+            delegate?.onGetText(
+                msg
+            )
+            ByteArray(0)
         }
     }
 

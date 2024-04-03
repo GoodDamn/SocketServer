@@ -1,4 +1,4 @@
-package good.damn.filesharing.listeners
+package good.damn.filesharing.listeners.network
 
 import android.util.Log
 import androidx.annotation.WorkerThread

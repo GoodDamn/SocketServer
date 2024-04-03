@@ -18,7 +18,7 @@ class HTTPResponseManager {
         val data = FileUtils
             .fromDoc(
                 path.ifEmpty { "welcome" }
-            )
+            ) ?: return getHeaderError()
 
         if (path.contains(".")) {
             return getHeaderFile(
@@ -40,6 +40,15 @@ class HTTPResponseManager {
             "Content-Length: $contentSize\r\n" +
             "Content-Type: application/octet-stream;\r\n" +
             "Content-Disposition: inline; filename=\"$fileName\"\r\n\r\n"
+        ).toByteArray(CHARSET)
+    }
+
+    private fun getHeaderError(): ByteArray {
+        return (
+            "HTTP/1.0 404 Not Found\r\n"+
+            "Content-Length: 9\r\n"+
+            "Content-Type: text/html; \r\n"+
+            "Date: Mon, 29 Jan 2024 17:09:46 GMT\r\n\r\nNot found"
         ).toByteArray(CHARSET)
     }
 

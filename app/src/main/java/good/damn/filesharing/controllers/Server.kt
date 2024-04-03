@@ -2,7 +2,7 @@ package good.damn.filesharing.controllers
 
 import android.util.Log
 import androidx.annotation.WorkerThread
-import good.damn.filesharing.listeners.NetworkInputListener
+import good.damn.filesharing.listeners.network.NetworkInputListener
 import good.damn.filesharing.manager.RequestManager
 import java.io.ByteArrayOutputStream
 import java.net.ServerSocket

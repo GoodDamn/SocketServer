@@ -1,55 +1,41 @@
 package good.damn.filesharing.activities
 
 import android.annotation.SuppressLint
-import android.net.ConnectivityManager
-import android.net.LinkProperties
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
-import android.net.wifi.WifiManager
-import android.os.Build
+import android.net.LinkAddress
 import android.os.Bundle
-import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.Gravity
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
-import good.damn.filesharing.utils.ByteUtils
+import good.damn.clientsocket.services.network.HotspotServiceCompat
 import good.damn.filesharing.controllers.Messenger
 import good.damn.filesharing.controllers.Server
 import good.damn.filesharing.controllers.launchers.ContentLauncher
+import good.damn.filesharing.listeners.network.service.HotspotServiceListener
 import good.damn.filesharing.utils.FileUtils
 import java.net.ServerSocket
 import java.net.Socket
-import java.nio.ByteOrder
 
-@OptIn(ExperimentalUnsignedTypes::class)
 class ServerActivity
     : AppCompatActivity(),
-    Server.ServerListener {
+    Server.ServerListener,
+    HotspotServiceListener {
 
     private val TAG = "ServerActivity"
 
     private val msgr = Messenger()
+    private val mPort = 8080
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    private lateinit var mTextViewIP: TextView
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val useSystem = Settings.System
-            .canWrite(this)
-
-        Log.d(TAG, "onCreate: SYSTEM_CAN_WRITE: $useSystem")
-
-        val port = 8080
-
-        val server = Server(port)
+        val server = Server(mPort)
         server.setOnServerListener(this)
 
         val contentLauncher = ContentLauncher(this) { uri ->
@@ -61,8 +47,7 @@ class ServerActivity
                     this,
                     "Something went wrong",
                     Toast.LENGTH_SHORT
-                )
-                    .show()
+                ).show()
                 return@ContentLauncher
             }
 
@@ -89,12 +74,8 @@ class ServerActivity
             ).show()
         }
 
-        val textViewIP = TextView(this)
-        textViewIP.textSize = 18.0f
-
-        getLanIP {
-            textViewIP.text = "Host: $it\nPort: $port"
-        }
+        mTextViewIP = TextView(this)
+        mTextViewIP.textSize = 18.0f
 
         val btnCreate = Button(this)
         btnCreate.text = "Create server"
@@ -128,7 +109,7 @@ class ServerActivity
         rootLayout.gravity = Gravity.CENTER
         rootLayout.orientation = LinearLayout.VERTICAL
 
-        rootLayout.addView(textViewIP, -1, -2)
+        rootLayout.addView(mTextViewIP, -1, -2)
         rootLayout.addView(btnCreate, -1, -2)
         rootLayout.addView(btnDrop, -1, -2)
         rootLayout.addView(editTextMsg, -1, -2)
@@ -166,7 +147,14 @@ class ServerActivity
             server.drop()
         }
 
+        val hotspotService = HotspotServiceCompat(
+            this
+        )
+
+        hotspotService.delegate = this
         setContentView(rootLayout)
+
+        hotspotService.start()
     }
 
     @WorkerThread
@@ -231,61 +219,10 @@ class ServerActivity
         msgr.addMessage("Server is dropped")
     }
 
-    private fun getIpString(
-        ip: Int
-    ): String {
-        Log.d(TAG, "getLanIP: WIFI_IP: $ip")
-        val arr = ByteUtils.integer(
-            if (ByteOrder.nativeOrder()
-                    .equals(ByteOrder.LITTLE_ENDIAN)
-            ) Integer.reverseBytes(ip)
-            else ip
-        )
-        return "${arr[0]}.${arr[1]}.${arr[2]}.${arr[3]}"
-    }
-
-    private fun getLanIP(
-        onGetIP: (String) -> Unit
+    override fun onGetHotspotIP(
+        addressList: String
     ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val connectManager = applicationContext.getSystemService(CONNECTIVITY_SERVICE)
-                    as ConnectivityManager
-
-            val request = NetworkRequest.Builder()
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .build()
-
-            val networkCallback = object : ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    Log.d(TAG, "onAvailable: ")
-                    super.onAvailable(network)
-                }
-
-                override fun onLinkPropertiesChanged(
-                    network: Network,
-                    link: LinkProperties
-                ) {
-                    val ip = link.linkAddresses.toString()
-                    Log.d(TAG, "onLinkPropertiesChanged: $ip")
-                    onGetIP(ip)
-                    super.onLinkPropertiesChanged(network, link)
-                }
-
-                override fun onUnavailable() {
-                    Log.d(TAG, "onUnavailable: ")
-                    super.onUnavailable()
-                }
-            }
-
-            connectManager.apply {
-                requestNetwork(request, networkCallback)
-                registerNetworkCallback(request, networkCallback)
-            }
-            return
-        }
-
-        val wifi = applicationContext.getSystemService(WIFI_SERVICE)
-                as WifiManager
-        onGetIP(getIpString(wifi.connectionInfo.ipAddress))
+        mTextViewIP.text = "Host: $addressList\nPort: $mPort"
     }
+
 }

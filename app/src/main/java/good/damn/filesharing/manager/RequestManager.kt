@@ -1,8 +1,7 @@
 package good.damn.filesharing.manager
 
-import android.util.Log
 import androidx.annotation.WorkerThread
-import good.damn.filesharing.listeners.NetworkInputListener
+import good.damn.filesharing.listeners.network.NetworkInputListener
 import good.damn.filesharing.manager.request.HTTPResponseManager
 import java.nio.charset.Charset
 

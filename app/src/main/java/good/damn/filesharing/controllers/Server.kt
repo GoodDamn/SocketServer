@@ -14,19 +14,13 @@ import java.net.SocketTimeoutException
 import java.nio.charset.Charset
 
 class Server(
-    port: Int
+    val mPort: Int
 ): Runnable {
 
     private val TAG = "Server"
 
-    private var mHostPort = port
-
     private var mServer: ServerSocket? = null
     private var mServerListener: ServerListener? = null
-
-    private var mResponseType = 2 // text
-    private var mResponse = byteArrayOf(48)
-    private var mResponseText = byteArrayOf(48)
 
     private val mRequestManager = RequestManager()
 
@@ -35,7 +29,10 @@ class Server(
     }
 
     override fun run() {
-        mServer = ServerSocket(mHostPort)
+        mServer = ServerSocket(
+            mPort
+        )
+
         mServer?.reuseAddress = true
 
         mServerListener?.onCreateServer(
@@ -45,25 +42,6 @@ class Server(
         while (listen(Application.BUFFER_MB)) {
             // Listen...
         }
-    }
-
-    fun setResponse(
-        data: ByteArray,
-        fileName: String
-    ) {
-        mResponseType = 1
-        mResponse = data
-        mResponseText = fileName
-            .toByteArray(Application.CHARSET)
-    }
-
-    fun setResponseText(
-        text: String
-    ) {
-        mResponseType = 2
-        mResponse = byteArrayOf()
-        mResponseText = text
-            .toByteArray(Application.CHARSET)
     }
 
     fun create() {

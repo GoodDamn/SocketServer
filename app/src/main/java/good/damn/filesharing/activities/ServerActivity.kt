@@ -2,12 +2,14 @@ package good.damn.filesharing.activities
 
 import android.annotation.SuppressLint
 import android.net.LinkAddress
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.ScrollingMovementMethod
 import android.view.Gravity
 import android.widget.*
+import androidx.activity.result.ActivityResultCallback
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.clientsocket.services.network.HotspotServiceCompat
@@ -23,7 +25,8 @@ import java.net.Socket
 class ServerActivity
     : AppCompatActivity(),
     ServerListener,
-    HotspotServiceListener {
+    HotspotServiceListener,
+    ActivityResultCallback<Uri?>{
 
     private val TAG = "ServerActivity"
 
@@ -39,41 +42,10 @@ class ServerActivity
         val server = Server(mPort)
         server.setOnServerListener(this)
 
-        val contentLauncher = ContentLauncher(this) { uri ->
-            val data = FileUtils
-                .read(uri, this)
-
-            if (data == null) {
-                Toast.makeText(
-                    this,
-                    "Something went wrong",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@ContentLauncher
-            }
-
-            val p = uri!!.path!!
-            val t = "primary:"
-            val filePath = p.substring(p.indexOf(t) + t.length)
-
-            val nameIndex = filePath.lastIndexOf("/")
-
-            val fileName = if (nameIndex == -1)
-                filePath
-            else filePath.substring(nameIndex + 1)
-
-            FileUtils.writeToDoc(
-                fileName,
-                data,
-                0
-            )
-
-            Toast.makeText(
-                this,
-                "FILE IS COPIED $fileName",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        val contentLauncher = ContentLauncher(
+            this,
+            this
+        )
 
         mTextViewIP = TextView(this)
         mTextViewIP.textSize = 18.0f
@@ -110,31 +82,41 @@ class ServerActivity
         rootLayout.gravity = Gravity.CENTER
         rootLayout.orientation = LinearLayout.VERTICAL
 
-        rootLayout.addView(mTextViewIP, -1, -2)
-        rootLayout.addView(btnCreate, -1, -2)
-        rootLayout.addView(btnDrop, -1, -2)
-        rootLayout.addView(editTextMsg, -1, -2)
-        rootLayout.addView(btnPutFile, -1, -2)
-        rootLayout.addView(textViewMsg, -1, -1)
+        rootLayout.addView(
+            mTextViewIP,
+            -1,
+            -2
+        )
 
-        editTextMsg.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                server.setResponseText(s.toString())
-            }
+        rootLayout.addView(
+            btnCreate,
+            -1,
+            -2
+        )
 
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
+        rootLayout.addView(
+            btnDrop,
+            -1,
+            -2
+        )
 
-            }
+        rootLayout.addView(
+            editTextMsg,
+            -1,
+            -2
+        )
 
-            override fun afterTextChanged(s: Editable?) {
+        rootLayout.addView(
+            btnPutFile,
+            -1,
+            -2
+        )
 
-            }
-        })
+        rootLayout.addView(
+            textViewMsg,
+            -1,
+            -1
+        )
 
         btnResponseFile.setOnClickListener {
             contentLauncher.launch("*/*")
@@ -224,6 +206,44 @@ class ServerActivity
         addressList: String
     ) {
         mTextViewIP.text = "Host: $addressList\nPort: $mPort"
+    }
+
+    override fun onActivityResult(
+        uri: Uri?
+    ) {
+        val data = FileUtils
+            .read(uri, this)
+
+        if (data == null) {
+            Toast.makeText(
+                this,
+                "Something went wrong",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        val p = uri!!.path!!
+        val t = "primary:"
+        val filePath = p.substring(p.indexOf(t) + t.length)
+
+        val nameIndex = filePath.lastIndexOf("/")
+
+        val fileName = if (nameIndex == -1)
+            filePath
+        else filePath.substring(nameIndex + 1)
+
+        FileUtils.writeToDoc(
+            fileName,
+            data,
+            0
+        )
+
+        Toast.makeText(
+            this,
+            "FILE IS COPIED $fileName",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
 }

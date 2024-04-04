@@ -1,6 +1,7 @@
 package good.damn.filesharing.manager.request
 
 import android.util.Log
+import good.damn.filesharing.Application
 import good.damn.filesharing.manager.RequestManager
 import good.damn.filesharing.utils.FileUtils
 import java.nio.charset.Charset
@@ -8,8 +9,6 @@ import java.nio.charset.Charset
 class HTTPResponseManager {
 
     private val TAG = "HTTPResponseManager"
-
-    private val CHARSET = Charset.forName("UTF-8")
 
     public fun execute(
         path: String,
@@ -40,7 +39,7 @@ class HTTPResponseManager {
             "Content-Length: $contentSize\r\n" +
             "Content-Type: application/octet-stream;\r\n" +
             "Content-Disposition: inline; filename=\"$fileName\"\r\n\r\n"
-        ).toByteArray(CHARSET)
+        ).toByteArray(Application.CHARSET)
     }
 
     private fun getHeaderError(): ByteArray {
@@ -49,7 +48,7 @@ class HTTPResponseManager {
             "Content-Length: 9\r\n"+
             "Content-Type: text/html; \r\n"+
             "Date: Mon, 29 Jan 2024 17:09:46 GMT\r\n\r\nNot found"
-        ).toByteArray(CHARSET)
+        ).toByteArray(Application.CHARSET)
     }
 
     private fun getHeaderDocument(
@@ -60,6 +59,6 @@ class HTTPResponseManager {
             "Content-Length: $contentSize\r\n" +
             "Content-Type: text/html; charset=UTF-8\r\n" +
             "Date: Mon, 29 Jan 2024 17:09:46 GMT\r\n\r\n"
-        ).toByteArray(CHARSET)
+        ).toByteArray(Application.CHARSET)
     }
 }

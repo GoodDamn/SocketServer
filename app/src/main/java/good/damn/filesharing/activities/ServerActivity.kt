@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.clientsocket.services.network.HotspotServiceCompat
+import good.damn.filesharing.callbacks.ActivityResultCopyToDoc
 import good.damn.filesharing.controllers.Messenger
 import good.damn.filesharing.controllers.Server
 import good.damn.filesharing.controllers.launchers.ContentLauncher
@@ -25,8 +26,7 @@ import java.net.Socket
 class ServerActivity
     : AppCompatActivity(),
     ServerListener,
-    HotspotServiceListener,
-    ActivityResultCallback<Uri?>{
+    HotspotServiceListener {
 
     private val TAG = "ServerActivity"
 
@@ -36,7 +36,9 @@ class ServerActivity
     private lateinit var mTextViewIP: TextView
 
     @SuppressLint("SetTextI18n")
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
         super.onCreate(savedInstanceState)
 
         val server = Server(mPort)
@@ -44,7 +46,7 @@ class ServerActivity
 
         val contentLauncher = ContentLauncher(
             this,
-            this
+            ActivityResultCopyToDoc(this)
         )
 
         mTextViewIP = TextView(this)
@@ -232,50 +234,6 @@ class ServerActivity
         addressList: String
     ) {
         mTextViewIP.text = "Host: $addressList\nPort: $mPort"
-    }
-
-    override fun onActivityResult(
-        uri: Uri?
-    ) {
-        val data = FileUtils
-            .read(uri, this)
-
-        if (data == null) {
-            Toast.makeText(
-                this,
-                "Something went wrong",
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
-
-        val p = uri!!.path!!
-        val t = "primary:"
-        val filePath = p.substring(
-            p.indexOf(t) + t.length
-        )
-
-        val nameIndex = filePath.lastIndexOf(
-            "/"
-        )
-
-        val fileName = if (nameIndex == -1)
-            filePath
-        else filePath.substring(
-            nameIndex + 1
-        )
-
-        FileUtils.writeToDoc(
-            fileName,
-            data,
-            0
-        )
-
-        Toast.makeText(
-            this,
-            "FILE IS COPIED $fileName",
-            Toast.LENGTH_SHORT
-        ).show()
     }
 
 }

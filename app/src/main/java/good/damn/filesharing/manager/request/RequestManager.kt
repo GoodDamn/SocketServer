@@ -1,18 +1,29 @@
 package good.damn.filesharing.manager.request
 
+import android.util.Log
 import androidx.annotation.WorkerThread
 import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.NetworkInputListener
 import good.damn.filesharing.manager.response.HTTPResponseManager
+import good.damn.filesharing.shareProtocol.ShareMethod
+import good.damn.filesharing.shareProtocol.ShareMethodHTTPGet
+import good.damn.filesharing.shareProtocol.ShareMethodList
 
 class RequestManager {
 
-    private val mFunctions: HashMap<Int,((ByteArray)->ByteArray)> = HashMap()
+    companion object {
+        private const val TAG = "RequestManager"
+    }
+
+    private val mFunctions: HashMap<
+        Int,
+        ((ByteArray)->ByteArray)
+    > = HashMap()
 
     var delegate: NetworkInputListener? = null
 
     init {
-        mFunctions[71] = { // GET; G - 71 ASCII
+        mFunctions[ShareMethodHTTPGet().hashCode()] = { // GET; G - 71 ASCII
             val httpMessage = String(
                 it,
                 Application.CHARSET
@@ -35,36 +46,15 @@ class RequestManager {
             )
         }
 
-        mFunctions[1] = { // File
-            val nameSize = it[1].toUByte()
-            val fileName = String(it,
-                2,
-                nameSize.toInt(),
-                Application.CHARSET
+        mFunctions[ShareMethodList().hashCode()] = {
+            byteArrayOf(
+                15,15,15,15, // response id
+                1, // n - fileNames count
+                2, // i - fileName length
+                0x6c,0x6f // ij- fileName
             )
-
-            delegate?.onGetFile(
-                it,
-                nameSize.toInt()+2,
-                fileName
-            )
-
-            ByteArray(0)
         }
 
-        mFunctions[2] = { // Text
-            val msgSize = it[1].toUByte() // 255 bytes
-            val msg = String(it,
-                2,
-                msgSize.toInt(),
-                Application.CHARSET
-            )
-
-            delegate?.onGetText(
-                msg
-            )
-            ByteArray(0)
-        }
     }
 
     @WorkerThread
@@ -76,7 +66,9 @@ class RequestManager {
             return ByteArray(0)
         }
 
-        return mFunctions[data[0].toInt()]?.let {
+        Log.d(TAG, "manage: ${data[0]}, ${data[1]}")
+
+        return mFunctions[ShareMethod(data).hashCode()]?.let {
             it(data)
         } ?: ByteArray(0)
     }

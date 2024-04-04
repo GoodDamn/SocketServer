@@ -72,9 +72,6 @@ class Server(
 
             var n: Int
 
-            val typeIn = inp.read()
-            outArr.write(typeIn) // type
-
             Thread.sleep(750)
             while (true) {
                 Log.d(TAG, "listen: READ ${inp.available()} ${outArr.size()}")
@@ -104,7 +101,7 @@ class Server(
             val data = outArr.toByteArray()
             outArr.close()
 
-            Log.d(TAG, "listen: DATA SIZE: ${data.size} RESPONSE TYPE: $typeIn")
+            Log.d(TAG, "listen: DATA SIZE: ${data.size}")
 
             out.write(
                 mRequestManager.manage(

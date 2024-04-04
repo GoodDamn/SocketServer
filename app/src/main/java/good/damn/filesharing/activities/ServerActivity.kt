@@ -14,6 +14,7 @@ import good.damn.clientsocket.services.network.HotspotServiceCompat
 import good.damn.filesharing.controllers.Messenger
 import good.damn.filesharing.controllers.Server
 import good.damn.filesharing.controllers.launchers.ContentLauncher
+import good.damn.filesharing.listeners.network.server.ServerListener
 import good.damn.filesharing.listeners.network.service.HotspotServiceListener
 import good.damn.filesharing.utils.FileUtils
 import java.net.ServerSocket
@@ -21,7 +22,7 @@ import java.net.Socket
 
 class ServerActivity
     : AppCompatActivity(),
-    Server.ServerListener,
+    ServerListener,
     HotspotServiceListener {
 
     private val TAG = "ServerActivity"

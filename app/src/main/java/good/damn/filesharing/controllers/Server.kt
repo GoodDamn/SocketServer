@@ -2,7 +2,9 @@ package good.damn.filesharing.controllers
 
 import android.util.Log
 import androidx.annotation.WorkerThread
+import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.NetworkInputListener
+import good.damn.filesharing.listeners.network.server.ServerListener
 import good.damn.filesharing.manager.RequestManager
 import java.io.ByteArrayOutputStream
 import java.net.ServerSocket
@@ -11,7 +13,9 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.nio.charset.Charset
 
-class Server(port: Int) : Runnable {
+class Server(
+    port: Int
+): Runnable {
 
     private val TAG = "Server"
 
@@ -24,17 +28,21 @@ class Server(port: Int) : Runnable {
     private var mResponse = byteArrayOf(48)
     private var mResponseText = byteArrayOf(48)
 
-    private val mCharset = Charset.forName("UTF-8")
+    private val mRequestManager = RequestManager()
+
+    init {
+        mRequestManager.delegate = mServerListener
+    }
 
     override fun run() {
         mServer = ServerSocket(mHostPort)
         mServer?.reuseAddress = true
 
-        mServerListener?.onCreateServer(mServer!!)
+        mServerListener?.onCreateServer(
+            mServer!!
+        )
 
-        val buffer = ByteArray(1024 * 1024)
-
-        while (listen(buffer)) {
+        while (listen(Application.BUFFER_MB)) {
             // Listen...
         }
     }
@@ -46,7 +54,7 @@ class Server(port: Int) : Runnable {
         mResponseType = 1
         mResponse = data
         mResponseText = fileName
-            .toByteArray(mCharset)
+            .toByteArray(Application.CHARSET)
     }
 
     fun setResponseText(
@@ -55,7 +63,7 @@ class Server(port: Int) : Runnable {
         mResponseType = 2
         mResponse = byteArrayOf()
         mResponseText = text
-            .toByteArray(mCharset)
+            .toByteArray(Application.CHARSET)
     }
 
     fun create() {
@@ -124,12 +132,16 @@ class Server(port: Int) : Runnable {
 
             Log.d(TAG, "listen: DATA SIZE: ${data.size} RESPONSE TYPE: $typeIn")
 
-            val req = RequestManager()
-            req.delegate = mServerListener
             out.write(
-                req.manage(data)
+                mRequestManager.manage(
+                    data
+                )
             )
-            mServerListener?.onDropClient(clientSocket)
+
+            mServerListener?.onDropClient(
+                clientSocket
+            )
+
             out.close()
         } catch (e: SocketException) {
             Log.d(TAG, "listen: EXCEPTION:  ${e.message}")
@@ -139,19 +151,5 @@ class Server(port: Int) : Runnable {
         }
 
         return true
-    }
-
-    interface ServerListener : NetworkInputListener {
-        @WorkerThread
-        fun onCreateServer(server: ServerSocket)
-
-        @WorkerThread
-        fun onStartListen()
-
-        @WorkerThread
-        fun onDropClient(socket: Socket)
-
-        @WorkerThread
-        fun onDropServer()
     }
 }

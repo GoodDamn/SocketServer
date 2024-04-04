@@ -1,15 +1,12 @@
 package good.damn.filesharing.manager
 
 import androidx.annotation.WorkerThread
+import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.NetworkInputListener
 import good.damn.filesharing.manager.request.HTTPResponseManager
 import java.nio.charset.Charset
 
 class RequestManager {
-
-    companion object {
-        private val CHARSET = Charset.forName("UTF-8")
-    }
 
     private val mFunctions: HashMap<Int,((ByteArray)->ByteArray)> = HashMap()
 
@@ -19,7 +16,7 @@ class RequestManager {
         mFunctions[71] = { // GET; G - 71 ASCII
             val httpMessage = String(
                 it,
-                CHARSET
+                Application.CHARSET
             )
 
             delegate?.onHttpGet(httpMessage)
@@ -44,14 +41,13 @@ class RequestManager {
             val fileName = String(it,
                 2,
                 nameSize.toInt(),
-                CHARSET
+                Application.CHARSET
             )
 
             delegate?.onGetFile(
                 it,
                 nameSize.toInt()+2,
                 fileName
-
             )
 
             ByteArray(0)
@@ -62,7 +58,7 @@ class RequestManager {
             val msg = String(it,
                 2,
                 msgSize.toInt(),
-                CHARSET
+                Application.CHARSET
             )
 
             delegate?.onGetText(

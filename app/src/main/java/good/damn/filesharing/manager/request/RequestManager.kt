@@ -16,14 +16,14 @@ class RequestManager {
     }
 
     private val mFunctions: HashMap<
-        Int,
+        ShareMethod,
         ((ByteArray)->ByteArray)
     > = HashMap()
 
     var delegate: NetworkInputListener? = null
 
     init {
-        mFunctions[ShareMethodHTTPGet().hashCode()] = { // GET; G - 71 ASCII
+        mFunctions[ShareMethodHTTPGet()] = { // GET; G - 71 ASCII
             val httpMessage = String(
                 it,
                 Application.CHARSET
@@ -46,7 +46,7 @@ class RequestManager {
             )
         }
 
-        mFunctions[ShareMethodList().hashCode()] = {
+        mFunctions[ShareMethodList()] = {
             byteArrayOf(
                 15,15,15,15, // response id
                 1, // n - fileNames count
@@ -68,7 +68,7 @@ class RequestManager {
 
         Log.d(TAG, "manage: ${data[0]}, ${data[1]}")
 
-        return mFunctions[ShareMethod(data).hashCode()]?.let {
+        return mFunctions[ShareMethod(data)]?.let {
             it(data)
         } ?: ByteArray(0)
     }

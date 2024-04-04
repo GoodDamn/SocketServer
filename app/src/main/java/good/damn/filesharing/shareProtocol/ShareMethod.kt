@@ -13,8 +13,10 @@ open class ShareMethod(
         (method[0] + method[1]) shl 1
         else -1
 
-    final override fun equals(other: Any?): Boolean {
-        return super.equals(other)
+    final override fun equals(
+        other: Any?
+    ): Boolean {
+        return other.hashCode() == mComputedHash
     }
 
     final override fun hashCode(): Int {

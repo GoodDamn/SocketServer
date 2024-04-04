@@ -1,17 +1,13 @@
 package good.damn.filesharing.controllers
 
 import android.util.Log
-import androidx.annotation.WorkerThread
 import good.damn.filesharing.Application
-import good.damn.filesharing.listeners.network.NetworkInputListener
 import good.damn.filesharing.listeners.network.server.ServerListener
-import good.damn.filesharing.manager.RequestManager
+import good.damn.filesharing.manager.request.RequestManager
 import java.io.ByteArrayOutputStream
 import java.net.ServerSocket
-import java.net.Socket
 import java.net.SocketException
 import java.net.SocketTimeoutException
-import java.nio.charset.Charset
 
 class Server(
     val mPort: Int

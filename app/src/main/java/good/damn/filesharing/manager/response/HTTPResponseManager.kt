@@ -1,10 +1,7 @@
-package good.damn.filesharing.manager.request
+package good.damn.filesharing.manager.response
 
-import android.util.Log
 import good.damn.filesharing.Application
-import good.damn.filesharing.manager.RequestManager
 import good.damn.filesharing.utils.FileUtils
-import java.nio.charset.Charset
 
 class HTTPResponseManager {
 

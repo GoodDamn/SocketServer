@@ -8,11 +8,14 @@ import good.damn.filesharing.manager.response.HTTPResponseManager
 import good.damn.filesharing.shareProtocol.ShareMethod
 import good.damn.filesharing.shareProtocol.ShareMethodHTTPGet
 import good.damn.filesharing.shareProtocol.ShareMethodList
+import good.damn.filesharing.utils.ByteUtils
 
 class RequestManager {
 
     companion object {
         private const val TAG = "RequestManager"
+        private val SHARE_METHOD_HTTP_GET = ShareMethodHTTPGet()
+        private val SHARE_METHOD_LIST= ShareMethodList()
     }
 
     private val mFunctions: HashMap<
@@ -47,12 +50,12 @@ class RequestManager {
         }
 
         mFunctions[ShareMethodList()] = {
-            byteArrayOf(
-                15,15,15,15, // response id
-                1, // n - fileNames count
-                2, // i - fileName length
-                0x6c,0x6f // ij- fileName
-            )
+            ByteUtils.integer(SHARE_METHOD_LIST.hashCode()).plus( // response id
+                byteArrayOf(
+                    1, // n - fileNames count
+                    2, // i - fileName length
+                    0x6c,0x6f // fileName with 'i' length
+            ))
         }
 
     }

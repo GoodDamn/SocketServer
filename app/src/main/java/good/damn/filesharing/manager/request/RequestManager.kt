@@ -26,7 +26,7 @@ class RequestManager {
     var delegate: NetworkInputListener? = null
 
     init {
-        mFunctions[ShareMethodHTTPGet()] = { // GET; G - 71 ASCII
+        mFunctions[SHARE_METHOD_HTTP_GET] = { // GET; G - 71 ASCII
             val httpMessage = String(
                 it,
                 Application.CHARSET
@@ -49,7 +49,7 @@ class RequestManager {
             )
         }
 
-        mFunctions[ShareMethodList()] = {
+        mFunctions[SHARE_METHOD_LIST] = {
             ByteUtils.integer(SHARE_METHOD_LIST.hashCode()).plus( // response id
                 byteArrayOf(
                     1, // n - fileNames count

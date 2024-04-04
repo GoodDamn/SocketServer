@@ -77,7 +77,6 @@ class ServerActivity
             contentLauncher.launch("*/*")
         }
 
-
         val rootLayout = LinearLayout(this)
         rootLayout.gravity = Gravity.CENTER
         rootLayout.orientation = LinearLayout.VERTICAL
@@ -141,13 +140,19 @@ class ServerActivity
     }
 
     @WorkerThread
-    override fun onCreateServer(server: ServerSocket) {
-        msgr.addMessage("Server started!")
+    override fun onCreateServer(
+        server: ServerSocket
+    ) {
+        msgr.addMessage(
+            "Server started!"
+        )
     }
 
     @WorkerThread
     override fun onStartListen() {
-        msgr.addMessage("Listen clients...")
+        msgr.addMessage(
+            "Listen clients..."
+        )
     }
 
     @WorkerThread
@@ -156,7 +161,9 @@ class ServerActivity
         readBytes: Int,
         last: Int
     ) {
-        msgr.addMessage("$readBytes $last")
+        msgr.addMessage(
+            "$readBytes $last"
+        )
     }
 
     @WorkerThread
@@ -172,34 +179,53 @@ class ServerActivity
         )
 
         if (msg != null) {
-            msgr.addMessage("SAVE PROCESS::EXCEPTION\n$msg")
+            msgr.addMessage(
+                "SAVE PROCESS::EXCEPTION\n$msg"
+            )
             return
         }
 
-        msgr.addMessage("$fileName is saved to Documents")
+        msgr.addMessage(
+            "$fileName is saved to Documents"
+        )
     }
 
     @WorkerThread
-    override fun onGetText(msg: String) {
-        msgr.addMessage(msg)
+    override fun onGetText(
+        msg: String
+    ) {
+        msgr.addMessage(
+            msg
+        )
     }
 
     @WorkerThread
     override fun onHttpGet(
         request: String
     ) {
-        msgr.addMessage("HTTP-GET REQUEST")
-        msgr.addMessage(request)
+        msgr.addMessage(
+            "HTTP-GET REQUEST"
+        )
+
+        msgr.addMessage(
+            request
+        )
     }
 
     @WorkerThread
-    override fun onDropClient(socket: Socket) {
-        msgr.addMessage("${socket.remoteSocketAddress} is disconnected")
+    override fun onDropClient(
+        socket: Socket
+    ) {
+        msgr.addMessage(
+            "${socket.remoteSocketAddress} is disconnected"
+        )
     }
 
     @WorkerThread
     override fun onDropServer() {
-        msgr.addMessage("Server is dropped")
+        msgr.addMessage(
+            "Server is dropped"
+        )
     }
 
     override fun onGetHotspotIP(
@@ -225,13 +251,19 @@ class ServerActivity
 
         val p = uri!!.path!!
         val t = "primary:"
-        val filePath = p.substring(p.indexOf(t) + t.length)
+        val filePath = p.substring(
+            p.indexOf(t) + t.length
+        )
 
-        val nameIndex = filePath.lastIndexOf("/")
+        val nameIndex = filePath.lastIndexOf(
+            "/"
+        )
 
         val fileName = if (nameIndex == -1)
             filePath
-        else filePath.substring(nameIndex + 1)
+        else filePath.substring(
+            nameIndex + 1
+        )
 
         FileUtils.writeToDoc(
             fileName,

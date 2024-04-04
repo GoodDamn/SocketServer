@@ -9,6 +9,7 @@ class Application
     companion object {
         val BUFFER_MB = ByteArray(1024*1024)
         val CHARSET = Charset.forName("UTF-8")
+        val CHARSET_ASCII = Charset.forName("US-ASCII")
     }
 
 }

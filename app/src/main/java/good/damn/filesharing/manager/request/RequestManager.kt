@@ -9,13 +9,15 @@ import good.damn.filesharing.shareProtocol.ShareMethod
 import good.damn.filesharing.shareProtocol.ShareMethodHTTPGet
 import good.damn.filesharing.shareProtocol.ShareMethodList
 import good.damn.filesharing.utils.ByteUtils
+import good.damn.filesharing.utils.FileUtils
+import java.io.ByteArrayOutputStream
 
 class RequestManager {
 
     companion object {
         private const val TAG = "RequestManager"
         private val SHARE_METHOD_HTTP_GET = ShareMethodHTTPGet()
-        private val SHARE_METHOD_LIST= ShareMethodList()
+        private val SHARE_METHOD_LIST = ShareMethodList()
     }
 
     private val mFunctions: HashMap<
@@ -49,15 +51,41 @@ class RequestManager {
             )
         }
 
-        mFunctions[SHARE_METHOD_LIST] = {
-            ByteUtils.integer(SHARE_METHOD_LIST.hashCode()).plus( // response id
-                byteArrayOf(
-                    1, // n - fileNames count
-                    2, // i - fileName length
-                    0x6c,0x6f // fileName with 'i' length
-            ))
-        }
+        mFunctions.set(SHARE_METHOD_LIST) {
 
+            val files = FileUtils
+                .getDocumentsFolder()
+                .listFiles() ?: return@set ByteArray(0)
+
+            val baos = ByteArrayOutputStream()
+
+            baos.write(ByteUtils.integer(
+                SHARE_METHOD_LIST.hashCode()
+            ))
+
+            baos.write(
+                files.size
+            )
+
+            for (file in files) {
+                val fileName = file.name.toByteArray(
+                    Application.CHARSET_ASCII
+                )
+
+                baos.write(
+                    fileName.size
+                )
+
+                baos.write(
+                    fileName
+                )
+            }
+
+            val bytes = baos.toByteArray()
+            baos.close()
+
+            return@set bytes // response id)
+        }
     }
 
     @WorkerThread

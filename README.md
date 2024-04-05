@@ -1,4 +1,4 @@
-# Multi-Server (![Client](https://github.com/GoodDamn/SocketClient))
+# Multi-Server; [Client side](https://github.com/GoodDamn/SocketClient)
 
 Supports requests/responses with: 
 * HTTP
@@ -10,6 +10,15 @@ Future ideas:
 * VPN simulation
 * VPS simulation
 
-Demo:
-https://github.com/GoodDamn/SocketServer/assets/76108467/391ab701-d2f9-4698-b307-3bbfce13f755
+Demo: Processing http-request
+
+
+
+https://github.com/GoodDamn/SocketServer/assets/76108467/c947f1d3-bdca-49b5-bcd5-4be9701db5f2
+
+
+Processing request with [native client side](https://github.com/GoodDamn/SocketClient)
+
+
+https://github.com/GoodDamn/SocketServer/assets/76108467/18dc7a0a-e88c-4bf8-a8e0-3b5948edc036
 

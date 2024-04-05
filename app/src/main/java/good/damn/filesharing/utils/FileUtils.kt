@@ -37,7 +37,7 @@ class FileUtils {
         fun fromDoc(
             fileName: String
         ): ByteArray? {
-            val docPath = getDocPath()
+            val docPath = getDocumentsFolder()
             val file = File("$docPath/$fileName")
 
             if (!file.exists()) {
@@ -60,7 +60,7 @@ class FileUtils {
             offset: Int
         ): String? {
 
-            val docPath = getDocPath()
+            val docPath = getDocumentsFolder()
             val file = File("$docPath/$fileName")
 
             try {
@@ -78,7 +78,7 @@ class FileUtils {
             return null
         }
 
-        private fun getDocPath(): String {
+        fun getDocumentsFolder(): File {
             val dir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS
             )
@@ -89,7 +89,7 @@ class FileUtils {
                 Log.d(TAG, "writeToDoc: dir $subDir is created")
             }
 
-            return subDir.path
+            return subDir
         }
     }
 

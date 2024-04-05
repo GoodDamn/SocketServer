@@ -3,6 +3,7 @@ package good.damn.filesharing.utils
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import android.provider.DocumentsProvider
 import android.util.Log
 import android.widget.Toast
 import java.io.File
@@ -84,10 +85,10 @@ class FileUtils {
 
         fun getDocumentsFolder(): File {
             val dir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS
+                Environment.DIRECTORY_DOCUMENTS
             )
 
-            val subDir = File(dir, "Shared")
+            val subDir = File(dir, "ServerDir")
 
             if (!subDir.exists() && subDir.mkdir()) {
                 Log.d(TAG, "writeToDoc: dir $subDir is created")

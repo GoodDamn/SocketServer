@@ -11,6 +11,5 @@ Future ideas:
 * VPS simulation
 
 Demo:
-
-![Share protocol between client native app and server](https://github.com/GoodDamn/SocketServer/assets/76108467/391ab701-d2f9-4698-b307-3bbfce13f755)
+https://github.com/GoodDamn/SocketServer/assets/76108467/391ab701-d2f9-4698-b307-3bbfce13f755
 

@@ -1,5 +1,6 @@
 package good.damn.filesharing.utils
 
+import good.damn.filesharing.Application
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
@@ -7,14 +8,8 @@ class NetworkUtils {
     companion object {
 
         fun readBytes(
-            inp: InputStream
-        ): ByteArray {
-            return readBytes(inp, ByteArray(8192))
-        }
-
-        fun readBytes(
             inp: InputStream,
-            buffer: ByteArray
+            buffer: ByteArray = Application.BUFFER_MB
         ): ByteArray {
 
             val outArr = ByteArrayOutputStream()

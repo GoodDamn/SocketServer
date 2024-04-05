@@ -4,11 +4,14 @@ import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
+import good.damn.filesharing.listeners.activityResult.ActivityResultCopyListener
 import good.damn.filesharing.utils.FileUtils
 
 class ActivityResultCopyToDoc(
     private val context: Context
 ): ActivityResultCallback<Uri?> {
+
+    var delegate: ActivityResultCopyListener? = null
 
     override fun onActivityResult(
         uri: Uri?
@@ -19,11 +22,9 @@ class ActivityResultCopyToDoc(
             )
 
         if (data == null) {
-            Toast.makeText(
-                context,
-                "Something went wrong",
-                Toast.LENGTH_SHORT
-            ).show()
+            delegate?.onErrorCopyFile(
+                "data == null"
+            )
             return
         }
 
@@ -43,20 +44,21 @@ class ActivityResultCopyToDoc(
             nameIndex + 1
         )
 
-        var msg = FileUtils.writeToDoc(
+        val msg = FileUtils.writeToDoc(
             fileName,
             data
         )
 
         if (msg == null) {
-            msg = "FILE IS COPIED $fileName"
+            delegate?.onSuccessCopyFile(
+                fileName
+            )
+            return
         }
 
-        Toast.makeText(
-            context,
-            msg,
-            Toast.LENGTH_SHORT
-        ).show()
+        delegate?.onErrorCopyFile(
+            msg
+        )
     }
 
 }

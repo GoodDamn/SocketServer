@@ -68,6 +68,7 @@ class FileUtils {
             val file = File("$docPath/$fileName")
 
             try {
+
                 if (!file.exists() && file.createNewFile()) {
                     Log.d(TAG, "writeToDoc: $file is created")
                 }
@@ -75,16 +76,15 @@ class FileUtils {
                 val fos = FileOutputStream(file)
                 fos.write(data, offset, data.size - offset)
                 fos.close()
+                return null
             } catch (e: IOException) {
-                Log.d(TAG, "writeToDoc: EXCEPTION ${e.message}")
-                return "${e.message} for ${file.path}"
+                return "${e.message} for ${file.path} WHICH EXISTING IS ${file.exists()}"
             }
-            return null
         }
 
         fun getDocumentsFolder(): File {
             val dir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS
+                Environment.DIRECTORY_DOWNLOADS
             )
 
             val subDir = File(dir, "Shared")

@@ -17,6 +17,7 @@ import good.damn.filesharing.callbacks.ActivityResultCopyToDoc
 import good.damn.filesharing.controllers.Messenger
 import good.damn.filesharing.controllers.Server
 import good.damn.filesharing.controllers.launchers.ContentLauncher
+import good.damn.filesharing.listeners.activityResult.ActivityResultCopyListener
 import good.damn.filesharing.listeners.network.server.ServerListener
 import good.damn.filesharing.listeners.network.service.HotspotServiceListener
 import good.damn.filesharing.utils.FileUtils
@@ -26,7 +27,8 @@ import java.net.Socket
 class ServerActivity
     : AppCompatActivity(),
     ServerListener,
-    HotspotServiceListener {
+    HotspotServiceListener,
+    ActivityResultCopyListener {
 
     private val TAG = "ServerActivity"
 
@@ -44,9 +46,15 @@ class ServerActivity
         val server = Server(mPort)
         server.setOnServerListener(this)
 
+        val activityResult = ActivityResultCopyToDoc(
+            this
+        )
+
+        activityResult.delegate = this
+
         val contentLauncher = ContentLauncher(
             this,
-            ActivityResultCopyToDoc(this)
+            activityResult
         )
 
         mTextViewIP = TextView(this)
@@ -234,6 +242,26 @@ class ServerActivity
         addressList: String
     ) {
         mTextViewIP.text = "Host: $addressList\nPort: $mPort"
+    }
+
+    override fun onSuccessCopyFile(
+        fileName: String
+    ) {
+        msgr.addMessage(
+            "FILE IS COPIED $fileName"
+        )
+    }
+
+    override fun onErrorCopyFile(
+        errorMsg: String
+    ) {
+        msgr.addMessage(
+            "ERROR_COPY_FILE:"
+        )
+
+        msgr.addMessage(
+            errorMsg
+        )
     }
 
 }

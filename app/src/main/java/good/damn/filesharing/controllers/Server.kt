@@ -72,6 +72,7 @@ class Server(
 
             var n: Int
 
+            Thread.sleep(500)
             while (true) {
                 Log.d(TAG, "listen: READ ${inp.available()} ${outArr.size()}")
                 if (inp.available() == 0) {

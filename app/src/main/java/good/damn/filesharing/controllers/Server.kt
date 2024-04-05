@@ -17,12 +17,12 @@ class Server(
 
     private var mServer: ServerSocket? = null
     private var mServerListener: ServerListener? = null
+        set(value) {
+            mRequestManager.delegate = value
+            field = value
+        }
 
     private val mRequestManager = RequestManager()
-
-    init {
-        mRequestManager.delegate = mServerListener
-    }
 
     override fun run() {
         mServer = ServerSocket(
@@ -72,7 +72,6 @@ class Server(
 
             var n: Int
 
-            Thread.sleep(750)
             while (true) {
                 Log.d(TAG, "listen: READ ${inp.available()} ${outArr.size()}")
                 if (inp.available() == 0) {

@@ -30,7 +30,7 @@ class RequestManager {
     var delegate: NetworkInputListener? = null
 
     init {
-        mFunctions[SHARE_METHOD_HTTP_GET] = { // GET; G - 71 ASCII
+        mFunctions[SHARE_METHOD_HTTP_GET] = {
             val httpMessage = String(
                 it,
                 Application.CHARSET

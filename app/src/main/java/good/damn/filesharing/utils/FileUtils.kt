@@ -38,6 +38,8 @@ class FileUtils {
             fileName: String
         ): ByteArray? {
             val docPath = getDocumentsFolder()
+                .path
+
             val file = File("$docPath/$fileName")
 
             if (!file.exists()) {
@@ -57,10 +59,12 @@ class FileUtils {
         fun writeToDoc(
             fileName: String,
             data: ByteArray,
-            offset: Int
+            offset: Int = 0
         ): String? {
 
             val docPath = getDocumentsFolder()
+                .path
+
             val file = File("$docPath/$fileName")
 
             try {

@@ -43,15 +43,18 @@ class ActivityResultCopyToDoc(
             nameIndex + 1
         )
 
-        FileUtils.writeToDoc(
+        var msg = FileUtils.writeToDoc(
             fileName,
-            data,
-            0
+            data
         )
+
+        if (msg == null) {
+            msg = "FILE IS COPIED $fileName"
+        }
 
         Toast.makeText(
             context,
-            "FILE IS COPIED $fileName",
+            msg,
             Toast.LENGTH_SHORT
         ).show()
     }

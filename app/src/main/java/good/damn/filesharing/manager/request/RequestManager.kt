@@ -6,6 +6,7 @@ import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.NetworkInputListener
 import good.damn.filesharing.manager.response.HTTPResponseManager
 import good.damn.filesharing.shareProtocol.ShareMethod
+import good.damn.filesharing.shareProtocol.ShareMethodGetFile
 import good.damn.filesharing.shareProtocol.ShareMethodHTTPGet
 import good.damn.filesharing.shareProtocol.ShareMethodList
 import good.damn.filesharing.utils.ByteUtils
@@ -18,6 +19,7 @@ class RequestManager {
         private const val TAG = "RequestManager"
         private val SHARE_METHOD_HTTP_GET = ShareMethodHTTPGet()
         private val SHARE_METHOD_LIST = ShareMethodList()
+        private val SHARE_METHOD_GET_FILE = ShareMethodGetFile()
     }
 
     private val mFunctions: HashMap<
@@ -49,6 +51,40 @@ class RequestManager {
             response.execute(
                 path
             )
+        }
+
+        mFunctions.set(SHARE_METHOD_GET_FILE) { request ->
+            val pathLength = request[2].toInt()
+
+            val path = String(
+                request,
+                3,
+                pathLength,
+                Application.CHARSET_ASCII
+            )
+
+            val file = FileUtils.fromDoc(
+                path
+            ) ?: return@set ByteArray(0)
+
+            val baos = ByteArrayOutputStream()
+
+            baos.write(ByteUtils.integer(
+                SHARE_METHOD_GET_FILE.hashCode()
+            ))
+
+            baos.write(ByteUtils.integer(
+                file.size
+            ))
+
+            baos.write(
+                file
+            )
+
+            val result = baos.toByteArray()
+            baos.close()
+
+            return@set result
         }
 
         mFunctions.set(SHARE_METHOD_LIST) {

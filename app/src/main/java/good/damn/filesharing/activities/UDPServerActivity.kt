@@ -2,19 +2,27 @@ package good.damn.filesharing.activities
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import good.damn.filesharing.controllers.Messenger
 import good.damn.filesharing.controllers.UDPServer
+import good.damn.filesharing.listeners.network.server.UDPServerListener
+import java.net.DatagramSocket
 
 class UDPServerActivity
-: AppCompatActivity() {
+    : AppCompatActivity(),
+    UDPServerListener {
 
-    private val mUdpServer = UDPServer(
+    val mUdpServer = UDPServer(
         8080,
         ByteArray(300)
     )
+
+    val msgr = Messenger()
 
     override fun onCreate(
         savedInstanceState: Bundle?
@@ -25,12 +33,25 @@ class UDPServerActivity
 
         val context = this
 
+        mUdpServer.delegate = this
+
         val btnStart = Button(
             context
         )
 
         val btnStop = Button(
             context
+        )
+
+        val textViewMsg = TextView(this)
+        textViewMsg.text = "----"
+        textViewMsg.textSize = 18f
+        textViewMsg.movementMethod = ScrollingMovementMethod()
+        textViewMsg.isVerticalScrollBarEnabled = true
+        textViewMsg.isHorizontalScrollBarEnabled = false
+
+        msgr.setTextView(
+            textViewMsg
         )
 
         val layout = LinearLayout(
@@ -63,20 +84,43 @@ class UDPServerActivity
             -2
         )
 
+        layout.addView(
+            textViewMsg,
+            -1,
+            -1
+        )
+
         setContentView(
             layout
         )
     }
 
-    private fun onClickBtnStart(
-        view: View
+    override fun onCreateDatagram(
+        socket: DatagramSocket
     ) {
-        mUdpServer.start()
+        msgr.addMessage("Listening... on ${socket.port} port")
     }
 
-    private fun onClickBtnStop(
-        view: View
+    override fun onResponse(
+        data: ByteArray
     ) {
-        mUdpServer.stop()
+        msgr.addMessage(
+            "RESPONSE:"
+        )
+        msgr.addMessage(
+            data.contentToString()
+        )
     }
+}
+
+fun UDPServerActivity.onClickBtnStart(
+    view: View
+) {
+    mUdpServer.start()
+}
+
+fun UDPServerActivity.onClickBtnStop(
+    view: View
+) {
+    mUdpServer.stop()
 }

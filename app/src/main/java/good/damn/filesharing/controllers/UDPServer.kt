@@ -2,6 +2,7 @@ package good.damn.filesharing.controllers
 
 import android.util.Log
 import good.damn.filesharing.listeners.network.server.ServerListener
+import good.damn.filesharing.listeners.network.server.UDPServerListener
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 
@@ -14,7 +15,7 @@ class UDPServer(
         private const val TAG = "UDPServer"
     }
 
-    var delegate: ServerListener? = null
+    var delegate: UDPServerListener? = null
 
     private var mThread: Thread? = null
 
@@ -37,6 +38,12 @@ class UDPServer(
             port
         )
 
+        socket.reuseAddress = true
+
+        delegate?.onCreateDatagram(
+            socket
+        )
+
         val packet = DatagramPacket(
             buffer,
             buffer.size
@@ -46,7 +53,11 @@ class UDPServer(
             packet
         )
 
-        Log.d(TAG, "listen: RESPONSE: ${buffer.contentToString()}")
+        delegate?.onResponse(
+            buffer
+        )
+
+        socket.close()
 
         return true
     }

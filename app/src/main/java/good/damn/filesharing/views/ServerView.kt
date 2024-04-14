@@ -14,8 +14,9 @@ import good.damn.filesharing.listeners.network.service.HotspotServiceListener
 class ServerView<DELEGATE>(
     private val mServer: BaseServer<DELEGATE>,
     context: Context
-): LinearLayout(context),
-    HotspotServiceListener {
+): LinearLayout(
+    context
+), HotspotServiceListener {
 
     private val msgr = Messenger()
 
@@ -99,7 +100,7 @@ class ServerView<DELEGATE>(
     override fun onGetHotspotIP(
         addressList: String
     ) {
-        mTextViewIP.text = "Host: $addressList\nPort:"
+        mTextViewIP.text = "Host: $addressList\nPort: ${mServer.port}"
     }
 
     private fun onClickBtnStart(

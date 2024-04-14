@@ -3,14 +3,12 @@ package good.damn.filesharing.activities
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.filesharing.callbacks.ActivityResultCopyToDoc
-import good.damn.filesharing.controllers.Messenger
-import good.damn.filesharing.controllers.TCPServer
+import good.damn.filesharing.servers.TCPServer
 import good.damn.filesharing.controllers.launchers.ContentLauncher
 import good.damn.filesharing.listeners.activityResult.ActivityResultCopyListener
 import good.damn.filesharing.listeners.network.server.ServerListener

@@ -7,8 +7,8 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import good.damn.clientsocket.services.network.HotspotServiceCompat
-import good.damn.filesharing.controllers.BaseServer
-import good.damn.filesharing.controllers.Messenger
+import good.damn.filesharing.servers.BaseServer
+import good.damn.filesharing.controllers.msgrs.Messenger
 import good.damn.filesharing.listeners.network.service.HotspotServiceListener
 
 class ServerView<DELEGATE>(

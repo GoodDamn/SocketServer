@@ -1,16 +1,15 @@
-package good.damn.filesharing.controllers
+package good.damn.filesharing.servers
 
-import android.util.Log
-import good.damn.filesharing.listeners.network.server.ServerListener
 import good.damn.filesharing.listeners.network.server.UDPServerListener
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 
 class UDPServer(
-    private val mPort: Int,
+    port: Int,
     private val mBuffer: ByteArray
-): BaseServer<UDPServerListener>(),
-    Runnable {
+): BaseServer<UDPServerListener>(
+    port
+), Runnable {
 
     companion object {
         private const val TAG = "UDPServer"
@@ -34,7 +33,7 @@ class UDPServer(
     fun listen(): Boolean {
 
         val socket = DatagramSocket(
-            mPort
+            port
         )
 
         socket.reuseAddress = true

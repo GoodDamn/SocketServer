@@ -1,4 +1,4 @@
-package good.damn.filesharing.controllers
+package good.damn.filesharing.servers
 
 import android.util.Log
 import good.damn.filesharing.Application
@@ -10,9 +10,10 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 
 class TCPServer(
-    private val mPort: Int
-): BaseServer<ServerListener>(),
-    Runnable {
+    port: Int
+): BaseServer<ServerListener>(
+    port
+), Runnable {
 
     private val TAG = "TCPServer"
 
@@ -29,7 +30,7 @@ class TCPServer(
 
     override fun run() {
         mServer = ServerSocket(
-            mPort
+            port
         )
 
         mServer?.reuseAddress = true

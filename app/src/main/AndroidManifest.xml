@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.ServerActivity"/>
+        <activity android:name=".activities.TCPServerActivity"/>
         <activity android:name=".activities.UDPServerActivity"/>
 
     </application>

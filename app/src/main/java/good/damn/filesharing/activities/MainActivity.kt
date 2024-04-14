@@ -65,7 +65,7 @@ class MainActivity
         startActivity(
             Intent(
                 this,
-                ServerActivity::class.java
+                TCPServerActivity::class.java
             )
         )
     }

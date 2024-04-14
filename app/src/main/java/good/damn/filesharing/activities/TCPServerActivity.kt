@@ -1,41 +1,33 @@
 package good.damn.filesharing.activities
 
 import android.annotation.SuppressLint
-import android.net.LinkAddress
-import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.Gravity
 import android.widget.*
-import androidx.activity.result.ActivityResultCallback
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
-import good.damn.clientsocket.services.network.HotspotServiceCompat
 import good.damn.filesharing.callbacks.ActivityResultCopyToDoc
 import good.damn.filesharing.controllers.Messenger
-import good.damn.filesharing.controllers.Server
+import good.damn.filesharing.controllers.TCPServer
 import good.damn.filesharing.controllers.launchers.ContentLauncher
 import good.damn.filesharing.listeners.activityResult.ActivityResultCopyListener
 import good.damn.filesharing.listeners.network.server.ServerListener
 import good.damn.filesharing.listeners.network.service.HotspotServiceListener
 import good.damn.filesharing.utils.FileUtils
+import good.damn.filesharing.views.ServerView
 import java.net.ServerSocket
 import java.net.Socket
 
-class ServerActivity
+class TCPServerActivity
     : AppCompatActivity(),
     ServerListener,
     HotspotServiceListener,
     ActivityResultCopyListener {
 
-    private val TAG = "ServerActivity"
+    private val TAG = "TCPServerActivity"
 
-    private val msgr = Messenger()
-    private val mPort = 8080
-
-    private lateinit var mTextViewIP: TextView
+    private lateinit var mServerView: ServerView<ServerListener>
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(
@@ -43,8 +35,10 @@ class ServerActivity
     ) {
         super.onCreate(savedInstanceState)
 
-        val server = Server(mPort)
-        server.setOnServerListener(this)
+        val server = TCPServer(
+            8080
+        )
+        server.delegate = this
 
         val activityResult = ActivityResultCopyToDoc(
             this
@@ -57,29 +51,10 @@ class ServerActivity
             activityResult
         )
 
-        mTextViewIP = TextView(this)
-        mTextViewIP.textSize = 18.0f
-
-        val btnCreate = Button(this)
-        btnCreate.text = "Create server"
-
-        val btnDrop = Button(this)
-        btnDrop.text = "Drop server"
-
-        val btnResponseFile = Button(this)
-        btnResponseFile.text = "Select response file"
-
-        val editTextMsg = EditText(this)
-        editTextMsg.hint = "Message"
-
-        val textViewMsg = TextView(this)
-        textViewMsg.text = "----"
-        textViewMsg.textSize = 18f
-        textViewMsg.movementMethod = ScrollingMovementMethod()
-        textViewMsg.isVerticalScrollBarEnabled = true
-        textViewMsg.isHorizontalScrollBarEnabled = false
-
-        msgr.setTextView(textViewMsg)
+        mServerView = ServerView(
+            server,
+            this
+        )
 
         val btnPutFile = Button(this)
         btnPutFile.text = "Put file"
@@ -87,80 +62,32 @@ class ServerActivity
             contentLauncher.launch("*/*")
         }
 
-        val rootLayout = LinearLayout(this)
-        rootLayout.gravity = Gravity.CENTER
-        rootLayout.orientation = LinearLayout.VERTICAL
 
-        rootLayout.addView(
-            mTextViewIP,
-            -1,
-            -2
-        )
-
-        rootLayout.addView(
-            btnCreate,
-            -1,
-            -2
-        )
-
-        rootLayout.addView(
-            btnDrop,
-            -1,
-            -2
-        )
-
-        rootLayout.addView(
-            editTextMsg,
-            -1,
-            -2
-        )
-
-        rootLayout.addView(
+        /*mServerView?.addView(
             btnPutFile,
             -1,
             -2
+        )*/
+
+        setContentView(
+            mServerView
         )
 
-        rootLayout.addView(
-            textViewMsg,
-            -1,
-            -1
-        )
-
-        btnResponseFile.setOnClickListener {
-            contentLauncher.launch("*/*")
-        }
-
-        btnCreate.setOnClickListener {
-            server.create()
-        }
-
-        btnDrop.setOnClickListener {
-            server.drop()
-        }
-
-        val hotspotService = HotspotServiceCompat(
-            this
-        )
-
-        hotspotService.delegate = this
-        setContentView(rootLayout)
-
-        hotspotService.start()
     }
 
     @WorkerThread
     override fun onCreateServer(
         server: ServerSocket
     ) {
-        msgr.addMessage(
+        Log.d(TAG, "onCreateServer: ")
+        mServerView.addMessage(
             "Server started!"
         )
     }
 
     @WorkerThread
     override fun onStartListen() {
-        msgr.addMessage(
+        mServerView.addMessage(
             "Listen clients..."
         )
     }
@@ -171,7 +98,7 @@ class ServerActivity
         readBytes: Int,
         last: Int
     ) {
-        msgr.addMessage(
+        mServerView.addMessage(
             "$readBytes $last"
         )
     }
@@ -189,13 +116,13 @@ class ServerActivity
         )
 
         if (msg != null) {
-            msgr.addMessage(
+            mServerView.addMessage(
                 "SAVE PROCESS::EXCEPTION\n$msg"
             )
             return
         }
 
-        msgr.addMessage(
+        mServerView.addMessage(
             "$fileName is saved to Documents"
         )
     }
@@ -204,7 +131,7 @@ class ServerActivity
     override fun onGetText(
         msg: String
     ) {
-        msgr.addMessage(
+        mServerView.addMessage(
             msg
         )
     }
@@ -213,11 +140,11 @@ class ServerActivity
     override fun onHttpGet(
         request: String
     ) {
-        msgr.addMessage(
+        mServerView.addMessage(
             "HTTP-GET REQUEST"
         )
 
-        msgr.addMessage(
+        mServerView.addMessage(
             request
         )
     }
@@ -226,14 +153,14 @@ class ServerActivity
     override fun onDropClient(
         socket: Socket
     ) {
-        msgr.addMessage(
+        mServerView.addMessage(
             "${socket.remoteSocketAddress} is disconnected"
         )
     }
 
     @WorkerThread
     override fun onDropServer() {
-        msgr.addMessage(
+        mServerView.addMessage(
             "Server is dropped"
         )
     }
@@ -241,13 +168,13 @@ class ServerActivity
     override fun onGetHotspotIP(
         addressList: String
     ) {
-        mTextViewIP.text = "Host: $addressList\nPort: $mPort"
+
     }
 
     override fun onSuccessCopyFile(
         fileName: String
     ) {
-        msgr.addMessage(
+        mServerView.addMessage(
             "FILE IS COPIED $fileName"
         )
     }
@@ -255,11 +182,11 @@ class ServerActivity
     override fun onErrorCopyFile(
         errorMsg: String
     ) {
-        msgr.addMessage(
+        mServerView.addMessage(
             "ERROR_COPY_FILE:"
         )
 
-        msgr.addMessage(
+        mServerView.addMessage(
             errorMsg
         )
     }

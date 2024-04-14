@@ -7,24 +7,23 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 
 class UDPServer(
-    val port: Int,
-    val buffer: ByteArray
-): Runnable {
+    private val mPort: Int,
+    private val mBuffer: ByteArray
+): BaseServer<UDPServerListener>(),
+    Runnable {
 
     companion object {
         private const val TAG = "UDPServer"
     }
 
-    var delegate: UDPServerListener? = null
-
     private var mThread: Thread? = null
 
-    fun start() {
+    override fun start() {
         mThread = Thread(this)
         mThread?.start()
     }
 
-    fun stop() {
+    override fun stop() {
         mThread?.interrupt()
     }
 
@@ -35,7 +34,7 @@ class UDPServer(
     fun listen(): Boolean {
 
         val socket = DatagramSocket(
-            port
+            mPort
         )
 
         socket.reuseAddress = true
@@ -45,8 +44,8 @@ class UDPServer(
         )
 
         val packet = DatagramPacket(
-            buffer,
-            buffer.size
+            mBuffer,
+            mBuffer.size
         )
 
         socket.receive(
@@ -54,7 +53,7 @@ class UDPServer(
         )
 
         delegate?.onResponse(
-            buffer
+            mBuffer
         )
 
         socket.close()

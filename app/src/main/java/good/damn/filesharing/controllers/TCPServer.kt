@@ -9,20 +9,23 @@ import java.net.ServerSocket
 import java.net.SocketException
 import java.net.SocketTimeoutException
 
-class Server(
-    val mPort: Int
-): Runnable {
+class TCPServer(
+    private val mPort: Int
+): BaseServer<ServerListener>(),
+    Runnable {
 
-    private val TAG = "Server"
+    private val TAG = "TCPServer"
 
     private var mServer: ServerSocket? = null
-    private var mServerListener: ServerListener? = null
-        set(value) {
-            mRequestManager.delegate = value
-            field = value
-        }
 
     private val mRequestManager = RequestManager()
+
+    override var delegate: ServerListener?
+        get() = super.delegate
+        set(value) {
+            mRequestManager.delegate = value
+            super.delegate = value
+        }
 
     override fun run() {
         mServer = ServerSocket(
@@ -30,8 +33,8 @@ class Server(
         )
 
         mServer?.reuseAddress = true
-
-        mServerListener?.onCreateServer(
+        
+        delegate?.onCreateServer(
             mServer!!
         )
 
@@ -40,27 +43,21 @@ class Server(
         }
     }
 
-    fun create() {
+    override fun start() {
         Thread(this)
             .start()
     }
 
-    fun drop() {
+    override fun stop() {
         mServer?.close()
-        mServerListener?.onDropServer()
-    }
-
-    fun setOnServerListener(
-        listener: ServerListener?
-    ) {
-        mServerListener = listener
+        delegate?.onDropServer()
     }
 
     private fun listen(
         buffer: ByteArray
     ): Boolean {
 
-        mServerListener?.onStartListen()
+        delegate?.onStartListen()
         try {
             val clientSocket = mServer!!.accept()
             clientSocket.soTimeout = 13000
@@ -81,7 +78,7 @@ class Server(
 
                 n = inp.read(buffer)
                 Log.d(TAG, "listen: READ $n ${outArr.size()}")
-                mServerListener?.onListenChunkData(
+                delegate?.onListenChunkData(
                     buffer,
                     n,
                     inp.available()
@@ -109,7 +106,7 @@ class Server(
                 )
             )
 
-            mServerListener?.onDropClient(
+            delegate?.onDropClient(
                 clientSocket
             )
 

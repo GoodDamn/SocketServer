@@ -11,18 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import good.damn.filesharing.controllers.Messenger
 import good.damn.filesharing.controllers.UDPServer
 import good.damn.filesharing.listeners.network.server.UDPServerListener
+import good.damn.filesharing.views.ServerView
 import java.net.DatagramSocket
 
 class UDPServerActivity
     : AppCompatActivity(),
     UDPServerListener {
 
-    val mUdpServer = UDPServer(
-        8080,
-        ByteArray(300)
-    )
-
-    val msgr = Messenger()
+    private lateinit var mServerView: ServerView<UDPServerListener>
 
     override fun onCreate(
         savedInstanceState: Bundle?
@@ -33,94 +29,35 @@ class UDPServerActivity
 
         val context = this
 
-        mUdpServer.delegate = this
+        val server = UDPServer(
+            8080,
+            ByteArray(300)
+        )
 
-        val btnStart = Button(
+        mServerView = ServerView(
+            server,
             context
-        )
-
-        val btnStop = Button(
-            context
-        )
-
-        val textViewMsg = TextView(this)
-        textViewMsg.text = "----"
-        textViewMsg.textSize = 18f
-        textViewMsg.movementMethod = ScrollingMovementMethod()
-        textViewMsg.isVerticalScrollBarEnabled = true
-        textViewMsg.isHorizontalScrollBarEnabled = false
-
-        msgr.setTextView(
-            textViewMsg
-        )
-
-        val layout = LinearLayout(
-            context
-        )
-
-        btnStart.text = "Start Server"
-        btnStop.text = "Stop Server"
-
-        btnStart.setOnClickListener(
-            this::onClickBtnStart
-        )
-
-        btnStop.setOnClickListener(
-            this::onClickBtnStop
-        )
-
-        layout.orientation = LinearLayout
-            .VERTICAL
-
-        layout.addView(
-            btnStart,
-            -1,
-            -2
-        )
-
-        layout.addView(
-            btnStop,
-            -1,
-            -2
-        )
-
-        layout.addView(
-            textViewMsg,
-            -1,
-            -1
         )
 
         setContentView(
-            layout
+            mServerView
         )
     }
 
     override fun onCreateDatagram(
         socket: DatagramSocket
     ) {
-        msgr.addMessage("Listening... on ${socket.port} port")
+        mServerView.addMessage("Listening... on ${socket.port} port")
     }
 
     override fun onResponse(
         data: ByteArray
     ) {
-        msgr.addMessage(
+        mServerView.addMessage(
             "RESPONSE:"
         )
-        msgr.addMessage(
+        mServerView.addMessage(
             data.contentToString()
         )
     }
-}
-
-fun UDPServerActivity.onClickBtnStart(
-    view: View
-) {
-    mUdpServer.start()
-}
-
-fun UDPServerActivity.onClickBtnStop(
-    view: View
-) {
-    mUdpServer.stop()
 }

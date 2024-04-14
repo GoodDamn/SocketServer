@@ -1,21 +1,34 @@
 package good.damn.filesharing.servers
 
-import good.damn.filesharing.listeners.network.server.UDPServerListener
+import android.view.inspector.IntFlagMapping
+import good.damn.filesharing.Application
+import good.damn.filesharing.listeners.network.server.SSHServerListener
 import java.net.DatagramPacket
 import java.net.DatagramSocket
+import java.net.InetAddress
 
-class UDPServer(
+class SSHServer(
+    host: String,
     port: Int,
     private val mBuffer: ByteArray
-): BaseServer<UDPServerListener>(
+) : BaseServer<SSHServerListener>(
     port
 ), Runnable {
 
-    companion object {
-        private const val TAG = "UDPServer"
+    private var mThread: Thread? = null
+    private val mHostAddress: InetAddress
+
+    init {
+        mHostAddress = InetAddress.getByName(
+            host
+        )
     }
 
-    private var mThread: Thread? = null
+    override var delegate: SSHServerListener?
+        get() = super.delegate
+        set(value) {
+            super.delegate = value
+        }
 
     override fun start() {
         mThread = Thread(this)
@@ -27,21 +40,13 @@ class UDPServer(
     }
 
     override fun run() {
-        while (listen()) {}
+        while(listen()){}
     }
 
     private fun listen(): Boolean {
-
         val socket = DatagramSocket(
             port
         )
-
-        socket.reuseAddress = true
-
-        delegate?.onCreateDatagram(
-            socket
-        )
-
         val packet = DatagramPacket(
             mBuffer,
             mBuffer.size
@@ -51,11 +56,9 @@ class UDPServer(
             packet
         )
 
-        delegate?.onResponse(
+        delegate?.onRequestCommand(
             mBuffer
         )
-
-        socket.close()
 
         return true
     }

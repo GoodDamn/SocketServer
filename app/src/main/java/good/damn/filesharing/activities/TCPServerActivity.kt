@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
@@ -62,12 +63,15 @@ class TCPServerActivity
             contentLauncher.launch("*/*")
         }
 
-
-        /*mServerView?.addView(
-            btnPutFile,
+        btnPutFile.layoutParams = ViewGroup.LayoutParams(
             -1,
             -2
-        )*/
+        )
+
+        mServerView.addView(
+            btnPutFile,
+            mServerView.childCount - 1
+        )
 
         setContentView(
             mServerView

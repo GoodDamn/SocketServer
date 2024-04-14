@@ -16,41 +16,28 @@ class MainActivity
         super.onCreate(savedInstanceState)
 
         val context = this
-        val btnTcpServer = Button(
-            context
-        )
-
-        val btnUdpServer = Button(
-            context
-        )
 
         val layout = LinearLayout(
             context
         )
-
         layout.orientation = LinearLayout.VERTICAL
 
-        btnTcpServer.text = "TCP Server"
-        btnUdpServer.text = "UDP Server"
-
-        btnTcpServer.setOnClickListener(
-            this::onClickBtnTcp
+        createServerButton(
+            "TCP Server",
+            TCPServerActivity::class.java,
+            layout
         )
 
-        btnUdpServer.setOnClickListener(
-            this::onClickBtnUdp
+        createServerButton(
+            "UDP Server",
+            UDPServerActivity::class.java,
+            layout
         )
 
-        layout.addView(
-            btnTcpServer,
-            -1,
-            -2
-        )
-
-        layout.addView(
-            btnUdpServer,
-            -1,
-            -2
+        createServerButton(
+            "SSH Server",
+            SSHServerActivity::class.java,
+            layout
         )
 
         setContentView(
@@ -58,26 +45,31 @@ class MainActivity
         )
     }
 
-
-    private fun onClickBtnTcp(
-        view: View
+    private fun createServerButton(
+        text: String,
+        activityClick: Class<*>,
+        layout: LinearLayout
     ) {
-        startActivity(
-            Intent(
-                this,
-                TCPServerActivity::class.java
-            )
+        val context = layout.context
+        val btnServer = Button(
+            context
         )
-    }
 
-    private fun onClickBtnUdp(
-        view: View
-    ) {
-        startActivity(
-            Intent(
-                this,
-                UDPServerActivity::class.java
+        btnServer.text = text
+
+        btnServer.setOnClickListener {
+            startActivity(
+                Intent(
+                    context,
+                    activityClick
+                )
             )
+        }
+
+        layout.addView(
+            btnServer,
+            -1,
+            -2
         )
     }
 

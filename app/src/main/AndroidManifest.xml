@@ -31,6 +31,7 @@
 
         <activity android:name=".activities.TCPServerActivity"/>
         <activity android:name=".activities.UDPServerActivity"/>
+        <activity android:name=".activities.SSHServerActivity"/>
 
     </application>
 

@@ -7,6 +7,8 @@ import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.server.SSHServerListener
 import good.damn.filesharing.servers.SSHServer
 import good.damn.filesharing.views.ServerView
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 class SSHServerActivity
 : AppCompatActivity(
@@ -57,6 +59,46 @@ class SSHServerActivity
         mServerView?.addMessage(
             command
         )
+
+        val process = Runtime.getRuntime()
+            .exec(command)
+
+        val buf = BufferedReader(
+            InputStreamReader(
+                process.inputStream
+            )
+        )
+
+        val bufError = BufferedReader(
+            InputStreamReader(
+                process.errorStream
+            )
+        )
+
+
+        mServerView?.addMessage(
+            "RESULT:"
+        )
+        while(true) {
+            val line = buf.readLine() ?: break
+            mServerView?.addMessage(
+                line
+            )
+        }
+
+        mServerView?.addMessage(
+            "ERROR:"
+        )
+        while(true) {
+            val line = bufError.readLine() ?: break
+            mServerView?.addMessage(
+                line
+            )
+        }
+
+        buf.close()
+        bufError.close()
+        process.waitFor()
     }
 
     @WorkerThread

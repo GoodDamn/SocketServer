@@ -1,4 +1,4 @@
-package good.damn.filesharing.shareProtocol
+package good.damn.filesharing.shareProtocol.method
 
 import android.util.Log
 

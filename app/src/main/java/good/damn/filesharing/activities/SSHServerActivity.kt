@@ -39,26 +39,10 @@ class SSHServerActivity
     }
 
     @WorkerThread
-    override fun onRequestCommand(
+    override fun onCredentials(
         request: ByteArray
     ) {
-        val len = request[0]
-            .toInt()
 
-        val command = String(
-            request,
-            1,
-            len,
-            Application.CHARSET_ASCII
-        )
-
-        mServerView?.addMessage(
-            "REQUEST_COMMAND:"
-        )
-
-        mServerView?.addMessage(
-            command
-        )
     }
 
     @WorkerThread

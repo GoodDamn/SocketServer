@@ -96,6 +96,19 @@ class FileUtils {
 
             return subDir
         }
+
+        fun isUserFolderExists(
+            user: String
+        ): Boolean {
+            return getUserFolder(user)
+                .exists()
+        }
+
+        fun getUserFolder(
+            user: String
+        ): File {
+            return File("${getDocumentsFolder()}/ssh/${user}")
+        }
     }
 
 }

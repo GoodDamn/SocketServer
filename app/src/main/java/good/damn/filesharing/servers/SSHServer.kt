@@ -1,11 +1,9 @@
 package good.damn.filesharing.servers
 
-import android.view.inspector.IntFlagMapping
-import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.server.SSHServerListener
+import good.damn.filesharing.services.network.request.SSHService
 import java.net.DatagramPacket
 import java.net.DatagramSocket
-import java.net.InetAddress
 
 class SSHServer(
     port: Int,
@@ -15,6 +13,8 @@ class SSHServer(
 ), Runnable {
 
     private var mThread: Thread? = null
+
+    private val mService = SSHService()
 
     override fun start() {
         mThread = Thread(this)
@@ -46,9 +46,20 @@ class SSHServer(
             packet
         )
 
-        delegate?.onRequestCommand(
+        val response = mService.authentication(
             mBuffer
         )
+
+        if (response != null) {
+            val sendPacket = DatagramPacket(
+                response,
+                response.size
+            )
+
+            socket.send(
+                sendPacket
+            )
+        }
 
         socket.close()
         return true

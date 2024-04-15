@@ -1,4 +1,4 @@
-package good.damn.filesharing.shareProtocol
+package good.damn.filesharing.shareProtocol.method
 
 class ShareMethodHTTPGet
 : ShareMethod(

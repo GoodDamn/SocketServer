@@ -40,11 +40,27 @@ class SSHServerActivity
         )
     }
 
-    override fun onCredentials(
-        auth: SSHAuth,
-        request: SSHRequest
+    override fun onAuth(
+        user: String
     ) {
+        mServerView?.addMessage(
+            "USER:"
+        )
+        mServerView?.addMessage(
+            user
+        )
+    }
 
+    override fun onErrorAuth(
+        error: String
+    ) {
+        mServerView?.addMessage(
+            "ERROR:"
+        )
+
+        mServerView?.addMessage(
+            error
+        )
     }
 
     @WorkerThread

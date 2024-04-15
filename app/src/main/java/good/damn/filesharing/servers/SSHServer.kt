@@ -8,6 +8,7 @@ import good.damn.filesharing.shareProtocol.ssh.SSHAuth
 import good.damn.filesharing.utils.FileUtils
 import java.net.DatagramPacket
 import java.net.DatagramSocket
+import java.net.InetAddress
 
 class SSHServer(
     port: Int,
@@ -54,6 +55,10 @@ class SSHServer(
             packet
         )
 
+        val remoteAddress = packet.address
+
+        socket.close()
+
         val auth = SSHAuth
             .authenticate(
                 mBuffer
@@ -79,16 +84,22 @@ class SSHServer(
 
             val sendPacket = DatagramPacket(
                 error,
-                error.size
+                error.size,
+                remoteAddress,
+                55555
             )
 
-            /*socket.send(
+            Log.d(TAG, "listen: REMOTE_ADDRESS: $remoteAddress")
+            
+            val socket = DatagramSocket()
+
+            socket.send(
                 sendPacket
             )
-            socket.close()*/
+
+            socket.close()
         }
 
-        socket.close()
         return true
     }
 

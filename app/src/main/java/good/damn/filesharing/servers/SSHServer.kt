@@ -69,38 +69,65 @@ class SSHServer(
         )
 
         if (auth == null || !FileUtils.isUserFolderExists(auth.user)) {
-            val msg = "Invalid credentials"
-                .toByteArray(
-                    Application.CHARSET_ASCII
-                )
 
             delegate?.onErrorAuth(
                 "Invalid credentials"
             )
 
-            val error = byteArrayOf(
-                msg.size.toByte()
-            ) + msg
-
-            val sendPacket = DatagramPacket(
-                error,
-                error.size,
+            responseMessage(
                 remoteAddress,
-                55555
+                "Invalid credentials"
             )
 
-            Log.d(TAG, "listen: REMOTE_ADDRESS: $remoteAddress")
-            
-            val socket = DatagramSocket()
-
-            socket.send(
-                sendPacket
-            )
-
-            socket.close()
+            return true
         }
 
+        responseMessage(
+            remoteAddress,
+            "Welcome to Android OS!"
+        )
+
         return true
+    }
+
+    private fun responseMessage(
+        address: InetAddress,
+        msg: String
+    ) {
+        val data = msg
+            .toByteArray(
+                Application.CHARSET_ASCII
+            )
+
+        responseToUser(
+            address,
+            byteArrayOf(
+                data.size.toByte()
+            ) + data
+        )
+    }
+
+    private fun responseToUser(
+        address: InetAddress,
+        data: ByteArray
+    ) {
+
+        val sendPacket = DatagramPacket(
+            data,
+            data.size,
+            address,
+            55555
+        )
+
+        Log.d(TAG, "listen: REMOTE_ADDRESS: $address")
+
+        val socket = DatagramSocket()
+
+        socket.send(
+            sendPacket
+        )
+
+        socket.close()
     }
 
 }

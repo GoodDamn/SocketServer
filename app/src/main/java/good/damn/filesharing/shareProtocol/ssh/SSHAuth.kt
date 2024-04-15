@@ -3,22 +3,31 @@ package good.damn.filesharing.shareProtocol.ssh
 import good.damn.filesharing.Application
 
 class SSHAuth(
-    request: ByteArray
-) {
-
     val user: String
+) {
+    companion object {
+        fun authenticate(
+            request: ByteArray
+        ): SSHAuth? {
 
-    init {
-        val len = request[0]
-            .toInt()
+            if (request.isEmpty()) {
+                return null
+            }
 
-        user = String(
-            request,
-            1,
-            len,
-            Application.CHARSET_ASCII
-        )
+            val len = request[0]
+                .toInt()
 
+            val user = String(
+                request,
+                1,
+                len,
+                Application.CHARSET_ASCII
+            )
+
+            return SSHAuth(
+                user
+            )
+
+        }
     }
-
 }

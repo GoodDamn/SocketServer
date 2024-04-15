@@ -26,17 +26,4 @@ class SSHService {
         }
     }
 
-    fun authentication(
-        arr: ByteArray
-    ): ByteArray? {
-        val auth = SSHAuth(
-            arr
-        )
-
-        return if (FileUtils.isUserFolderExists(auth.user))
-            null
-        else "Invalid credentials".toByteArray(
-            Application.CHARSET_ASCII
-        )
-    }
 }

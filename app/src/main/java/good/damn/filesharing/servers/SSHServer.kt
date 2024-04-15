@@ -1,7 +1,9 @@
 package good.damn.filesharing.servers
 
+import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.server.SSHServerListener
 import good.damn.filesharing.services.network.request.SSHService
+import good.damn.filesharing.shareProtocol.ssh.SSHAuth
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 
@@ -46,14 +48,24 @@ class SSHServer(
             packet
         )
 
-        val response = mService.authentication(
-            mBuffer
-        )
+        val auth = SSHAuth
+            .authenticate(
+                mBuffer
+            )
 
-        if (response != null) {
+        if (auth == null) {
+            val msg = "Invalid credentials"
+                .toByteArray(
+                    Application.CHARSET_ASCII
+                )
+
+            val error = byteArrayOf(
+                msg.size.toByte()
+            ) + msg
+
             val sendPacket = DatagramPacket(
-                response,
-                response.size
+                error,
+                error.size
             )
 
             socket.send(

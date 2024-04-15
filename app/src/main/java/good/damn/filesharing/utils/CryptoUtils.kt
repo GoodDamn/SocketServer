@@ -23,7 +23,20 @@ class CryptoUtils {
             )
         }
 
-        fun sha256(
+        fun sha256Base64(
+            input: ByteArray,
+            offset: Int = 0,
+            len: Int = input.size - offset
+        ): String {
+            return Base64.encodeToString(
+                input,
+                offset,
+                len,
+                Base64.DEFAULT
+            )
+        }
+
+        private fun sha256(
             input: String
         ): ByteArray {
             mDigestSha256.reset()

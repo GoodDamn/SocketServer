@@ -1,6 +1,7 @@
 package good.damn.filesharing.shareProtocol.ssh
 
 import good.damn.filesharing.Application
+import good.damn.filesharing.utils.CryptoUtils
 
 class SSHAuth(
     val user: String
@@ -17,12 +18,12 @@ class SSHAuth(
             val len = request[0]
                 .toInt()
 
-            val user = String(
-                request,
-                1,
-                len,
-                Application.CHARSET_ASCII
-            )
+            val user = CryptoUtils
+                .sha256Base64(
+                    request,
+                    1,
+                    len
+                )
 
             return SSHAuth(
                 user

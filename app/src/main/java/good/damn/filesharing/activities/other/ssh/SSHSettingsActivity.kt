@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.filesharing.Application
+import good.damn.filesharing.utils.CryptoUtils
 import good.damn.filesharing.utils.FileUtils
 import good.damn.filesharing.utils.SSHUtils
 
@@ -65,7 +66,9 @@ class SSHSettingsActivity
     private fun onClickBtnCreateUser(
         view: View
     ) {
-        val credentials = mEditTextAuth?.text.toString()
+        val credentials = CryptoUtils.sha256Base64(
+            mEditTextAuth?.text.toString()
+        )
 
         val folder = FileUtils.getUserFolder(
             credentials

@@ -1,5 +1,6 @@
 package good.damn.filesharing.utils
 
+import android.util.Base64
 import good.damn.filesharing.Application
 import java.security.MessageDigest
 
@@ -8,6 +9,19 @@ class CryptoUtils {
 
         private val mDigestSha256 = MessageDigest
             .getInstance("SHA-256")
+
+        fun sha256Base64(
+            input: String
+        ): String {
+            val hash = sha256(
+                input
+            )
+
+            return Base64.encodeToString(
+                hash,
+                Base64.DEFAULT
+            )
+        }
 
         fun sha256(
             input: String

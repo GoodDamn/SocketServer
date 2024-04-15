@@ -3,7 +3,7 @@ package good.damn.filesharing.servers
 import android.util.Log
 import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.server.ServerListener
-import good.damn.filesharing.manager.request.RequestManager
+import good.damn.filesharing.services.network.request.RequestService
 import java.io.ByteArrayOutputStream
 import java.net.ServerSocket
 import java.net.SocketException
@@ -19,12 +19,12 @@ class TCPServer(
 
     private var mServer: ServerSocket? = null
 
-    private val mRequestManager = RequestManager()
+    private val mRequestService = RequestService()
 
     override var delegate: ServerListener?
         get() = super.delegate
         set(value) {
-            mRequestManager.delegate = value
+            mRequestService.delegate = value
             super.delegate = value
         }
 
@@ -102,7 +102,7 @@ class TCPServer(
             Log.d(TAG, "listen: DATA SIZE: ${data.size}")
 
             out.write(
-                mRequestManager.manage(
+                mRequestService.manage(
                     data
                 )
             )

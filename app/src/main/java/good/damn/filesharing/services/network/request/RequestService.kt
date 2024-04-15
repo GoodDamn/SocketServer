@@ -1,10 +1,10 @@
-package good.damn.filesharing.manager.request
+package good.damn.filesharing.services.network.request
 
 import android.util.Log
 import androidx.annotation.WorkerThread
 import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.NetworkInputListener
-import good.damn.filesharing.manager.response.HTTPResponseManager
+import good.damn.filesharing.services.network.response.HTTPResponseService
 import good.damn.filesharing.shareProtocol.ShareMethod
 import good.damn.filesharing.shareProtocol.ShareMethodGetFile
 import good.damn.filesharing.shareProtocol.ShareMethodHTTPGet
@@ -13,7 +13,7 @@ import good.damn.filesharing.utils.ByteUtils
 import good.damn.filesharing.utils.FileUtils
 import java.io.ByteArrayOutputStream
 
-class RequestManager {
+class RequestService {
 
     companion object {
         private const val TAG = "RequestManager"
@@ -47,7 +47,7 @@ class RequestManager {
                     )
                 )
 
-            val response = HTTPResponseManager()
+            val response = HTTPResponseService()
             response.execute(
                 path
             )

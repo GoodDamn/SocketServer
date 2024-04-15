@@ -34,6 +34,9 @@ class SSHSettingsActivity
             context
         )
 
+        btnCreateUser.text = "Create user"
+        mEditTextAuth?.hint = "user@password"
+
         layout.orientation = LinearLayout
             .VERTICAL
 

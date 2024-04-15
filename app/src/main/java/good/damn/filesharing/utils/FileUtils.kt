@@ -3,6 +3,7 @@ package good.damn.filesharing.utils
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import android.provider.DocumentsProvider
 import android.util.Log
 import android.widget.Toast
 import java.io.File
@@ -38,6 +39,8 @@ class FileUtils {
             fileName: String
         ): ByteArray? {
             val docPath = getDocumentsFolder()
+                .path
+
             val file = File("$docPath/$fileName")
 
             if (!file.exists()) {
@@ -57,13 +60,16 @@ class FileUtils {
         fun writeToDoc(
             fileName: String,
             data: ByteArray,
-            offset: Int
+            offset: Int = 0
         ): String? {
 
             val docPath = getDocumentsFolder()
+                .path
+
             val file = File("$docPath/$fileName")
 
             try {
+
                 if (!file.exists() && file.createNewFile()) {
                     Log.d(TAG, "writeToDoc: $file is created")
                 }
@@ -71,11 +77,10 @@ class FileUtils {
                 val fos = FileOutputStream(file)
                 fos.write(data, offset, data.size - offset)
                 fos.close()
+                return null
             } catch (e: IOException) {
-                Log.d(TAG, "writeToDoc: EXCEPTION ${e.message}")
-                return "${e.message} for ${file.path}"
+                return "${e.message} for ${file.path} WHICH EXISTING IS ${file.exists()}"
             }
-            return null
         }
 
         fun getDocumentsFolder(): File {
@@ -83,13 +88,26 @@ class FileUtils {
                 Environment.DIRECTORY_DOCUMENTS
             )
 
-            val subDir = File(dir, "Shared")
+            val subDir = File(dir, "ServerDir")
 
             if (!subDir.exists() && subDir.mkdir()) {
                 Log.d(TAG, "writeToDoc: dir $subDir is created")
             }
 
             return subDir
+        }
+
+        fun isUserFolderExists(
+            user: String
+        ): Boolean {
+            return getUserFolder(user)
+                .exists()
+        }
+
+        fun getUserFolder(
+            user: String
+        ): File {
+            return File("${getDocumentsFolder()}/ssh/${user}")
         }
     }
 

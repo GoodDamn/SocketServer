@@ -1,4 +1,4 @@
-package good.damn.filesharing.controllers
+package good.damn.filesharing.controllers.msgrs
 
 import android.os.Handler
 import android.os.Looper

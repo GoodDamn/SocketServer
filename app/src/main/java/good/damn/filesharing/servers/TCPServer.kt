@@ -1,37 +1,41 @@
-package good.damn.filesharing.controllers
+package good.damn.filesharing.servers
 
 import android.util.Log
 import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.server.ServerListener
-import good.damn.filesharing.manager.request.RequestManager
+import good.damn.filesharing.services.network.request.RequestService
 import java.io.ByteArrayOutputStream
 import java.net.ServerSocket
 import java.net.SocketException
 import java.net.SocketTimeoutException
 
-class Server(
-    val mPort: Int
-): Runnable {
+class TCPServer(
+    port: Int
+): BaseServer<ServerListener>(
+    port
+), Runnable {
 
-    private val TAG = "Server"
+    private val TAG = "TCPServer"
 
     private var mServer: ServerSocket? = null
-    private var mServerListener: ServerListener? = null
-        set(value) {
-            mRequestManager.delegate = value
-            field = value
-        }
 
-    private val mRequestManager = RequestManager()
+    private val mRequestService = RequestService()
+
+    override var delegate: ServerListener?
+        get() = super.delegate
+        set(value) {
+            mRequestService.delegate = value
+            super.delegate = value
+        }
 
     override fun run() {
         mServer = ServerSocket(
-            mPort
+            port
         )
 
         mServer?.reuseAddress = true
-
-        mServerListener?.onCreateServer(
+        
+        delegate?.onCreateServer(
             mServer!!
         )
 
@@ -40,27 +44,21 @@ class Server(
         }
     }
 
-    fun create() {
+    override fun start() {
         Thread(this)
             .start()
     }
 
-    fun drop() {
+    override fun stop() {
         mServer?.close()
-        mServerListener?.onDropServer()
-    }
-
-    fun setOnServerListener(
-        listener: ServerListener?
-    ) {
-        mServerListener = listener
+        delegate?.onDropServer()
     }
 
     private fun listen(
         buffer: ByteArray
     ): Boolean {
 
-        mServerListener?.onStartListen()
+        delegate?.onStartListen()
         try {
             val clientSocket = mServer!!.accept()
             clientSocket.soTimeout = 13000
@@ -81,7 +79,7 @@ class Server(
 
                 n = inp.read(buffer)
                 Log.d(TAG, "listen: READ $n ${outArr.size()}")
-                mServerListener?.onListenChunkData(
+                delegate?.onListenChunkData(
                     buffer,
                     n,
                     inp.available()
@@ -104,12 +102,12 @@ class Server(
             Log.d(TAG, "listen: DATA SIZE: ${data.size}")
 
             out.write(
-                mRequestManager.manage(
+                mRequestService.manage(
                     data
                 )
             )
 
-            mServerListener?.onDropClient(
+            delegate?.onDropClient(
                 clientSocket
             )
 

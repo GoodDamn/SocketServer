@@ -1,17 +1,24 @@
 package good.damn.filesharing.shareProtocol.method
 
 import android.util.Log
+import good.damn.filesharing.shareProtocol.interfaces.Responsible
 
 open class ShareMethod(
-    method: ByteArray
-) {
+    method: ByteArray,
+    offset: Int = 0
+): Responsible {
     companion object {
         private const val TAG = "ShareMethod"
     }
 
-    private val mComputedHash = if (method.size >= 3)
-        (method[0] + method[1] + method[2]) shl 1
+    private val mComputedHash = if (method.size - offset >= 3)
+        (method[offset] + method[offset+1] + method[offset+2]) shl 1
         else -1
+
+    override fun response(
+        request: ByteArray,
+        offset: Int
+    ):ByteArray {return ByteArray(0)}
 
     final override fun equals(
         other: Any?

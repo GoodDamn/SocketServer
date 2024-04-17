@@ -74,37 +74,27 @@ class SSHServer(
                 "Invalid credentials"
             )
 
-            responseMessage(
+            responseToUser(
                 remoteAddress,
-                "Invalid credentials"
+                mService.responseMessage(
+                    "Invalid credentials"
+                )
             )
 
             return true
         }
 
-        responseMessage(
+        val response = mService.makeResponse(
+            mBuffer,
+            auth.contentOffset
+        )
+
+        responseToUser(
             remoteAddress,
-            "Welcome to Android OS!"
+            response
         )
 
         return true
-    }
-
-    private fun responseMessage(
-        address: InetAddress,
-        msg: String
-    ) {
-        val data = msg
-            .toByteArray(
-                Application.CHARSET_ASCII
-            )
-
-        responseToUser(
-            address,
-            byteArrayOf(
-                data.size.toByte()
-            ) + data
-        )
     }
 
     private fun responseToUser(

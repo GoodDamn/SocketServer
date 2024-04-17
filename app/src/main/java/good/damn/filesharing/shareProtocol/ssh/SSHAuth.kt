@@ -4,7 +4,8 @@ import good.damn.filesharing.Application
 import good.damn.filesharing.utils.CryptoUtils
 
 class SSHAuth(
-    val user: String
+    val user: String,
+    val contentOffset: Int
 ) {
     companion object {
         fun authenticate(
@@ -26,7 +27,8 @@ class SSHAuth(
                 )
 
             return SSHAuth(
-                user
+                user,
+                len+1
             )
 
         }

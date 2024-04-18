@@ -2,6 +2,7 @@ package good.damn.filesharing.shareProtocol.method
 
 import android.util.Log
 import good.damn.filesharing.shareProtocol.interfaces.Responsible
+import java.io.File
 
 open class ShareMethod(
     method: ByteArray,
@@ -20,7 +21,8 @@ open class ShareMethod(
     override fun response(
         request: ByteArray,
         argsCount: Int,
-        argsPosition: Int
+        argsPosition: Int,
+        userFolder: File
     ):ByteArray {
         Log.d(TAG, "response: ")
         return ByteArray(0)

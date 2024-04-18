@@ -4,6 +4,9 @@ import android.util.Log
 import good.damn.filesharing.Application
 import good.damn.filesharing.services.network.request.SSHService
 import good.damn.filesharing.shareProtocol.method.ShareMethod
+import good.damn.filesharing.utils.FileUtils
+import good.damn.filesharing.utils.SSHUtils
+import java.io.File
 
 class ShareMethodMakeDir
 : ShareMethod(
@@ -19,7 +22,8 @@ class ShareMethodMakeDir
     override fun response(
         request: ByteArray,
         argsCount: Int,
-        argsPosition: Int
+        argsPosition: Int,
+        userFolder: File
     ): ByteArray {
 
         if (argsCount <= 0) {
@@ -38,11 +42,23 @@ class ShareMethodMakeDir
             Application.CHARSET_ASCII
         )
 
-        Log.d(TAG, "response: folderPath:$folderPath")
+        val path = File("$userFolder/$folderPath")
+
+        if (path.exists()) {
+            return SSHService.responseMessage(
+                "$folderPath already exists"
+            )
+        }
+
+        if (path.mkdirs()) {
+            return SSHService.responseMessage(
+                "Folder at $folderPath created")
+        }
 
         return SSHService.responseMessage(
-            "Folder at $folderPath created"
+            "Couldn't create a dir $folderPath"
         )
+
     }
 
 }

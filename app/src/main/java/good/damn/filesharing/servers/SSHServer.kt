@@ -85,8 +85,8 @@ class SSHServer(
         }
 
         val response = mService.makeResponse(
-            mBuffer,
-            auth.contentOffset
+            auth,
+            mBuffer
         )
 
         responseToUser(

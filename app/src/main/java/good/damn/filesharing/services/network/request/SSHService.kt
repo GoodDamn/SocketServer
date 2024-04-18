@@ -35,9 +35,11 @@ class SSHService {
     }
 
     fun makeResponse(
+        auth: SSHAuth,
         request: ByteArray,
-        offset: Int = 0
     ): ByteArray {
+
+        val offset = auth.contentOffset
 
         val argsCount = request[offset]
             .toInt() - 1
@@ -61,7 +63,10 @@ class SSHService {
         ].response(
             request,
             argsCount,
-            cmdPos+cmdLen
+            cmdPos+cmdLen,
+            FileUtils.getUserFolder(
+                auth.user
+            )
         )
     }
 }

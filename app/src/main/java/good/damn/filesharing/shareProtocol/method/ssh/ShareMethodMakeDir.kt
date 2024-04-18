@@ -9,7 +9,8 @@ class ShareMethodMakeDir
 : ShareMethod(
     byteArrayOf(
         0x6D, 0x6B, 0x64 // mkd
-    )
+    ),
+    length = 3
 ) {
     companion object {
         private const val TAG = "ShareMethodMakeDir"
@@ -17,18 +18,31 @@ class ShareMethodMakeDir
 
     override fun response(
         request: ByteArray,
-        offset: Int
+        argsCount: Int,
+        argsPosition: Int
     ): ByteArray {
-        val cmdLen = request[offset]
 
-        val cmd = String(
+        if (argsCount <= 0) {
+            return SSHService.responseMessage(
+                "No folder name for creating directory"
+            )
+        }
+
+        val folderLen = request[argsPosition]
+            .toInt()
+
+        val folderPath = String(
             request,
-            offset,
-            cmdLen.toInt(),
+            argsPosition + 1,
+            folderLen,
             Application.CHARSET_ASCII
         )
 
-        return ByteArray(0)
+        Log.d(TAG, "response: folderPath:$folderPath")
+
+        return SSHService.responseMessage(
+            "Folder at $folderPath created"
+        )
     }
 
 }

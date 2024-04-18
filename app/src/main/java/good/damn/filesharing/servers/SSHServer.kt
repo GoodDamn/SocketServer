@@ -76,7 +76,7 @@ class SSHServer(
 
             responseToUser(
                 remoteAddress,
-                mService.responseMessage(
+                SSHService.responseMessage(
                     "Invalid credentials"
                 )
             )

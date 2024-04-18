@@ -4,7 +4,8 @@ interface Responsible {
 
     fun response(
         request: ByteArray,
-        offset: Int
+        argsCount: Int,
+        argsPosition: Int
     ): ByteArray
 
 }

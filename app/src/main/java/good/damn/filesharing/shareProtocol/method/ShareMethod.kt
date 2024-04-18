@@ -8,6 +8,7 @@ open class ShareMethod(
     offset: Int = 0,
     length: Int = 2
 ): Responsible {
+    
     companion object {
         private const val TAG = "ShareMethod"
     }
@@ -18,7 +19,8 @@ open class ShareMethod(
 
     override fun response(
         request: ByteArray,
-        offset: Int
+        argsCount: Int,
+        argsPosition: Int
     ):ByteArray {
         Log.d(TAG, "response: ")
         return ByteArray(0)

@@ -19,6 +19,19 @@ class SSHService {
 
     companion object {
         private const val TAG = "SSHService"
+
+        fun responseMessage(
+            msg: String
+        ): ByteArray {
+            val data = msg
+                .toByteArray(
+                    Application.CHARSET_ASCII
+                )
+
+            return byteArrayOf(
+                data.size.toByte()
+            ) + data
+        }
     }
 
     fun makeResponse(
@@ -26,7 +39,15 @@ class SSHService {
         offset: Int = 0
     ): ByteArray {
 
-        val index = ShareMethod(request,offset)
+        val argsCount = request[offset]
+            .toInt() - 1
+
+        val cmdLen = request[offset+1]
+            .toInt()
+
+        val cmdPos = offset + 2
+
+        val index = ShareMethod(request,cmdPos,cmdLen)
             .hashCode() % mRequests.size
 
         if (index >= mRequests.size) {
@@ -37,20 +58,10 @@ class SSHService {
 
         return mRequests[
             index
-        ].response(request, offset)
+        ].response(
+            request,
+            argsCount,
+            cmdPos+cmdLen
+        )
     }
-
-    fun responseMessage(
-        msg: String
-    ): ByteArray {
-        val data = msg
-            .toByteArray(
-                Application.CHARSET_ASCII
-            )
-
-        return byteArrayOf(
-            data.size.toByte()
-        ) + data
-    }
-
 }

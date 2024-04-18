@@ -25,6 +25,10 @@ class SSHServer(
 
     private val mService = SSHService()
 
+    override fun serverType(): String {
+        return "SSH"
+    }
+
     override fun start() {
         mThread = Thread(this)
         mThread?.start()

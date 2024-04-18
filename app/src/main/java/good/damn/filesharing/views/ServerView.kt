@@ -12,7 +12,7 @@ import good.damn.filesharing.controllers.msgrs.Messenger
 import good.damn.filesharing.listeners.network.service.HotspotServiceListener
 
 class ServerView<DELEGATE>(
-    private val mServer: BaseServer<DELEGATE>,
+    private val mServers: Array<BaseServer<DELEGATE>>,
     context: Context
 ): LinearLayout(
     context
@@ -21,6 +21,14 @@ class ServerView<DELEGATE>(
     private val msgr = Messenger()
 
     private val mTextViewIP: TextView
+
+    constructor(
+        server: BaseServer<DELEGATE>,
+        context: Context
+    ) : this(
+        arrayOf(server),
+        context
+    )
 
     init {
         orientation = VERTICAL
@@ -100,19 +108,27 @@ class ServerView<DELEGATE>(
     override fun onGetHotspotIP(
         addressList: String
     ) {
-        mTextViewIP.text = "Host: $addressList\nPort: ${mServer.port}"
+        var t = "Host: $addressList"
+        for (server in mServers) {
+            t += "\nPort: ${server.port} ${server.serverType()}"
+        }
+        mTextViewIP.text = t
     }
 
     private fun onClickBtnStart(
         view: View
     ) {
-        mServer.start()
+        for (server in mServers) {
+            server.start()
+        }
     }
 
     private fun onClickBtnStop(
         view: View
     ) {
-        mServer.stop()
+        for (server in mServers) {
+            server.stop()
+        }
     }
 
     fun addMessage(

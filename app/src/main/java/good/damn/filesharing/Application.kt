@@ -1,6 +1,7 @@
 package good.damn.filesharing
 
 import android.content.Context
+import android.content.res.Resources
 import android.widget.Toast
 import java.nio.Buffer
 import java.nio.charset.Charset
@@ -17,7 +18,58 @@ class Application
         val CHARSET = Charset.forName("UTF-8")
         val CHARSET_ASCII = Charset.forName("US-ASCII")
 
-        lateinit var SSL: SSLContext
+        fun createSSLContext(
+            resources: Resources
+        ): SSLContext {
+
+            val password = "123456"
+                .toCharArray()
+
+            val keyStore = KeyStore.getInstance("JKS")
+            keyStore.load(
+                resources.openRawResource(
+                    R.raw.multi
+                ),
+                password
+            )
+
+            val trustStore = KeyStore.getInstance("JKS")
+            trustStore.load(
+                resources.openRawResource(
+                    R.raw.multi_trust
+                ),
+                password
+            )
+
+            val keyManager = KeyManagerFactory.getInstance(
+                KeyManagerFactory.getDefaultAlgorithm()
+            )
+
+            keyManager.init(
+                keyStore,
+                password
+            )
+
+            val trustManager = TrustManagerFactory.getInstance(
+                TrustManagerFactory.getDefaultAlgorithm()
+            )
+
+            trustManager.init(
+                trustStore
+            )
+
+            val SSL = SSLContext.getInstance(
+                "TLS"
+            )
+
+            SSL.init(
+                keyManager.keyManagers,
+                trustManager.trustManagers,
+                null
+            )
+
+            return SSL
+        }
 
         fun showMessage(
             msg: String,
@@ -30,56 +82,6 @@ class Application
             ).show()
         }
 
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-
-        val password = "123456"
-            .toCharArray()
-
-        val keyStore = KeyStore.getInstance("JKS")
-        keyStore.load(
-            resources.openRawResource(
-                R.raw.multi
-            ),
-            password
-        )
-
-        val trustStore = KeyStore.getInstance("JKS")
-        trustStore.load(
-            resources.openRawResource(
-                R.raw.multi_trust
-            ),
-            password
-        )
-
-        val keyManager = KeyManagerFactory.getInstance(
-            KeyManagerFactory.getDefaultAlgorithm()
-        )
-
-        keyManager.init(
-            keyStore,
-            password
-        )
-
-        val trustManager = TrustManagerFactory.getInstance(
-            TrustManagerFactory.getDefaultAlgorithm()
-        )
-
-        trustManager.init(
-            trustStore
-        )
-
-        SSL = SSLContext.getInstance(
-            "TLS"
-        )
-
-        SSL.init(
-            keyManager.keyManagers,
-            trustManager.trustManagers,
-            null
-        )
     }
 
 }

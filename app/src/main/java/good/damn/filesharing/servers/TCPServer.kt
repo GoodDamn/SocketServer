@@ -43,6 +43,10 @@ open class TCPServer(
         }
     }
 
+    override fun serverType(): String {
+        return "No SSL"
+    }
+
     final override fun start() {
         Thread(this)
             .start()

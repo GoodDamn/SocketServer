@@ -1,6 +1,7 @@
 package good.damn.filesharing.shareProtocol.method.ssh
 
 import android.util.Log
+import good.damn.filesharing.Application
 import good.damn.filesharing.services.network.request.SSHService
 import good.damn.filesharing.shareProtocol.method.ShareMethod
 
@@ -20,11 +21,12 @@ class ShareMethodMakeDir
     ): ByteArray {
         val cmdLen = request[offset]
 
-        Log.d(TAG, "response: $cmdLen ${request[offset + 4]}")
-
-        if (request[offset + 4].toInt() == 0x20) { // [Space]
-
-        }
+        val cmd = String(
+            request,
+            offset,
+            cmdLen.toInt(),
+            Application.CHARSET_ASCII
+        )
 
         return ByteArray(0)
     }

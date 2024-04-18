@@ -21,7 +21,6 @@ class SSHService {
         private const val TAG = "SSHService"
     }
 
-
     fun makeResponse(
         request: ByteArray,
         offset: Int = 0
@@ -52,7 +51,6 @@ class SSHService {
         return byteArrayOf(
             data.size.toByte()
         ) + data
-
     }
 
 }

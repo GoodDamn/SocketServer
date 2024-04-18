@@ -8,8 +8,9 @@ import java.io.ByteArrayOutputStream
 import java.net.ServerSocket
 import java.net.SocketException
 import java.net.SocketTimeoutException
+import javax.net.ssl.SSLServerSocket
 
-class TCPServer(
+open class TCPServer(
     port: Int
 ): BaseServer<ServerListener>(
     port
@@ -21,17 +22,15 @@ class TCPServer(
 
     private val mRequestService = RequestService()
 
-    override var delegate: ServerListener?
+    final override var delegate: ServerListener?
         get() = super.delegate
         set(value) {
             mRequestService.delegate = value
             super.delegate = value
         }
 
-    override fun run() {
-        mServer = ServerSocket(
-            port
-        )
+    final override fun run() {
+        mServer = onCreateSocket()
 
         mServer?.reuseAddress = true
         
@@ -44,14 +43,20 @@ class TCPServer(
         }
     }
 
-    override fun start() {
+    final override fun start() {
         Thread(this)
             .start()
     }
 
-    override fun stop() {
+    final override fun stop() {
         mServer?.close()
         delegate?.onDropServer()
+    }
+
+    internal open fun onCreateSocket(): ServerSocket {
+        return ServerSocket(
+            port
+        )
     }
 
     private fun listen(

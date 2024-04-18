@@ -17,6 +17,10 @@ class UDPServer(
 
     private var mThread: Thread? = null
 
+    override fun serverType(): String {
+        return "UDP"
+    }
+
     override fun start() {
         mThread = Thread(this)
         mThread?.start()

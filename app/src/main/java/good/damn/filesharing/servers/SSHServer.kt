@@ -25,6 +25,10 @@ class SSHServer(
 
     private val mService = SSHService()
 
+    override fun serverType(): String {
+        return "SSH"
+    }
+
     override fun start() {
         mThread = Thread(this)
         mThread?.start()
@@ -74,37 +78,27 @@ class SSHServer(
                 "Invalid credentials"
             )
 
-            responseMessage(
+            responseToUser(
                 remoteAddress,
-                "Invalid credentials"
+                SSHService.responseMessage(
+                    "Invalid credentials"
+                )
             )
 
             return true
         }
 
-        responseMessage(
+        val response = mService.makeResponse(
+            auth,
+            mBuffer
+        )
+
+        responseToUser(
             remoteAddress,
-            "Welcome to Android OS!"
+            response
         )
 
         return true
-    }
-
-    private fun responseMessage(
-        address: InetAddress,
-        msg: String
-    ) {
-        val data = msg
-            .toByteArray(
-                Application.CHARSET_ASCII
-            )
-
-        responseToUser(
-            address,
-            byteArrayOf(
-                data.size.toByte()
-            ) + data
-        )
     }
 
     private fun responseToUser(

@@ -13,6 +13,8 @@ import good.damn.filesharing.controllers.launchers.ContentLauncher
 import good.damn.filesharing.listeners.activityResult.ActivityResultCopyListener
 import good.damn.filesharing.listeners.network.server.ServerListener
 import good.damn.filesharing.listeners.network.service.HotspotServiceListener
+import good.damn.filesharing.servers.BaseServer
+import good.damn.filesharing.servers.SSLServer
 import good.damn.filesharing.utils.FileUtils
 import good.damn.filesharing.views.ServerView
 import java.net.ServerSocket
@@ -37,6 +39,13 @@ class TCPServerActivity
         val server = TCPServer(
             8080
         )
+
+        val sslServer = SSLServer(
+            resources,
+            4443
+        )
+
+        sslServer.delegate = this
         server.delegate = this
 
         val activityResult = ActivityResultCopyToDoc(

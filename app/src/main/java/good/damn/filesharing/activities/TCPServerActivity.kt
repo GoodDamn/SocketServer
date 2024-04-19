@@ -41,7 +41,6 @@ class TCPServerActivity
         )
 
         val sslServer = SSLServer(
-            resources,
             4443
         )
 
@@ -60,7 +59,10 @@ class TCPServerActivity
         )
 
         mServerView = ServerView(
-            server,
+            arrayOf(
+                server,
+                sslServer
+            ),
             this
         )
 

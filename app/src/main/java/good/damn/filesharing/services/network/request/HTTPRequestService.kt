@@ -1,9 +1,9 @@
-package good.damn.filesharing.services.network.response
+package good.damn.filesharing.services.network.request
 
 import good.damn.filesharing.Application
 import good.damn.filesharing.utils.FileUtils
 
-class HTTPResponseService {
+class HTTPRequestService {
 
     private val TAG = "HTTPResponseManager"
 

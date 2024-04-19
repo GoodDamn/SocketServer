@@ -21,7 +21,7 @@ class Application
         fun createSSLContext(
             resources: Resources
         ): SSLContext {
-
+/*
             val password = "123456"
                 .toCharArray()
 
@@ -66,9 +66,9 @@ class Application
                 keyManager.keyManagers,
                 trustManager.trustManagers,
                 null
-            )
+            )*/
 
-            return SSL
+            return SSLContext.getDefault()
         }
 
         fun showMessage(

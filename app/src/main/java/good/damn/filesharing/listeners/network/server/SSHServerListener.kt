@@ -8,6 +8,4 @@ interface SSHServerListener {
     fun onErrorAuth(
         error: String
     )
-
-    fun onResponseBuffer(): ByteArray
 }

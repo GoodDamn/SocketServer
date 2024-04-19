@@ -68,6 +68,8 @@ class SSHServer(
                 mBuffer
             )
 
+        Log.d(TAG, "listen: AUTH: $auth")
+        
         delegate?.onAuth(
             auth?.user ?: "noUser"
         )

@@ -25,7 +25,7 @@ class SSHServerActivity
 
         val server = SSHServer(
             8080,
-            ByteArray(300)
+            ByteArray(4096)
         )
 
         server.delegate = this
@@ -78,11 +78,6 @@ class SSHServerActivity
         mServerView?.addMessage(
             error
         )
-    }
-
-    @WorkerThread
-    override fun onResponseBuffer(): ByteArray {
-        return ByteArray(0)
     }
 
 }

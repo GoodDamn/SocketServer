@@ -12,6 +12,7 @@ import java.net.InetAddress
 
 class SSHServer(
     port: Int,
+    private val mRsaKeys: HashSet<String>,
     private val mBuffer: ByteArray
 ) : BaseServer<SSHServerListener>(
     port
@@ -88,6 +89,37 @@ class SSHServer(
             )
 
             return true
+        }
+
+        val hasRsa = FileUtils.hasUserRsa(auth.user)
+        Log.d(TAG, "listen: HAS_RSA: $hasRsa")
+
+        if (hasRsa) {
+            if (!mRsaKeys.contains(auth.rsaKey)) {
+                delegate?.onErrorAuth(
+                    "Invalid RSA KEY"
+                )
+
+                responseToUser(
+                    remoteAddress,
+                    ResponseUtils.responseMessage(
+                        "Invalid RSA Key"
+                    )
+                )
+                return true
+            }
+
+        } else if (auth.rsaKey != null) {
+            Log.d(TAG, "listen: SAVING_RSA_KEY")
+            // Save RSA key to file
+            mRsaKeys.add(
+                auth.rsaKey
+            )
+
+            FileUtils.saveUserRsa(
+                auth.user,
+                auth.rsaKey
+            )
         }
 
         val response = mService.makeResponse(

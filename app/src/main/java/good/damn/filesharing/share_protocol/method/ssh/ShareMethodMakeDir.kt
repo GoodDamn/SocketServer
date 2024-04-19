@@ -22,9 +22,6 @@ class ShareMethodMakeDir
         argsPosition: Int,
         userFolder: File
     ): ByteArray {
-
-        Log.d(TAG, "response: ")
-        
         if (argsCount <= 0) {
             return ResponseUtils.responseMessage(
                 "No folder name for creating directory"

@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import good.damn.filesharing.activities.other.ssh.SSHSettingsActivity
 import good.damn.filesharing.listeners.network.server.SSHServerListener
 import good.damn.filesharing.servers.SSHServer
+import good.damn.filesharing.utils.FileUtils
 import good.damn.filesharing.views.ServerView
+import java.io.File
 
 class SSHServerActivity
 : AppCompatActivity(
@@ -23,9 +25,19 @@ class SSHServerActivity
 
         val context = this
 
+        val buffer = ByteArray(
+            4096
+        )
+
+        val rsaKeys = FileUtils
+            .getUsersRsa(
+                buffer
+            )
+
         val server = SSHServer(
             8080,
-            ByteArray(4096)
+            rsaKeys,
+            buffer
         )
 
         server.delegate = this

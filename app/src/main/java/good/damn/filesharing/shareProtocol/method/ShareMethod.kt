@@ -2,6 +2,7 @@ package good.damn.filesharing.shareProtocol.method
 
 import android.util.Log
 import good.damn.filesharing.shareProtocol.interfaces.Responsible
+import good.damn.filesharing.utils.ResponseUtils
 import java.io.File
 
 open class ShareMethod(
@@ -15,7 +16,7 @@ open class ShareMethod(
     }
 
     private val mComputedHash = if (method.isNotEmpty())
-            method.sum(offset, length) shl 1
+            method.sum(method,offset, length) shl 1
             else -1
 
     override fun response(
@@ -24,8 +25,10 @@ open class ShareMethod(
         argsPosition: Int,
         userFolder: File
     ):ByteArray {
-        Log.d(TAG, "response: ")
-        return ByteArray(0)
+        Log.d(TAG, "response: NO IMPLEMENTATION")
+        return ResponseUtils.responseMessage(
+            "No implementation for this method"
+        )
     }
 
     final override fun equals(
@@ -41,12 +44,13 @@ open class ShareMethod(
 }
 
 fun ByteArray.sum(
+    inp: ByteArray,
     offset: Int = 0,
     length: Int = size
 ): Int {
     var sum = 0
-    for (i in offset until length) {
-        sum += i
+    for (i in offset until length+offset) {
+        sum += inp[i]
     }
     return sum
 }

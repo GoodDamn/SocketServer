@@ -8,6 +8,7 @@ import good.damn.filesharing.shareProtocol.method.ShareMethod
 import good.damn.filesharing.shareProtocol.method.ssh.ShareMethodMakeDir
 import good.damn.filesharing.shareProtocol.ssh.SSHAuth
 import good.damn.filesharing.shareProtocol.ssh.SSHRequest
+import good.damn.filesharing.utils.ResponseUtils
 import java.net.InetAddress
 import java.util.Hashtable
 
@@ -19,19 +20,6 @@ class SSHService {
 
     companion object {
         private const val TAG = "SSHService"
-
-        fun responseMessage(
-            msg: String
-        ): ByteArray {
-            val data = msg
-                .toByteArray(
-                    Application.CHARSET_ASCII
-                )
-
-            return byteArrayOf(
-                data.size.toByte()
-            ) + data
-        }
     }
 
     fun makeResponse(
@@ -53,7 +41,7 @@ class SSHService {
             .hashCode() % mRequests.size
 
         if (index >= mRequests.size) {
-            return responseMessage(
+            return ResponseUtils.responseMessage(
                 "Hash calculating error $index"
             )
         }

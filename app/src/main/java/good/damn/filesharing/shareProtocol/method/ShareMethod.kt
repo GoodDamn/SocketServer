@@ -15,7 +15,7 @@ open class ShareMethod(
     }
 
     private val mComputedHash = if (method.isNotEmpty())
-            method.sum(offset, length) shl 1
+            method.sum(method,offset, length) shl 1
             else -1
 
     override fun response(
@@ -41,12 +41,13 @@ open class ShareMethod(
 }
 
 fun ByteArray.sum(
+    inp: ByteArray,
     offset: Int = 0,
     length: Int = size
 ): Int {
     var sum = 0
     for (i in offset until length) {
-        sum += i
+        sum += inp[i]
     }
     return sum
 }

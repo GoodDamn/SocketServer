@@ -5,6 +5,7 @@ import good.damn.filesharing.Application
 import good.damn.filesharing.services.network.request.SSHService
 import good.damn.filesharing.shareProtocol.method.ShareMethod
 import good.damn.filesharing.utils.FileUtils
+import good.damn.filesharing.utils.ResponseUtils
 import good.damn.filesharing.utils.SSHUtils
 import java.io.File
 
@@ -27,7 +28,7 @@ class ShareMethodMakeDir
     ): ByteArray {
 
         if (argsCount <= 0) {
-            return SSHService.responseMessage(
+            return ResponseUtils.responseMessage(
                 "No folder name for creating directory"
             )
         }
@@ -45,17 +46,17 @@ class ShareMethodMakeDir
         val path = File("$userFolder/$folderPath")
 
         if (path.exists()) {
-            return SSHService.responseMessage(
+            return ResponseUtils.responseMessage(
                 "$folderPath already exists"
             )
         }
 
         if (path.mkdirs()) {
-            return SSHService.responseMessage(
+            return ResponseUtils.responseMessage(
                 "Folder at $folderPath created")
         }
 
-        return SSHService.responseMessage(
+        return ResponseUtils.responseMessage(
             "Couldn't create a dir $folderPath"
         )
 

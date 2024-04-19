@@ -20,18 +20,11 @@ class SSLServer(
     @WorkerThread
     override fun onCreateSocket(): ServerSocket {
         val socket = SSLContext
-            .getInstance("TLS")
+            .getDefault()
             .serverSocketFactory
             .createServerSocket(
                 port
             )
-
-        (socket as SSLServerSocket)
-            .enabledProtocols = arrayOf(
-                "TLSv1.1",
-                "TLSv1.2"
-            )
-
         return socket
     }
 }

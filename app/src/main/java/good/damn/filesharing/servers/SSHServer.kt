@@ -6,6 +6,7 @@ import good.damn.filesharing.listeners.network.server.SSHServerListener
 import good.damn.filesharing.services.network.request.SSHService
 import good.damn.filesharing.shareProtocol.ssh.SSHAuth
 import good.damn.filesharing.utils.FileUtils
+import good.damn.filesharing.utils.ResponseUtils
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -80,7 +81,7 @@ class SSHServer(
 
             responseToUser(
                 remoteAddress,
-                SSHService.responseMessage(
+                ResponseUtils.responseMessage(
                     "Invalid credentials"
                 )
             )

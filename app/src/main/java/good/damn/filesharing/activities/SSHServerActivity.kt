@@ -7,15 +7,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
-import good.damn.filesharing.Application
 import good.damn.filesharing.activities.other.ssh.SSHSettingsActivity
 import good.damn.filesharing.listeners.network.server.SSHServerListener
 import good.damn.filesharing.servers.SSHServer
-import good.damn.filesharing.shareProtocol.ssh.SSHAuth
-import good.damn.filesharing.shareProtocol.ssh.SSHRequest
+import good.damn.filesharing.utils.FileUtils
 import good.damn.filesharing.views.ServerView
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import java.io.File
 
 class SSHServerActivity
 : AppCompatActivity(
@@ -28,9 +25,19 @@ class SSHServerActivity
 
         val context = this
 
+        val buffer = ByteArray(
+            4096
+        )
+
+        val rsaKeys = FileUtils
+            .getUsersRsa(
+                buffer
+            )
+
         val server = SSHServer(
             8080,
-            ByteArray(300)
+            rsaKeys,
+            buffer
         )
 
         server.delegate = this
@@ -83,11 +90,6 @@ class SSHServerActivity
         mServerView?.addMessage(
             error
         )
-    }
-
-    @WorkerThread
-    override fun onResponseBuffer(): ByteArray {
-        return ByteArray(0)
     }
 
 }

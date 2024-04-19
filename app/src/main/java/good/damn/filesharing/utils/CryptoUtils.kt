@@ -19,8 +19,8 @@ class CryptoUtils {
 
             return Base64.encodeToString(
                 hash,
-                Base64.DEFAULT
-            )
+                Base64.URL_SAFE
+            ).replace("\\s+".toRegex(), "")
         }
 
         fun sha256Base64(
@@ -32,8 +32,8 @@ class CryptoUtils {
                 input,
                 offset,
                 len,
-                Base64.DEFAULT
-            )
+                Base64.URL_SAFE
+            ).replace("\\s+".toRegex(), "")
         }
 
         private fun sha256(

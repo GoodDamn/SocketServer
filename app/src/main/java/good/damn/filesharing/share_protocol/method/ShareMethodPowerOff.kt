@@ -1,16 +1,13 @@
-package good.damn.filesharing.shareProtocol.method
+package good.damn.filesharing.share_protocol.method
 
-import android.util.Log
 import good.damn.filesharing.Application
 import java.io.File
-import java.net.ServerSocket
 
 class ShareMethodPowerOff
 : ShareMethod(
     "pff".toByteArray(
         Application.CHARSET_ASCII
-    ),
-    length = 3
+    )
 ){
 
     companion object {

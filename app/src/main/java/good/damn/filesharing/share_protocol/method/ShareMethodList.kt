@@ -1,4 +1,4 @@
-package good.damn.filesharing.shareProtocol.method
+package good.damn.filesharing.share_protocol.method
 
 import good.damn.filesharing.Application
 import good.damn.filesharing.utils.ByteUtils
@@ -9,8 +9,7 @@ import java.io.File
 
 class ShareMethodList
 : ShareMethod(
-    byteArrayOf(0x6C, 0x69), // li
-    length = 2
+    byteArrayOf(0x6C, 0x69) // li
 ) {
     override fun response(
         request: ByteArray,

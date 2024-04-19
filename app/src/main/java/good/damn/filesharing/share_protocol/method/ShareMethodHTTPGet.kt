@@ -1,4 +1,4 @@
-package good.damn.filesharing.shareProtocol.method
+package good.damn.filesharing.share_protocol.method
 
 import good.damn.filesharing.Application
 import good.damn.filesharing.services.network.request.HTTPResponseService
@@ -8,8 +8,6 @@ class ShareMethodHTTPGet
 : ShareMethod(
     byteArrayOf(0x47,0x45,0x54) // GET - ASCII Codes
 ) {
-
-
     override fun response(
         request: ByteArray,
         argsCount: Int,

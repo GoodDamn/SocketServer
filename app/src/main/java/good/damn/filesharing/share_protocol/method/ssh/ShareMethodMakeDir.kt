@@ -1,20 +1,16 @@
-package good.damn.filesharing.shareProtocol.method.ssh
+package good.damn.filesharing.share_protocol.method.ssh
 
 import android.util.Log
 import good.damn.filesharing.Application
-import good.damn.filesharing.services.network.request.SSHService
-import good.damn.filesharing.shareProtocol.method.ShareMethod
-import good.damn.filesharing.utils.FileUtils
+import good.damn.filesharing.share_protocol.method.ShareMethod
 import good.damn.filesharing.utils.ResponseUtils
-import good.damn.filesharing.utils.SSHUtils
 import java.io.File
 
 class ShareMethodMakeDir
 : ShareMethod(
     byteArrayOf(
         0x6D, 0x6B, 0x64 // mkd
-    ),
-    length = 3
+    )
 ) {
     companion object {
         private const val TAG = "ShareMethodMakeDir"
@@ -26,7 +22,6 @@ class ShareMethodMakeDir
         argsPosition: Int,
         userFolder: File
     ): ByteArray {
-
         if (argsCount <= 0) {
             return ResponseUtils.responseMessage(
                 "No folder name for creating directory"

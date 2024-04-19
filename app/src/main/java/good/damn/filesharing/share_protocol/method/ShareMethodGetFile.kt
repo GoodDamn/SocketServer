@@ -1,4 +1,4 @@
-package good.damn.filesharing.shareProtocol.method
+package good.damn.filesharing.share_protocol.method
 
 import good.damn.filesharing.Application
 import good.damn.filesharing.utils.ByteUtils
@@ -11,8 +11,7 @@ class ShareMethodGetFile
 : ShareMethod(
     byteArrayOf(
         0x67, 0x66 // gf
-    ),
-    length = 2
+    )
 ) {
 
     override fun response(

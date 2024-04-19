@@ -1,16 +1,11 @@
 package good.damn.filesharing.services.network.request
 
-import android.util.Log
-import good.damn.filesharing.Application
-import good.damn.filesharing.shareProtocol.interfaces.Responsible
+import good.damn.filesharing.share_protocol.interfaces.Responsible
 import good.damn.filesharing.utils.FileUtils
-import good.damn.filesharing.shareProtocol.method.ShareMethod
-import good.damn.filesharing.shareProtocol.method.ssh.ShareMethodMakeDir
-import good.damn.filesharing.shareProtocol.ssh.SSHAuth
-import good.damn.filesharing.shareProtocol.ssh.SSHRequest
+import good.damn.filesharing.share_protocol.method.ShareMethod
+import good.damn.filesharing.share_protocol.method.ssh.ShareMethodMakeDir
+import good.damn.filesharing.share_protocol.ssh.SSHAuth
 import good.damn.filesharing.utils.ResponseUtils
-import java.net.InetAddress
-import java.util.Hashtable
 
 class SSHService {
 

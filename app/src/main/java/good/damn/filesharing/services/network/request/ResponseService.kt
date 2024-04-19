@@ -44,9 +44,10 @@ class ResponseService {
         data: ByteArray
     ): ByteArray {
         if (data.size < 2) {
-            return ByteArray(0)
+            return ResponseUtils.responseMessageId(
+                "Null data"
+            )
         }
-
 
         val protocolType = data[0]
         var offset = 0
@@ -85,8 +86,8 @@ class ResponseService {
         ) ?: ResponseUtils.responseMessageId(
             "No such method ${String(
                 data,
-                0,
-                2,
+                offset,
+                methodLen,
                 Application.CHARSET_ASCII
             )}"
         )

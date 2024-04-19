@@ -3,6 +3,9 @@ package good.damn.filesharing
 import android.content.Context
 import android.content.res.Resources
 import android.widget.Toast
+import good.damn.filesharing.servers.SSLServer
+import good.damn.filesharing.servers.TCPServer
+import java.net.ServerSocket
 import java.nio.Buffer
 import java.nio.charset.Charset
 import java.security.KeyStore
@@ -17,6 +20,8 @@ class Application
         val BUFFER_MB = ByteArray(1024*1024)
         val CHARSET = Charset.forName("UTF-8")
         val CHARSET_ASCII = Charset.forName("US-ASCII")
+        var SERVER: TCPServer? = null
+        var SERVER_SSL: SSLServer? = null
 
         fun createSSLContext(
             resources: Resources

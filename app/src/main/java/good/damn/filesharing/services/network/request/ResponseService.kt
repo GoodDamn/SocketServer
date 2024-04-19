@@ -5,28 +5,27 @@ import androidx.annotation.WorkerThread
 import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.NetworkInputListener
 import good.damn.filesharing.shareProtocol.interfaces.Responsible
-import good.damn.filesharing.shareProtocol.method.ShareMethod
-import good.damn.filesharing.shareProtocol.method.ShareMethodGetFile
-import good.damn.filesharing.shareProtocol.method.ShareMethodHTTPGet
-import good.damn.filesharing.shareProtocol.method.ShareMethodList
+import good.damn.filesharing.shareProtocol.method.*
 import good.damn.filesharing.utils.ResponseUtils
 import java.io.File
+import java.net.ServerSocket
 
 class ResponseService {
-
     companion object {
         private const val TAG = "RequestManager"
         private const val SHARE_PROTOCOL_TYPE: Byte = 0
         private val HTTP_METHOD_GET = ShareMethodHTTPGet()
         private val SHARE_METHOD_LIST = ShareMethodList()
         private val SHARE_METHOD_GET_FILE = ShareMethodGetFile()
+        private val SHARE_METHOD_POWER_OFF = ShareMethodPowerOff()
         private val NULL_FILE = File("/")
         private val SHARE_METHODS: HashMap<
             ShareMethod,
             Responsible
             > = hashMapOf(
                 SHARE_METHOD_GET_FILE to SHARE_METHOD_GET_FILE,
-                SHARE_METHOD_LIST to SHARE_METHOD_LIST
+                SHARE_METHOD_LIST to SHARE_METHOD_LIST,
+                SHARE_METHOD_POWER_OFF to SHARE_METHOD_POWER_OFF
             )
 
         private val HTTP_METHODS: HashMap<

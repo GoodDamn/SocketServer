@@ -30,7 +30,6 @@ open class TCPServer(
 
     final override fun run() {
         mServer = onCreateSocket()
-
         mServer?.reuseAddress = true
         
         delegate?.onCreateServer(
@@ -53,6 +52,7 @@ open class TCPServer(
 
     final override fun stop() {
         mServer?.close()
+        mServer = null
         delegate?.onDropServer()
     }
 
@@ -109,10 +109,16 @@ open class TCPServer(
 
             Log.d(TAG, "listen: DATA SIZE: ${data.size}")
 
+            val response = mResponseService
+                .manage(data)
+
+            if (mServer == null || response.isEmpty()) {
+                out.close()
+                return false
+            }
+
             out.write(
-                mResponseService.manage(
-                    data
-                )
+                response
             )
 
             delegate?.onDropClient(

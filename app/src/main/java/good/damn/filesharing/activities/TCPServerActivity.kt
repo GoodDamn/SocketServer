@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
+import good.damn.filesharing.Application
 import good.damn.filesharing.callbacks.ActivityResultCopyToDoc
 import good.damn.filesharing.servers.TCPServer
 import good.damn.filesharing.controllers.launchers.ContentLauncher
@@ -43,6 +44,9 @@ class TCPServerActivity
         val sslServer = SSLServer(
             4443
         )
+
+        Application.SERVER = server
+        Application.SERVER_SSL = sslServer
 
         sslServer.delegate = this
         server.delegate = this

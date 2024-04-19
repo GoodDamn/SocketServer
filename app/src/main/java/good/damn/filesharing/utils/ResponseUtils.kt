@@ -16,5 +16,14 @@ class ResponseUtils {
                 data.size.toByte()
             ) + data
         }
+
+        fun responseMessageId(
+            msg: String,
+            msgId: Int = 1
+        ): ByteArray {
+            return ByteUtils.integer(msgId) + responseMessage(
+                msg
+            )
+        }
     }
 }

@@ -33,7 +33,7 @@ class ShareMethodGetFile
 
         val file = FileUtils.fromDoc(
             path
-        ) ?: return ResponseUtils.responseMessage(
+        ) ?: return ResponseUtils.responseMessageId(
             "$path not exists"
         )
 

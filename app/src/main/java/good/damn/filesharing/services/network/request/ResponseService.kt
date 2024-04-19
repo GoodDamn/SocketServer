@@ -82,7 +82,7 @@ class ResponseService {
             argsCount,
             argsPosition,
             NULL_FILE
-        ) ?: ResponseUtils.responseMessage(
+        ) ?: ResponseUtils.responseMessageId(
             "No such method ${String(
                 data,
                 0,

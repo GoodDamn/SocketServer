@@ -21,7 +21,7 @@ class ShareMethodList
 
         val files = FileUtils
             .getDocumentsFolder()
-            .listFiles() ?: return ResponseUtils.responseMessage(
+            .listFiles() ?: return ResponseUtils.responseMessageId(
                     "No files inside this server"
                 )
 

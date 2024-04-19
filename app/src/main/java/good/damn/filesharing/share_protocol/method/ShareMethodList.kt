@@ -9,8 +9,7 @@ import java.io.File
 
 class ShareMethodList
 : ShareMethod(
-    byteArrayOf(0x6C, 0x69), // li
-    length = 2
+    byteArrayOf(0x6C, 0x69) // li
 ) {
     override fun response(
         request: ByteArray,

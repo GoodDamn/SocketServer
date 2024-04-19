@@ -8,7 +8,7 @@ import java.io.File
 open class ShareMethod(
     method: ByteArray,
     offset: Int = 0,
-    length: Int = 2
+    length: Int = method.size
 ): Responsible {
     
     companion object {

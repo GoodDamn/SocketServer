@@ -14,17 +14,19 @@ class ResponseService {
         private const val TAG = "RequestManager"
         private const val SHARE_PROTOCOL_TYPE: Byte = 0
         private val HTTP_METHOD_GET = ShareMethodHTTPGet()
-        private val SHARE_METHOD_LIST = ShareMethodList()
-        private val SHARE_METHOD_GET_FILE = ShareMethodGetFile()
-        private val SHARE_METHOD_POWER_OFF = ShareMethodPowerOff()
+        private val SM_LIST = ShareMethodList()
+        private val SM_GET_FILE = ShareMethodGetFile()
+        private val SM_POWER_OFF = ShareMethodPowerOff()
+        private val SM_SYSTEM_INFO = ShareMethodSystemInfo()
         private val NULL_FILE = File("/")
         private val SHARE_METHODS: HashMap<
             ShareMethod,
             Responsible
             > = hashMapOf(
-                SHARE_METHOD_GET_FILE to SHARE_METHOD_GET_FILE,
-                SHARE_METHOD_LIST to SHARE_METHOD_LIST,
-                SHARE_METHOD_POWER_OFF to SHARE_METHOD_POWER_OFF
+                SM_GET_FILE to SM_GET_FILE,
+                SM_LIST to SM_LIST,
+                SM_POWER_OFF to SM_POWER_OFF,
+                SM_SYSTEM_INFO to SM_SYSTEM_INFO
             )
 
         private val HTTP_METHODS: HashMap<

@@ -11,8 +11,7 @@ class ShareMethodGetFile
 : ShareMethod(
     byteArrayOf(
         0x67, 0x66 // gf
-    ),
-    length = 2
+    )
 ) {
 
     override fun response(

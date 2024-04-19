@@ -7,8 +7,7 @@ class ShareMethodPowerOff
 : ShareMethod(
     "pff".toByteArray(
         Application.CHARSET_ASCII
-    ),
-    length = 3
+    )
 ){
 
     companion object {

@@ -1,4 +1,4 @@
-package good.damn.filesharing.shareProtocol.method
+package good.damn.filesharing.share_protocol.method
 
 import good.damn.filesharing.Application
 import good.damn.filesharing.services.network.request.HTTPResponseService

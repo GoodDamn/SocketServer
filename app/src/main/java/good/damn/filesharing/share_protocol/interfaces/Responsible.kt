@@ -1,4 +1,4 @@
-package good.damn.filesharing.shareProtocol.interfaces
+package good.damn.filesharing.share_protocol.interfaces
 
 import java.io.File
 

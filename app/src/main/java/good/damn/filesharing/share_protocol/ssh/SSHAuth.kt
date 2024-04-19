@@ -1,6 +1,5 @@
-package good.damn.filesharing.shareProtocol.ssh
+package good.damn.filesharing.share_protocol.ssh
 
-import good.damn.filesharing.Application
 import good.damn.filesharing.utils.CryptoUtils
 
 class SSHAuth(

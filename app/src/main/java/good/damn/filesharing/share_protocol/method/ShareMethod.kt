@@ -1,7 +1,7 @@
-package good.damn.filesharing.shareProtocol.method
+package good.damn.filesharing.share_protocol.method
 
 import android.util.Log
-import good.damn.filesharing.shareProtocol.interfaces.Responsible
+import good.damn.filesharing.share_protocol.interfaces.Responsible
 import good.damn.filesharing.utils.ResponseUtils
 import java.io.File
 

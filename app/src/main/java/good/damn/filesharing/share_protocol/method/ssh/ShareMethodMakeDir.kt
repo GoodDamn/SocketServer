@@ -1,12 +1,8 @@
-package good.damn.filesharing.shareProtocol.method.ssh
+package good.damn.filesharing.share_protocol.method.ssh
 
-import android.util.Log
 import good.damn.filesharing.Application
-import good.damn.filesharing.services.network.request.SSHService
-import good.damn.filesharing.shareProtocol.method.ShareMethod
-import good.damn.filesharing.utils.FileUtils
+import good.damn.filesharing.share_protocol.method.ShareMethod
 import good.damn.filesharing.utils.ResponseUtils
-import good.damn.filesharing.utils.SSHUtils
 import java.io.File
 
 class ShareMethodMakeDir

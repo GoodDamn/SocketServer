@@ -1,10 +1,9 @@
 package good.damn.filesharing.servers
 
 import android.util.Log
-import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.server.SSHServerListener
 import good.damn.filesharing.services.network.request.SSHService
-import good.damn.filesharing.shareProtocol.ssh.SSHAuth
+import good.damn.filesharing.share_protocol.ssh.SSHAuth
 import good.damn.filesharing.utils.FileUtils
 import good.damn.filesharing.utils.ResponseUtils
 import java.net.DatagramPacket

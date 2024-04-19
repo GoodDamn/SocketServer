@@ -4,11 +4,10 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.NetworkInputListener
-import good.damn.filesharing.shareProtocol.interfaces.Responsible
-import good.damn.filesharing.shareProtocol.method.*
+import good.damn.filesharing.share_protocol.interfaces.Responsible
+import good.damn.filesharing.share_protocol.method.*
 import good.damn.filesharing.utils.ResponseUtils
 import java.io.File
-import java.net.ServerSocket
 
 class ResponseService {
     companion object {

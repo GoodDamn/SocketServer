@@ -1,9 +1,9 @@
 package good.damn.filesharing.shareProtocol.method
 
 import good.damn.filesharing.Application
-import good.damn.filesharing.services.network.request.RequestService
 import good.damn.filesharing.utils.ByteUtils
 import good.damn.filesharing.utils.FileUtils
+import good.damn.filesharing.utils.ResponseUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -21,28 +21,29 @@ class ShareMethodGetFile
         argsPosition: Int,
         userFolder: File
     ): ByteArray {
-        val pathLength = request[2].toInt()
+        val pathLength = request[argsPosition]
+            .toInt()
 
         val path = String(
             request,
-            3,
+            argsPosition+1,
             pathLength,
             Application.CHARSET_ASCII
         )
 
         val file = FileUtils.fromDoc(
             path
-        ) ?: return ByteArray(0)
+        ) ?: return ResponseUtils.responseMessage(
+            "$path not exists"
+        )
 
         val baos = ByteArrayOutputStream()
 
-        baos.write(
-            ByteUtils.integer(
+        baos.write(ByteUtils.integer(
             hashCode()
         ))
 
-        baos.write(
-            ByteUtils.integer(
+        baos.write(ByteUtils.integer(
             file.size
         ))
 
@@ -55,5 +56,4 @@ class ShareMethodGetFile
 
         return result
     }
-
 }

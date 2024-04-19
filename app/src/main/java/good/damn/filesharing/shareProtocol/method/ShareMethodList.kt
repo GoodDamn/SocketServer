@@ -1,9 +1,9 @@
 package good.damn.filesharing.shareProtocol.method
 
 import good.damn.filesharing.Application
-import good.damn.filesharing.services.network.request.RequestService
 import good.damn.filesharing.utils.ByteUtils
 import good.damn.filesharing.utils.FileUtils
+import good.damn.filesharing.utils.ResponseUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -18,9 +18,12 @@ class ShareMethodList
         argsPosition: Int,
         userFolder: File
     ): ByteArray {
+
         val files = FileUtils
             .getDocumentsFolder()
-            .listFiles() ?: return ByteArray(0)
+            .listFiles() ?: return ResponseUtils.responseMessage(
+                    "No files inside this server"
+                )
 
         val baos = ByteArrayOutputStream()
 

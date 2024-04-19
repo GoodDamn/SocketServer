@@ -2,6 +2,7 @@ package good.damn.filesharing.shareProtocol.method
 
 import android.util.Log
 import good.damn.filesharing.shareProtocol.interfaces.Responsible
+import good.damn.filesharing.utils.ResponseUtils
 import java.io.File
 
 open class ShareMethod(
@@ -24,8 +25,10 @@ open class ShareMethod(
         argsPosition: Int,
         userFolder: File
     ):ByteArray {
-        Log.d(TAG, "response: ")
-        return ByteArray(0)
+        Log.d(TAG, "response: NO IMPLEMENTATION")
+        return ResponseUtils.responseMessage(
+            "No implementation for this method"
+        )
     }
 
     final override fun equals(

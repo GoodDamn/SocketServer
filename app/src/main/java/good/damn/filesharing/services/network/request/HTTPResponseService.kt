@@ -3,7 +3,7 @@ package good.damn.filesharing.services.network.request
 import good.damn.filesharing.Application
 import good.damn.filesharing.utils.FileUtils
 
-class HTTPRequestService {
+class HTTPResponseService {
 
     private val TAG = "HTTPResponseManager"
 

@@ -1,7 +1,7 @@
 package good.damn.filesharing.shareProtocol.method
 
 import good.damn.filesharing.Application
-import good.damn.filesharing.services.network.request.HTTPRequestService
+import good.damn.filesharing.services.network.request.HTTPResponseService
 import java.io.File
 
 class ShareMethodHTTPGet
@@ -33,7 +33,7 @@ class ShareMethodHTTPGet
                 )
             )
 
-        val response = HTTPRequestService()
+        val response = HTTPResponseService()
         return response.execute(
             path
         )

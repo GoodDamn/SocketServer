@@ -107,7 +107,7 @@ open class TCPServer(
             val data = outArr.toByteArray()
             outArr.close()
 
-            Log.d(TAG, "listen: DATA SIZE: ${data.size}")
+            Log.d(TAG, "listen: DATA: ${data.size}")
 
             val response = mResponseService
                 .manage(data)

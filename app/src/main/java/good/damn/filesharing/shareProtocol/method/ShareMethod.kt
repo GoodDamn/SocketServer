@@ -49,7 +49,7 @@ fun ByteArray.sum(
     length: Int = size
 ): Int {
     var sum = 0
-    for (i in offset until length) {
+    for (i in offset until length+offset) {
         sum += inp[i]
     }
     return sum

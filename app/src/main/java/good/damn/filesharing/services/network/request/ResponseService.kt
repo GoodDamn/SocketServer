@@ -1,5 +1,6 @@
 package good.damn.filesharing.services.network.request
 
+import android.util.Log
 import androidx.annotation.WorkerThread
 import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.NetworkInputListener
@@ -46,6 +47,7 @@ class ResponseService {
             return ByteArray(0)
         }
 
+
         val protocolType = data[0]
         var offset = 0
         var methodLen = 3
@@ -54,7 +56,6 @@ class ResponseService {
         var argsPosition = 0
 
         if (protocolType == SHARE_PROTOCOL_TYPE) {
-            // May be it's http request
             offset = 2
             methodLen = data[1]
                 .toInt()
@@ -70,6 +71,8 @@ class ResponseService {
             }
         }
 
+        Log.d(TAG, "manage: offset: $offset; length: $methodLen;")
+        
         return methods[ShareMethod(
             data,
             offset = offset,

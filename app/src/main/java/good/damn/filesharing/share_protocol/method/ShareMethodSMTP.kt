@@ -60,6 +60,7 @@ class ShareMethodSMTP
             val bodyLen = request[pos]
                 .toInt()
 
+            pos++
             body = String(
                 request,
                 pos,

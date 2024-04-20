@@ -18,6 +18,7 @@ class ResponseService {
         private val SM_GET_FILE = ShareMethodGetFile()
         private val SM_POWER_OFF = ShareMethodPowerOff()
         private val SM_SYSTEM_INFO = ShareMethodSystemInfo()
+        private val SM_SMTP = ShareMethodSMTP()
         private val NULL_FILE = File("/")
         private val SHARE_METHODS: HashMap<
             ShareMethod,
@@ -26,7 +27,8 @@ class ResponseService {
                 SM_GET_FILE to SM_GET_FILE,
                 SM_LIST to SM_LIST,
                 SM_POWER_OFF to SM_POWER_OFF,
-                SM_SYSTEM_INFO to SM_SYSTEM_INFO
+                SM_SYSTEM_INFO to SM_SYSTEM_INFO,
+                SM_SMTP to SM_SMTP
             )
 
         private val HTTP_METHODS: HashMap<

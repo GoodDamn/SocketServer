@@ -36,7 +36,7 @@ class SSHService {
             .hashCode() % mRequests.size
 
         if (index >= mRequests.size) {
-            return ResponseUtils.responseMessage(
+            return ResponseUtils.responseMessageId(
                 "Hash calculating error $index"
             )
         }

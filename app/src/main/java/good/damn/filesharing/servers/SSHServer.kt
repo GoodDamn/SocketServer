@@ -83,7 +83,7 @@ class SSHServer(
 
             responseToUser(
                 remoteAddress,
-                ResponseUtils.responseMessage(
+                ResponseUtils.responseMessageId(
                     "Invalid credentials"
                 )
             )
@@ -102,7 +102,7 @@ class SSHServer(
 
                 responseToUser(
                     remoteAddress,
-                    ResponseUtils.responseMessage(
+                    ResponseUtils.responseMessageId(
                         "Invalid RSA Key"
                     )
                 )

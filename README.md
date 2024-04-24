@@ -3,12 +3,16 @@
 Supports requests/responses with: 
 * HTTP
 * Share protocol (Developed for the app)
+* SMTP Support
+* SSH simulation (Runtime class doesn't work because Android security)
+
+P.S. For SSH exists some self methods which simulates, like you write to console and execute it
+
+* mdk 'folder name' - makes a dir in user's directory
 
 Future ideas:
 * SSL TCP
-* SMTP support
 * VPN simulation
-* VPS simulation
 
 Demo: Processing http-request
 

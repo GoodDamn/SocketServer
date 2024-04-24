@@ -1,4 +1,4 @@
-# Multi-Server; [Desktop version](https://github.com/GoodDamn/DesktopServer) [Client side](https://github.com/GoodDamn/SocketClient);
+# Multi-Server; [Desktop version](https://github.com/GoodDamn/DesktopServer); [Client side](https://github.com/GoodDamn/SocketClient);
 
 Supports requests/responses with: 
 * HTTP

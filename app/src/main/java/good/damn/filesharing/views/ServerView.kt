@@ -9,9 +9,10 @@ import android.widget.TextView
 import good.damn.clientsocket.services.network.HotspotServiceCompat
 import good.damn.filesharing.servers.BaseServer
 import good.damn.filesharing.controllers.msgrs.Messenger
+import good.damn.filesharing.listeners.network.server.ServerListener
 import good.damn.filesharing.listeners.network.service.HotspotServiceListener
 
-class ServerView<DELEGATE>(
+class ServerView<DELEGATE: ServerListener >(
     private val mServers: Array<BaseServer<DELEGATE>>,
     context: Context
 ): LinearLayout(

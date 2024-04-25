@@ -15,8 +15,8 @@ import good.damn.filesharing.views.ServerView
 import java.io.File
 
 class SSHServerActivity
-: AppCompatActivity(
-), SSHServerListener {
+: AppCompatActivity(),
+SSHServerListener {
 
     private var mServerView: ServerView<SSHServerListener>? = null
 
@@ -89,6 +89,18 @@ class SSHServerActivity
 
         mServerView?.addMessage(
             error
+        )
+    }
+
+    override fun onCreateServer() {
+        mServerView?.addMessage(
+            "Server started!"
+        )
+    }
+
+    override fun onDropServer() {
+        mServerView?.addMessage(
+            "Server stopped"
         )
     }
 

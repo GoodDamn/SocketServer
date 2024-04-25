@@ -3,6 +3,7 @@ package good.damn.filesharing.servers
 import android.util.Log
 import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.server.ServerListener
+import good.damn.filesharing.listeners.network.server.TCPServerListener
 import good.damn.filesharing.services.network.request.ResponseService
 import java.io.ByteArrayOutputStream
 import java.net.ServerSocket
@@ -11,7 +12,7 @@ import java.net.SocketTimeoutException
 
 open class TCPServer(
     port: Int
-): BaseServer<ServerListener>(
+): BaseServer<TCPServerListener>(
     port
 ), Runnable {
 
@@ -21,7 +22,7 @@ open class TCPServer(
 
     private val mResponseService = ResponseService()
 
-    final override var delegate: ServerListener?
+    final override var delegate: TCPServerListener?
         get() = super.delegate
         set(value) {
             mResponseService.delegate = value
@@ -32,9 +33,7 @@ open class TCPServer(
         mServer = onCreateSocket()
         mServer?.reuseAddress = true
         
-        delegate?.onCreateServer(
-            mServer!!
-        )
+        delegate?.onCreateServer()
 
         while (listen(Application.BUFFER_MB)) {
             // Listen...
@@ -66,10 +65,14 @@ open class TCPServer(
         buffer: ByteArray
     ): Boolean {
 
-        delegate?.onStartListen()
+        delegate?.onListen()
         try {
             val clientSocket = mServer!!.accept()
             clientSocket.soTimeout = 13000
+
+            delegate?.onAcceptClient(
+                clientSocket
+            )
 
             val out = clientSocket.getOutputStream()
             val inp = clientSocket.getInputStream()
@@ -87,11 +90,6 @@ open class TCPServer(
 
                 n = inp.read(buffer)
                 Log.d(TAG, "listen: READ $n ${outArr.size()}")
-                delegate?.onListenChunkData(
-                    buffer,
-                    n,
-                    inp.available()
-                )
 
                 if (n == -1) {
                     break
@@ -121,7 +119,7 @@ open class TCPServer(
                 response
             )
 
-            delegate?.onDropClient(
+            delegate?.onDisconnectClient(
                 clientSocket
             )
 

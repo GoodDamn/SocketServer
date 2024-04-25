@@ -34,7 +34,7 @@ open class TCPServer(
         mServer?.reuseAddress = true
         
         delegate?.onCreateServer()
-
+        Log.d(TAG, "run: ")
         while (listen(Application.BUFFER_MB)) {
             // Listen...
         }

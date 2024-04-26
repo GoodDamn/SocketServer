@@ -20,6 +20,16 @@ class ByteUtils {
             )
         }
 
+        fun integer(
+            inp: ByteArray,
+            offset: Int
+        ): Int {
+            return (inp[offset].toInt() and 0xff shl 24) or
+                (inp[offset+1].toInt() and 0xff shl 16) or
+                (inp[offset+2].toInt() and 0xff shl 8) or
+                (inp[offset+3].toInt() and 0xff)
+        }
+
         fun integer(i: Int): ByteArray {
             return byteArrayOf(
                 ((i shr 24) and 0xff).toByte(),

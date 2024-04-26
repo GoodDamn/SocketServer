@@ -3,7 +3,7 @@ package good.damn.filesharing.services.network.request
 import android.util.Log
 import androidx.annotation.WorkerThread
 import good.damn.filesharing.Application
-import good.damn.filesharing.listeners.network.NetworkInputListener
+import good.damn.filesharing.listeners.network.server.TCPServerListener
 import good.damn.filesharing.share_protocol.interfaces.Responsible
 import good.damn.filesharing.share_protocol.method.*
 import good.damn.filesharing.utils.ResponseUtils
@@ -39,7 +39,7 @@ class ResponseService {
             )
     }
 
-    var delegate: NetworkInputListener? = null
+    var delegate: TCPServerListener? = null
 
     @WorkerThread
     fun manage(

@@ -26,17 +26,32 @@ class SSHServer(
 
     private val mService = SSHService()
 
+    private var mServerSocket: DatagramSocket? = null
+
     override fun serverType(): String {
         return "SSH"
     }
 
     override fun start() {
+
+        if (mThread?.isInterrupted ?: false) {
+            return
+        }
+
+        mServerSocket = DatagramSocket(
+            port
+        )
         mThread = Thread(this)
         mThread?.start()
     }
 
     override fun stop() {
+        if (mThread?.isInterrupted ?: true) {
+            return
+        }
         mThread?.interrupt()
+        mServerSocket?.close()
+        delegate?.onDropServer()
     }
 
     override fun run() {
@@ -45,24 +60,20 @@ class SSHServer(
 
     private fun listen(): Boolean {
 
-        val socket = DatagramSocket(
-            port
-        )
+        delegate?.onCreateServer()
 
-        socket.reuseAddress = true
+        mServerSocket?.reuseAddress = true
 
         val packet = DatagramPacket(
             mBuffer,
             mBuffer.size
         )
 
-        socket.receive(
+        mServerSocket?.receive(
             packet
         )
 
         val remoteAddress = packet.address
-
-        socket.close()
 
         val auth = SSHAuth
             .authenticate(
@@ -83,7 +94,7 @@ class SSHServer(
 
             responseToUser(
                 remoteAddress,
-                ResponseUtils.responseMessage(
+                ResponseUtils.responseMessageId(
                     "Invalid credentials"
                 )
             )
@@ -102,7 +113,7 @@ class SSHServer(
 
                 responseToUser(
                     remoteAddress,
-                    ResponseUtils.responseMessage(
+                    ResponseUtils.responseMessageId(
                         "Invalid RSA Key"
                     )
                 )

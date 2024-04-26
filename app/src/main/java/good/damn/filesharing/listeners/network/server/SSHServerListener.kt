@@ -1,6 +1,7 @@
 package good.damn.filesharing.listeners.network.server
 
-interface SSHServerListener {
+interface SSHServerListener
+    : ServerListener {
     fun onAuth(
         user: String
     )

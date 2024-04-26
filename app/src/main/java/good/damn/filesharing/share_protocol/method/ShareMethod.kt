@@ -26,7 +26,7 @@ open class ShareMethod(
         userFolder: File
     ):ByteArray {
         Log.d(TAG, "response: NO IMPLEMENTATION")
-        return ResponseUtils.responseMessage(
+        return ResponseUtils.responseMessageId(
             "No implementation for this method"
         )
     }

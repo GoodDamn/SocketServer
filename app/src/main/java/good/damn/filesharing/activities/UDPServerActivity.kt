@@ -53,4 +53,16 @@ class UDPServerActivity
             data.contentToString()
         )
     }
+
+    override fun onCreateServer() {
+        mServerView.addMessage(
+            "Server started!"
+        )
+    }
+
+    override fun onDropServer() {
+        mServerView.addMessage(
+            "Server stopped"
+        )
+    }
 }

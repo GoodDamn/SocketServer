@@ -13,6 +13,7 @@ import good.damn.filesharing.servers.TCPServer
 import good.damn.filesharing.controllers.launchers.ContentLauncher
 import good.damn.filesharing.listeners.activityResult.ActivityResultCopyListener
 import good.damn.filesharing.listeners.network.server.ServerListener
+import good.damn.filesharing.listeners.network.server.TCPServerListener
 import good.damn.filesharing.listeners.network.service.HotspotServiceListener
 import good.damn.filesharing.servers.BaseServer
 import good.damn.filesharing.servers.SSLServer
@@ -23,13 +24,12 @@ import java.net.Socket
 
 class TCPServerActivity
     : AppCompatActivity(),
-    ServerListener,
-    HotspotServiceListener,
+    TCPServerListener,
     ActivityResultCopyListener {
 
     private val TAG = "TCPServerActivity"
 
-    private lateinit var mServerView: ServerView<ServerListener>
+    private lateinit var mServerView: ServerView<TCPServerListener>
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(
@@ -93,9 +93,7 @@ class TCPServerActivity
     }
 
     @WorkerThread
-    override fun onCreateServer(
-        server: ServerSocket
-    ) {
+    override fun onCreateServer() {
         Log.d(TAG, "onCreateServer: ")
         mServerView.addMessage(
             "Server started!"
@@ -103,53 +101,9 @@ class TCPServerActivity
     }
 
     @WorkerThread
-    override fun onStartListen() {
+    override fun onListen() {
         mServerView.addMessage(
             "Listen clients..."
-        )
-    }
-
-    @WorkerThread
-    override fun onListenChunkData(
-        data: ByteArray,
-        readBytes: Int,
-        last: Int
-    ) {
-        mServerView.addMessage(
-            "$readBytes $last"
-        )
-    }
-
-    @WorkerThread
-    override fun onGetFile(
-        data: ByteArray,
-        offset: Int,
-        fileName: String
-    ) {
-        val msg = FileUtils.writeToDoc(
-            fileName,
-            data,
-            offset
-        )
-
-        if (msg != null) {
-            mServerView.addMessage(
-                "SAVE PROCESS::EXCEPTION\n$msg"
-            )
-            return
-        }
-
-        mServerView.addMessage(
-            "$fileName is saved to Documents"
-        )
-    }
-
-    @WorkerThread
-    override fun onGetText(
-        msg: String
-    ) {
-        mServerView.addMessage(
-            msg
         )
     }
 
@@ -167,7 +121,16 @@ class TCPServerActivity
     }
 
     @WorkerThread
-    override fun onDropClient(
+    override fun onAcceptClient(
+        socket: Socket
+    ) {
+        mServerView.addMessage(
+            "${socket.remoteSocketAddress} accepted"
+        )
+    }
+
+    @WorkerThread
+    override fun onDisconnectClient(
         socket: Socket
     ) {
         mServerView.addMessage(
@@ -180,12 +143,6 @@ class TCPServerActivity
         mServerView.addMessage(
             "Server is dropped"
         )
-    }
-
-    override fun onGetHotspotIP(
-        addressList: String
-    ) {
-
     }
 
     override fun onSuccessCopyFile(

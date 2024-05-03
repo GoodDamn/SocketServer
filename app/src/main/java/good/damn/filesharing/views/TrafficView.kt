@@ -3,7 +3,7 @@ package good.damn.filesharing.views
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.view.View
-import good.damn.filesharing.views.renderer.TrafficRenderer
+import good.damn.filesharing.opengl.renderer.TrafficRenderer
 
 class TrafficView(
     context: Context

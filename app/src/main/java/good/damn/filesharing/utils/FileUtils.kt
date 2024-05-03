@@ -10,6 +10,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
+import java.nio.charset.Charset
 
 class FileUtils {
 
@@ -27,8 +29,7 @@ class FileUtils {
             val inp = context.contentResolver
                 .openInputStream(uri) ?: return null
 
-            val data = NetworkUtils
-                .readBytes(inp)
+            val data = readBytes(inp)
 
             inp.close()
 
@@ -40,20 +41,15 @@ class FileUtils {
             buffer: ByteArray
         ): ByteArray {
             val fis = FileInputStream(file)
-            val baos = ByteArrayOutputStream()
-            var n: Int
-            while(true) {
-                n = fis.read(buffer)
-                if (n == -1) {
-                    break
-                }
-                baos.write(buffer,0,n)
-            }
-            val res = baos.toByteArray()
-            baos.close()
+
+            val d = readBytes(
+                fis,
+                buffer
+            )
+
             fis.close()
 
-            return res
+            return d
         }
 
         fun fromDoc(
@@ -70,8 +66,7 @@ class FileUtils {
 
             val inps = FileInputStream(file)
 
-            val b = NetworkUtils
-                .readBytes(inps)
+            val b = readBytes(inps)
 
             inps.close()
 
@@ -207,6 +202,30 @@ class FileUtils {
         ): File {
             return File("${getDocumentsFolder()}/ssh/${user}")
         }
+
+        fun readBytes(
+            inp: InputStream,
+            buffer: ByteArray = Application.BUFFER_MB
+        ): ByteArray {
+
+            val outArr = ByteArrayOutputStream()
+
+            var n: Int
+
+            while (true) {
+                n = inp.read(buffer)
+                if (n == -1) {
+                    break
+                }
+                outArr.write(buffer,0,n)
+            }
+
+            val data = outArr.toByteArray()
+            outArr.close()
+
+            return data
+        }
+
     }
 
 }

@@ -1,4 +1,4 @@
-package good.damn.filesharing.views.renderer
+package good.damn.filesharing.opengl.renderer
 
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
@@ -33,9 +33,10 @@ class TrafficRenderer
     private lateinit var mIndicesBuffer: ShortBuffer
 
     private var mShaderFragment = """
-        
+        precision mediump float;
         void main() {
-            gl_FragColor = vec4(1.0,1.0,0.0,1.0);
+            float lin = gl_FragCoord.x / 750.0;
+            gl_FragColor = vec4(0.5,0.0,lin,1.0);
         }
     """.trimIndent()
 
@@ -111,10 +112,6 @@ class TrafficRenderer
 
         glUseProgram(
             mProgram
-        )
-
-        glEnable(
-            GL_TRIANGLES
         )
     }
 

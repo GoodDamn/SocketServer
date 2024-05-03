@@ -7,6 +7,8 @@ import good.damn.filesharing.servers.SSLServer
 import good.damn.filesharing.servers.TCPServer
 import java.net.ServerSocket
 import java.nio.Buffer
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.charset.Charset
 import java.security.KeyStore
 import javax.net.ssl.KeyManagerFactory
@@ -17,6 +19,8 @@ class Application
 : android.app.Application() {
 
     companion object {
+        val BYTE_ORDER = ByteOrder
+            .nativeOrder()
         val BUFFER_MB = ByteArray(1024*1024)
         val CHARSET = Charset.forName("UTF-8")
         val CHARSET_ASCII = Charset.forName("US-ASCII")

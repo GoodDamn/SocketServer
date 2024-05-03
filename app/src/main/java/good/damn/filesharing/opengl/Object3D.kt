@@ -2,6 +2,7 @@ package good.damn.filesharing.opengl
 
 import android.content.Context
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.Exception
 import java.nio.Buffer
@@ -13,13 +14,36 @@ import java.nio.ShortBuffer
 import java.util.Vector
 
 class Object3D(
-    val vertices: FloatBuffer,
-    val indices: ShortBuffer
+    val vertices: FloatArray,
+    val indices: ShortArray
 ) {
     companion object {
+
+        fun createFromAssets(
+            path: String,
+            context: Context
+        ): Object3D {
+            return getObject(
+                context.assets.open(
+                    path
+                )
+            )
+        }
+
         fun createFromResources(
             resourceId: Int,
             context: Context
+        ): Object3D {
+            return getObject(
+                context.resources.openRawResource(
+                    resourceId
+                )
+            )
+        }
+
+
+        private fun getObject(
+            inp: InputStream
         ): Object3D {
             val vertices: Vector<Float> = Vector()
             val normals: Vector<Float> = Vector()
@@ -30,9 +54,7 @@ class Object3D(
 
             try {
                 val inStream = InputStreamReader(
-                    context.resources.openRawResource(
-                        resourceId
-                    )
+                    inp
                 )
                 reader = BufferedReader(inStream)
 
@@ -108,23 +130,9 @@ class Object3D(
                 mNormals[normIndex++] = normals[i]
             }
 
-            val byteBuffer =
-                ByteBuffer.allocateDirect(mVertices.size * 4)
-            byteBuffer.order(ByteOrder.nativeOrder())
-            val mVertexBuffer = byteBuffer.asFloatBuffer()
-            mVertexBuffer.put(mVertices)
-            mVertexBuffer.position(0)
-
-            val drawByteBuffer: ByteBuffer =
-                ByteBuffer.allocateDirect(mIndices.size * 2)
-            drawByteBuffer.order(ByteOrder.nativeOrder())
-            val mIndicesBuffer = drawByteBuffer.asShortBuffer()
-            mIndicesBuffer.put(mIndices)
-            mIndicesBuffer.position(0)
-
             return Object3D(
-                mVertexBuffer,
-                mIndicesBuffer
+                mVertices,
+                mIndices
             )
         }
 

@@ -1,7 +1,9 @@
 package good.damn.filesharing.opengl.entities
 
 import android.opengl.GLES30.*
+import android.opengl.Matrix
 import good.damn.filesharing.Application
+import good.damn.filesharing.opengl.renderer.TrafficRenderer
 import java.nio.ByteBuffer
 
 open class Entity(
@@ -12,10 +14,12 @@ open class Entity(
 
     private val mAttrPosition: Int
     /*private val mAttrTexCoord: Int
-    private val mAttrNormal: Int
+    private val mAttrNormal: Int*/
 
     private val mUniformModelView: Int
-    private val mUniformProject: Int*/
+    private val mUniformProject: Int
+
+    private val model = FloatArray(16)
 
     private val mIndicesCount = indices.size
 
@@ -65,7 +69,7 @@ open class Entity(
             0
         )
 
-        /*mUniformModelView = glGetUniformLocation(
+        mUniformModelView = glGetUniformLocation(
             program,
             "model"
         )
@@ -73,7 +77,7 @@ open class Entity(
         mUniformProject = glGetUniformLocation(
             program,
             "projection"
-        )*/
+        )
 
         glGenVertexArrays(
             1,
@@ -181,9 +185,21 @@ open class Entity(
             GL_ELEMENT_ARRAY_BUFFER,
             0
         )
+
+        Matrix.setIdentityM(
+            model,
+            0
+        )
     }
 
     final fun draw() {
+        TrafficRenderer
+            .CAMERA.draw(
+                mUniformProject,
+                mUniformModelView,
+                model
+            )
+
         glBindVertexArray(
             mVertexArray[0]
         )

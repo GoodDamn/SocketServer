@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.EntityIterator
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import android.opengl.Matrix
 import good.damn.filesharing.opengl.Mesh
 import good.damn.filesharing.opengl.Object3D
+import good.damn.filesharing.opengl.camera.BaseCamera
 import good.damn.filesharing.opengl.entities.Entity
 import good.damn.filesharing.opengl.entities.primitives.Plane
 import java.nio.ByteBuffer
@@ -19,17 +21,22 @@ class TrafficRenderer(
     private val mContext: Context
 ): GLSurfaceView.Renderer {
 
+    companion object {
+        lateinit var CAMERA: BaseCamera
+    }
+
     private var mWidth = 0
     private var mHeight = 0
 
     private var mShaderFragment = """
         precision mediump float;
-        varying lowp vec4 posIn;
+        varying lowp vec3 posOut;
+        
         void main() {
             gl_FragColor = vec4(
-                posIn.x,
-                posIn.y,
-                posIn.z,
+                1.0,
+                1.0,
+                0.0,
                 1.0);
         }
     """.trimIndent()
@@ -37,11 +44,15 @@ class TrafficRenderer(
     private var mShaderVertex = """
         attribute vec4 position;
         
-        varying lowp vec4 posIn;
+        uniform mat4 projection;
+        uniform mat4 model;
+        
+        varying lowp vec3 posOut;
         
         void main() {
-            gl_Position = position;
-            posIn = position;
+            vec4 coord = model * position;
+            gl_Position = coord;
+            posOut = coord.xyz;
         }
     """.trimIndent()
 
@@ -103,6 +114,12 @@ class TrafficRenderer(
     ) {
         mWidth = width
         mHeight = height
+
+        CAMERA = BaseCamera(
+            width,
+            height
+        )
+
     }
 
     override fun onDrawFrame(p0: GL10?) {

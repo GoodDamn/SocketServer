@@ -81,7 +81,8 @@ class FileUtils {
         fun writeToDoc(
             fileName: String,
             data: ByteArray,
-            offset: Int = 0
+            offset: Int = 0,
+            length: Int = data.size
         ): String? {
 
             val docPath = getDocumentsFolder()
@@ -92,14 +93,16 @@ class FileUtils {
             return writeFile(
                 file,
                 data,
-                offset
+                offset,
+                length
             )
         }
 
         private fun writeFile(
             file: File,
             data: ByteArray,
-            offset: Int = 0
+            offset: Int = 0,
+            length: Int = data.size
         ): String? {
             return try {
                 if (!file.exists() && file.createNewFile()) {
@@ -107,7 +110,7 @@ class FileUtils {
                 }
 
                 val fos = FileOutputStream(file)
-                fos.write(data, offset, data.size - offset)
+                fos.write(data, offset, length)
                 fos.close()
                 null
             } catch (e: IOException) {

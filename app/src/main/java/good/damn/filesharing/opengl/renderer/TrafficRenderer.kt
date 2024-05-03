@@ -20,16 +20,24 @@ class TrafficRenderer
 
     private var mShaderFragment = """
         precision mediump float;
+        varying lowp vec4 posIn;
         void main() {
-            float lin = gl_FragCoord.x / 750.0;
-            gl_FragColor = vec4(0.5,0.0,lin,1.0);
+            gl_FragColor = vec4(
+                posIn.x,
+                posIn.y,
+                posIn.z,
+                1.0);
         }
     """.trimIndent()
 
     private var mShaderVertex = """
         attribute vec4 position;
+        
+        varying lowp vec4 posIn;
+        
         void main() {
             gl_Position = position;
+            posIn = position;
         }
     """.trimIndent()
 
@@ -44,40 +52,20 @@ class TrafficRenderer
 
         mProgram = glCreateProgram()
 
-        val shaderVert = glCreateShader(
-            GL_VERTEX_SHADER
-        )
-
-        glShaderSource(
-            shaderVert,
-            mShaderVertex
-        )
-
-        val shaderFrag = glCreateShader(
-            GL_FRAGMENT_SHADER
-        )
-
-        glShaderSource(
-            shaderFrag,
-            mShaderFragment
-        )
-
-        glCompileShader(
-            shaderVert
-        )
-
-        glCompileShader(
-            shaderFrag
+        glAttachShader(
+            mProgram,
+            createShader(
+                GL_VERTEX_SHADER,
+                mShaderVertex
+            )
         )
 
         glAttachShader(
             mProgram,
-            shaderVert
-        )
-
-        glAttachShader(
-            mProgram,
-            shaderFrag
+            createShader(
+                GL_FRAGMENT_SHADER,
+                mShaderFragment
+            )
         )
 
         glLinkProgram(
@@ -112,8 +100,8 @@ class TrafficRenderer
 
         glClearColor(
             0f,
-            1f,
-            0f,
+            0.1f,
+            0.1f,
             1f
         )
 
@@ -127,6 +115,26 @@ class TrafficRenderer
         mEntities.forEach {
             it.draw()
         }
-
     }
+
+    private fun createShader(
+        type: Int,
+        source: String
+    ): Int {
+        val shader = glCreateShader(
+            type
+        )
+
+        glShaderSource(
+            shader,
+            source
+        )
+
+        glCompileShader(
+            shader
+        )
+
+        return shader
+    }
+
 }

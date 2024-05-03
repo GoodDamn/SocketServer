@@ -2,6 +2,7 @@ package good.damn.filesharing.opengl
 
 import android.content.Context
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.Exception
 import java.nio.Buffer
@@ -17,9 +18,32 @@ class Object3D(
     val indices: ShortArray
 ) {
     companion object {
+
+        fun createFromAssets(
+            path: String,
+            context: Context
+        ): Object3D {
+            return getObject(
+                context.assets.open(
+                    path
+                )
+            )
+        }
+
         fun createFromResources(
             resourceId: Int,
             context: Context
+        ): Object3D {
+            return getObject(
+                context.resources.openRawResource(
+                    resourceId
+                )
+            )
+        }
+
+
+        private fun getObject(
+            inp: InputStream
         ): Object3D {
             val vertices: Vector<Float> = Vector()
             val normals: Vector<Float> = Vector()
@@ -30,9 +54,7 @@ class Object3D(
 
             try {
                 val inStream = InputStreamReader(
-                    context.resources.openRawResource(
-                        resourceId
-                    )
+                    inp
                 )
                 reader = BufferedReader(inStream)
 

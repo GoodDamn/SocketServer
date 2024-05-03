@@ -1,8 +1,11 @@
 package good.damn.filesharing.opengl.renderer
 
+import android.content.Context
 import android.content.EntityIterator
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import good.damn.filesharing.opengl.Mesh
+import good.damn.filesharing.opengl.Object3D
 import good.damn.filesharing.opengl.entities.Entity
 import good.damn.filesharing.opengl.entities.primitives.Plane
 import java.nio.ByteBuffer
@@ -12,8 +15,9 @@ import java.nio.ShortBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class TrafficRenderer
-: GLSurfaceView.Renderer {
+class TrafficRenderer(
+    private val mContext: Context
+): GLSurfaceView.Renderer {
 
     private var mWidth = 0
     private var mHeight = 0
@@ -77,7 +81,11 @@ class TrafficRenderer
         )
 
         mEntities = arrayOf(
-            Plane(
+            Mesh(
+                Object3D.createFromAssets(
+                    "objs/Box.obj",
+                    mContext
+                ),
                 mProgram
             )
         )

@@ -13,8 +13,8 @@ import java.nio.ShortBuffer
 import java.util.Vector
 
 class Object3D(
-    val vertices: FloatBuffer,
-    val indices: ShortBuffer
+    val vertices: FloatArray,
+    val indices: ShortArray
 ) {
     companion object {
         fun createFromResources(
@@ -108,23 +108,9 @@ class Object3D(
                 mNormals[normIndex++] = normals[i]
             }
 
-            val byteBuffer =
-                ByteBuffer.allocateDirect(mVertices.size * 4)
-            byteBuffer.order(ByteOrder.nativeOrder())
-            val mVertexBuffer = byteBuffer.asFloatBuffer()
-            mVertexBuffer.put(mVertices)
-            mVertexBuffer.position(0)
-
-            val drawByteBuffer: ByteBuffer =
-                ByteBuffer.allocateDirect(mIndices.size * 2)
-            drawByteBuffer.order(ByteOrder.nativeOrder())
-            val mIndicesBuffer = drawByteBuffer.asShortBuffer()
-            mIndicesBuffer.put(mIndices)
-            mIndicesBuffer.position(0)
-
             return Object3D(
-                mVertexBuffer,
-                mIndicesBuffer
+                mVertices,
+                mIndices
             )
         }
 

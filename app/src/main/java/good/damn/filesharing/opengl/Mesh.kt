@@ -1,21 +1,15 @@
 package good.damn.filesharing.opengl
 
 import android.content.Context
+import good.damn.filesharing.opengl.entities.Entity
 
 class Mesh(
-    context: Context,
-    resourceId: Int
-): Entity() {
-
-    private val object3D: Object3D
-
-    init {
-
-        object3D = Object3D
-            .createFromResources(
-                resourceId,
-                context
-            )
-    }
+    obj: Object3D,
+    program: Int
+): Entity(
+    obj.vertices,
+    obj.indices,
+    program
+) {
 
 }

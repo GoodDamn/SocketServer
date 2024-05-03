@@ -83,12 +83,17 @@ class TrafficRenderer(
         mEntities = arrayOf(
             Mesh(
                 Object3D.createFromAssets(
-                    "objs/Box.obj",
+                    "objs/Sphere.obj",
                     mContext
                 ),
                 mProgram
             )
         )
+
+        glEnable(
+            GL_DEPTH_TEST
+        )
+
     }
 
     override fun onSurfaceChanged(

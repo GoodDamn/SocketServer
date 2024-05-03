@@ -3,19 +3,30 @@ package good.damn.filesharing.opengl.entities
 import android.opengl.GLES30.*
 import good.damn.filesharing.Application
 import java.nio.ByteBuffer
-import java.nio.FloatBuffer
-import java.nio.ShortBuffer
 
 open class Entity(
     vertices: FloatArray,
     indices: ShortArray,
-    private val mProgram: Int
+    program: Int
 ) {
 
-    final internal val mVertexBuffer: FloatBuffer
-    final internal val mIndicesBuffer: ShortBuffer
+    private val mAttrPosition: Int
+    /*private val mAttrTexCoord: Int
+    private val mAttrNormal: Int
+
+    private val mUniformModelView: Int
+    private val mUniformProject: Int*/
+
+    private val mIndicesCount = indices.size
+
+    private var mStride = 3 * 4
+
+    private val mVertexArray = intArrayOf(
+        1
+    )
 
     init {
+
         val vertByte = ByteBuffer
             .allocateDirect(
                 vertices.size * 4
@@ -34,56 +45,181 @@ open class Entity(
             Application.BYTE_ORDER
         )
 
-        mVertexBuffer = vertByte
+        val bufVert = vertByte
             .asFloatBuffer()
 
-        mIndicesBuffer = indexByte
+        val bufIndex = indexByte
             .asShortBuffer()
 
-        mVertexBuffer.put(
+        bufVert.put(
             vertices
         )
-        mVertexBuffer.position(
+        bufVert.position(
             0
         )
 
-        mIndicesBuffer.put(
+        bufIndex.put(
             indices
         )
-        mIndicesBuffer.position(
+        bufIndex.position(
             0
         )
 
-    }
+        /*mUniformModelView = glGetUniformLocation(
+            program,
+            "model"
+        )
 
-    final fun draw() {
-        val pos = glGetAttribLocation(
-            mProgram,
+        mUniformProject = glGetUniformLocation(
+            program,
+            "projection"
+        )*/
+
+        glGenVertexArrays(
+            1,
+            mVertexArray,
+            0
+        )
+
+        glBindVertexArray(
+            mVertexArray[0]
+        )
+
+        // Generate vertex buffer
+
+        val idVertex = intArrayOf(
+            1
+        )
+
+        glGenBuffers(
+            1,
+            idVertex,
+            0
+        )
+
+        glBindBuffer(
+            GL_ARRAY_BUFFER,
+            idVertex[0]
+        )
+
+        glBufferData(
+            GL_ARRAY_BUFFER,
+            vertices.size * 4,
+            bufVert,
+            GL_STATIC_DRAW
+        )
+
+        /*mAttrTexCoord = glGetAttribLocation(
+            program,
+            "texCoordIn"
+        )
+
+        mAttrNormal = glGetAttribLocation(
+            program,
+            "normalIn"
+        )*/
+
+        mAttrPosition = glGetAttribLocation(
+            program,
             "position"
         )
 
-        glEnableVertexAttribArray(
-            pos
+        // Generate index buffer
+
+        val idIndex = intArrayOf(
+            1
         )
 
-        glVertexAttribPointer(
-            pos,
-            2,
-            GL_FLOAT,
-            false,
-            8,
-            mVertexBuffer
+        glGenBuffers(
+            1,
+            idIndex,
+            0
+        )
+
+        glBindBuffer(
+            GL_ELEMENT_ARRAY_BUFFER,
+            idIndex[0]
+        )
+
+        glBufferData(
+            GL_ELEMENT_ARRAY_BUFFER,
+            indices.size * 2,
+            bufIndex,
+            GL_STATIC_DRAW
+        )
+
+        // Enable vertex attrib
+
+        enableVertex(
+            mAttrPosition,
+            0,
+            3
+        )
+
+        /*enableVertex(
+            mAttrTexCoord,
+                3 * 4,
+            2
+        )*/
+
+        /*enableVertex(
+            mAttrNormal,
+            5 * 4,
+            3
+        )*/
+
+        glBindVertexArray(
+            0
+        )
+
+        glBindBuffer(
+            GL_ARRAY_BUFFER,
+            0
+        )
+
+        glBindBuffer(
+            GL_ELEMENT_ARRAY_BUFFER,
+            0
+        )
+    }
+
+    final fun draw() {
+        glBindVertexArray(
+            mVertexArray[0]
         )
 
         glDrawElements(
             GL_TRIANGLES,
-            mIndicesBuffer.capacity(),
+            mIndicesCount,
             GL_UNSIGNED_SHORT,
-            mIndicesBuffer
+            0
         )
 
-        glDisableVertexAttribArray(
-            pos
+        glBindVertexArray(
+            0
         )
     }
+
+
+    private fun enableVertex(
+        attrib: Int,
+        offset: Int,
+        size: Int
+    ) {
+
+        glEnableVertexAttribArray(
+            attrib
+        )
+
+        glVertexAttribPointer(
+            attrib,
+            size,
+            GL_FLOAT,
+            false,
+            mStride,
+            offset
+        )
+
+    }
+
 }

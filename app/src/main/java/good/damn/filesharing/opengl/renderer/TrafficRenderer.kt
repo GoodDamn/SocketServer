@@ -17,9 +17,8 @@ import java.nio.ShortBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class TrafficRenderer(
-    private val mContext: Context
-): GLSurfaceView.Renderer {
+class TrafficRenderer
+: GLSurfaceView.Renderer {
 
     companion object {
         lateinit var CAMERA: BaseCamera
@@ -94,8 +93,7 @@ class TrafficRenderer(
         mEntities = arrayOf(
             Mesh(
                 Object3D.createFromAssets(
-                    "objs/Sphere.obj",
-                    mContext
+                    "objs/Sphere.obj"
                 ),
                 mProgram
             )

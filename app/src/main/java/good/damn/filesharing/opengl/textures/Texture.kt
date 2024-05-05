@@ -10,7 +10,9 @@ class Texture(
     assetPath: String
 ) {
 
-    private var mId = 0
+    private var mId = intArrayOf(
+        1
+    )
     private var mUniformTexture = 0
 
     init {
@@ -25,6 +27,40 @@ class Texture(
         )
 
 
+        glGenTextures(
+            1,
+            mId,
+            0
+        )
+
+        glBindTexture(
+            GL_TEXTURE_2D,
+            mId[0]
+        )
+
+        glTexParameteri(
+            GL_TEXTURE_2D,
+            GL_TEXTURE_MIN_FILTER,
+            GL_NEAREST
+        )
+
+        glTexParameteri(
+            GL_TEXTURE_2D,
+            GL_TEXTURE_MAG_FILTER,
+            GL_LINEAR
+        )
+
+        glTexParameteri(
+            GL_TEXTURE_2D,
+            GL_TEXTURE_WRAP_S,
+            GL_CLAMP_TO_EDGE
+        )
+
+        glTexParameteri(
+            GL_TEXTURE_2D,
+            GL_TEXTURE_WRAP_T,
+            GL_CLAMP_TO_EDGE
+        )
 
         GLUtils.texImage2D(
             GL_TEXTURE_2D,
@@ -53,7 +89,7 @@ class Texture(
 
         glBindTexture(
             GL_TEXTURE_2D,
-            mId
+            mId[0]
         )
 
         glUniform1i(

@@ -100,14 +100,12 @@ class Object3D(
                 }
             }
 
-            val mNormals = FloatArray(faces.size * 3)
-            val mTexCoords = FloatArray(faces.size * 2)
-            val mVertices = FloatArray(faces.size * 3)
+            val mVertices = FloatArray(faces.size * 5)
             val mIndices = ShortArray(faces.size)
 
             var texIndex = 0
             var posIndex = 0
-            var normIndex = 0
+            //var normIndex = 0
 
             for ((index, face) in faces.withIndex()) {
                 val parts = face.split("/")
@@ -120,13 +118,13 @@ class Object3D(
                 mVertices[posIndex++] = vertices[i]
 
                 i = 2 * (parts[1].toInt() - 1)
-                mTexCoords[texIndex++] = textures[i++]
-                mTexCoords[texIndex++] = 1 - textures[i]
+                mVertices[texIndex++] = textures[i++]
+                mVertices[texIndex++] = 1 - textures[i]
 
-                i = 3 * (parts[2].toInt() - 1)
+                /*i = 3 * (parts[2].toInt() - 1)
                 mNormals[normIndex++] = normals[i++]
                 mNormals[normIndex++] = normals[i++]
-                mNormals[normIndex++] = normals[i]
+                mNormals[normIndex++] = normals[i]*/
             }
 
             return Object3D(

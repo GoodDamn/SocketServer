@@ -5,6 +5,7 @@ import android.content.EntityIterator
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
+import android.util.Log
 import good.damn.filesharing.opengl.Mesh
 import good.damn.filesharing.opengl.Object3D
 import good.damn.filesharing.opengl.camera.BaseCamera
@@ -21,6 +22,7 @@ class TrafficRenderer
 : GLSurfaceView.Renderer {
 
     companion object {
+        private const val TAG = "TrafficRenderer"
         lateinit var CAMERA: BaseCamera
     }
 

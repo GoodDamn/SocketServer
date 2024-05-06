@@ -115,7 +115,7 @@ open class Entity(
 
         mAttrTexCoord = glGetAttribLocation(
             program,
-            "texCoordIn"
+            "texCoord"
         )
 
         /*mAttrNormal = glGetAttribLocation(

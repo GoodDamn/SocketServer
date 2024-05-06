@@ -99,8 +99,6 @@ class Application
     }
 
     override fun onCreate() {
-        super.onCreate()
-
         val context = applicationContext
 
         ASSETS = applicationContext
@@ -108,7 +106,7 @@ class Application
 
         RESOURCES = context
             .resources
-
+        super.onCreate()
     }
 
 }

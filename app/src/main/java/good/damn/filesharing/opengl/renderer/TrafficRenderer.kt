@@ -9,6 +9,7 @@ import android.util.Log
 import good.damn.filesharing.opengl.Mesh
 import good.damn.filesharing.opengl.Object3D
 import good.damn.filesharing.opengl.camera.BaseCamera
+import good.damn.filesharing.opengl.camera.RotationCamera
 import good.damn.filesharing.opengl.entities.Entity
 import good.damn.filesharing.opengl.entities.primitives.Plane
 import java.nio.ByteBuffer
@@ -24,12 +25,13 @@ class TrafficRenderer
 
     companion object {
         private const val TAG = "TrafficRenderer"
-        lateinit var CAMERA: BaseCamera
+        lateinit var CAMERA: RotationCamera
     }
 
-    private var mCurrentDelta = 0.0
-    private var mCurrentMillis: Long = 0
-    private var mPrevMillis: Long = 0
+    private var mSumTick = 0f
+    private var mCurrentMillis = 0L
+    private var mPrevMillis = 0L
+    private var mTick = 0f
 
     private var mWidth = 0
     private var mHeight = 0
@@ -118,6 +120,7 @@ class TrafficRenderer
             GL_DEPTH_TEST
         )
 
+        mPrevMillis = System.currentTimeMillis()
     }
 
     override fun onSurfaceChanged(
@@ -128,16 +131,12 @@ class TrafficRenderer
         mWidth = width
         mHeight = height
 
-        CAMERA = BaseCamera(
+        CAMERA = RotationCamera(
             width,
             height
         )
 
-        CAMERA.setPosition(
-            0f,
-            0f,
-            -3f
-        )
+        CAMERA.radius = 6f
     }
 
     override fun onDrawFrame(p0: GL10?) {
@@ -162,19 +161,18 @@ class TrafficRenderer
             mHeight
         )
 
-        val x = (sin(mCurrentDelta) * 3.0).toFloat()
         mEntities.forEach {
-            it.setPosition(
-                x,
-                0f,
-                0f
-            )
-
             it.draw()
         }
 
-        mCurrentDelta += (mCurrentMillis - mPrevMillis) / 4000.0
-        Log.d(TAG, "onDrawFrame: $mCurrentDelta $x")
+        mTick = (mCurrentMillis - mPrevMillis) / 1000.0f
+        
+        CAMERA.setRotation(
+            15f * sin(mSumTick),
+            1f
+        )
+
+        mSumTick += mTick
         mPrevMillis = mCurrentMillis
     }
 

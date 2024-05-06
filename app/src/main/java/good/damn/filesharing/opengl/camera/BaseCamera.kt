@@ -4,12 +4,12 @@ import android.opengl.GLES30.*
 import android.opengl.Matrix
 import good.damn.filesharing.opengl.entities.DimensionObject
 
-class BaseCamera(
+open class BaseCamera(
     width: Int,
     height: Int
 ): DimensionObject() {
 
-    private var mProjection = FloatArray(
+    private val mProjection = FloatArray(
         16
     )
 

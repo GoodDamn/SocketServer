@@ -18,6 +18,7 @@ open class Entity(
 
     private val mUniformModelView: Int
     private val mUniformProject: Int
+    private val mUniformCamera: Int
 
     private val model = FloatArray(16)
 
@@ -77,6 +78,11 @@ open class Entity(
         mUniformProject = glGetUniformLocation(
             program,
             "projection"
+        )
+
+        mUniformCamera = glGetUniformLocation(
+            program,
+            "camera"
         )
 
         glGenVertexArrays(
@@ -197,6 +203,7 @@ open class Entity(
             .CAMERA.draw(
                 mUniformProject,
                 mUniformModelView,
+                mUniformCamera,
                 model
             )
 

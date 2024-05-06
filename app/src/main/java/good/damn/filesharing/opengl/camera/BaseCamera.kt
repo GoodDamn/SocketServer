@@ -16,12 +16,7 @@ class BaseCamera(
         16
     )
 
-    private var mResult = FloatArray(
-        16
-    )
-
     init {
-
         Matrix.setIdentityM(
             model,
             0
@@ -57,6 +52,7 @@ class BaseCamera(
     fun draw(
         unifProj: Int,
         unifModel: Int,
+        unifCamera: Int,
         model: FloatArray
     ) {
         glUniformMatrix4fv(
@@ -67,12 +63,11 @@ class BaseCamera(
             0
         )
 
-        Matrix.multiplyMM(
-            mResult,
-            0,
+        glUniformMatrix4fv(
+            unifCamera,
+            1,
+            false,
             this.model,
-            0,
-            model,
             0
         )
 
@@ -80,7 +75,7 @@ class BaseCamera(
             unifModel,
             1,
             false,
-            mResult,
+            model,
             0
         )
     }

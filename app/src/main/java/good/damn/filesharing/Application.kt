@@ -1,6 +1,7 @@
 package good.damn.filesharing
 
 import android.content.Context
+import android.content.res.AssetManager
 import android.content.res.Resources
 import android.widget.Toast
 import good.damn.filesharing.servers.SSLServer
@@ -19,6 +20,10 @@ class Application
 : android.app.Application() {
 
     companion object {
+
+        lateinit var ASSETS: AssetManager
+        lateinit var RESOURCES: Resources
+
         val BYTE_ORDER = ByteOrder
             .nativeOrder()
         val BUFFER_MB = ByteArray(1024*1024)
@@ -91,6 +96,17 @@ class Application
             ).show()
         }
 
+    }
+
+    override fun onCreate() {
+        val context = applicationContext
+
+        ASSETS = applicationContext
+            .assets
+
+        RESOURCES = context
+            .resources
+        super.onCreate()
     }
 
 }

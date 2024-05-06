@@ -13,17 +13,18 @@ open class Entity(
 ) {
 
     private val mAttrPosition: Int
-    /*private val mAttrTexCoord: Int
-    private val mAttrNormal: Int*/
+    private val mAttrTexCoord: Int
+    //private val mAttrNormal: Int
 
     private val mUniformModelView: Int
     private val mUniformProject: Int
+    private val mUniformCamera: Int
 
     private val model = FloatArray(16)
 
     private val mIndicesCount = indices.size
 
-    private var mStride = 3 * 4
+    private var mStride = 5 * 4
 
     private val mVertexArray = intArrayOf(
         1
@@ -79,6 +80,11 @@ open class Entity(
             "projection"
         )
 
+        mUniformCamera = glGetUniformLocation(
+            program,
+            "camera"
+        )
+
         glGenVertexArrays(
             1,
             mVertexArray,
@@ -113,12 +119,12 @@ open class Entity(
             GL_STATIC_DRAW
         )
 
-        /*mAttrTexCoord = glGetAttribLocation(
+        mAttrTexCoord = glGetAttribLocation(
             program,
-            "texCoordIn"
+            "texCoord"
         )
 
-        mAttrNormal = glGetAttribLocation(
+        /*mAttrNormal = glGetAttribLocation(
             program,
             "normalIn"
         )*/
@@ -160,11 +166,11 @@ open class Entity(
             3
         )
 
-        /*enableVertex(
+        enableVertex(
             mAttrTexCoord,
                 3 * 4,
             2
-        )*/
+        )
 
         /*enableVertex(
             mAttrNormal,
@@ -192,11 +198,12 @@ open class Entity(
         )
     }
 
-    final fun draw() {
+    open fun draw() {
         TrafficRenderer
             .CAMERA.draw(
                 mUniformProject,
                 mUniformModelView,
+                mUniformCamera,
                 model
             )
 

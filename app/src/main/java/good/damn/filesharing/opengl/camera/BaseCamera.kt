@@ -16,12 +16,7 @@ class BaseCamera(
         16
     )
 
-    private var mResult = FloatArray(
-        16
-    )
-
     init {
-
         Matrix.setIdentityM(
             model,
             0
@@ -32,15 +27,24 @@ class BaseCamera(
             0,
             0f,
             0f,
-            0f
+            -3f
+        )
+
+        Matrix.rotateM(
+            model,
+            0,
+            35f,
+            0f,
+            1f,
+            1f
         )
 
         Matrix.perspectiveM(
             mProjection,
             0,
-            85.0f / 180.0f * Math.PI.toFloat(),
+            85.0f,
             width.toFloat() / height.toFloat(),
-            1.0f,
+            0.1f,
             150.0f
         )
     }
@@ -48,6 +52,7 @@ class BaseCamera(
     fun draw(
         unifProj: Int,
         unifModel: Int,
+        unifCamera: Int,
         model: FloatArray
     ) {
         glUniformMatrix4fv(
@@ -58,12 +63,11 @@ class BaseCamera(
             0
         )
 
-        Matrix.multiplyMM(
-            mResult,
-            0,
+        glUniformMatrix4fv(
+            unifCamera,
+            1,
+            false,
             this.model,
-            0,
-            model,
             0
         )
 
@@ -71,7 +75,7 @@ class BaseCamera(
             unifModel,
             1,
             false,
-            mResult,
+            model,
             0
         )
     }

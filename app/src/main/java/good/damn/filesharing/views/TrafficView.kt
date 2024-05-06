@@ -7,7 +7,7 @@ import good.damn.filesharing.opengl.renderer.TrafficRenderer
 
 class TrafficView(
     context: Context
-) : GLSurfaceView(
+): GLSurfaceView(
     context
 ) {
 
@@ -17,9 +17,7 @@ class TrafficView(
       )
 
       setRenderer(
-         TrafficRenderer(
-            context
-         )
+         TrafficRenderer()
       )
 
       renderMode = RENDERMODE_CONTINUOUSLY

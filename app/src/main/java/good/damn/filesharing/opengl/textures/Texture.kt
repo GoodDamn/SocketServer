@@ -18,7 +18,6 @@ class Texture(
 
     init {
 
-
         val inp = Application.ASSETS.open(
             assetPath
         )
@@ -26,7 +25,6 @@ class Texture(
         val bitmap = BitmapFactory.decodeStream(
             inp
         )
-
 
         glGenTextures(
             1,
@@ -66,9 +64,7 @@ class Texture(
         GLUtils.texImage2D(
             GL_TEXTURE_2D,
             0,
-            GL_RGBA,
             bitmap,
-            GL_UNSIGNED_BYTE,
             0
         )
 

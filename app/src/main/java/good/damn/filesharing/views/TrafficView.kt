@@ -7,7 +7,7 @@ import good.damn.filesharing.opengl.renderer.TrafficRenderer
 
 class TrafficView(
     context: Context
-) : GLSurfaceView(
+): GLSurfaceView(
     context
 ) {
 

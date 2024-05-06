@@ -23,7 +23,6 @@ class Mesh(
         super.draw()
 
         mTexture.draw()
-
     }
 
 }

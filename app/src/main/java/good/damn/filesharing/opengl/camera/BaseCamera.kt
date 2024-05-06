@@ -32,15 +32,24 @@ class BaseCamera(
             0,
             0f,
             0f,
-            0f
+            -3f
+        )
+
+        Matrix.rotateM(
+            model,
+            0,
+            35f,
+            0f,
+            1f,
+            1f
         )
 
         Matrix.perspectiveM(
             mProjection,
             0,
-            85.0f / 180.0f * Math.PI.toFloat(),
+            85.0f,
             width.toFloat() / height.toFloat(),
-            1.0f,
+            0.1f,
             150.0f
         )
     }

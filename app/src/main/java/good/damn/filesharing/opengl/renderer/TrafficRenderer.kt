@@ -22,7 +22,6 @@ class TrafficRenderer
 : GLSurfaceView.Renderer {
 
     companion object {
-        private const val TAG = "TrafficRenderer"
         lateinit var CAMERA: BaseCamera
     }
 
@@ -57,7 +56,7 @@ class TrafficRenderer
         
         void main() {
             vec4 coord = model * position;
-            gl_Position = coord;
+            gl_Position = projection * coord;
             posOut = coord.xyz;
             texCoordOut = texCoord;
         }
@@ -101,7 +100,7 @@ class TrafficRenderer
         mEntities = arrayOf(
             Mesh(
                 Object3D.createFromAssets(
-                    "objs/Sphere.obj"
+                    "objs/Box.obj"
                 ),
                 "textures/box.png",
                 mProgram
@@ -126,7 +125,6 @@ class TrafficRenderer
             width,
             height
         )
-
     }
 
     override fun onDrawFrame(p0: GL10?) {

@@ -23,7 +23,7 @@ open class Entity(
 
     private val mIndicesCount = indices.size
 
-    private var mStride = 3 * 4
+    private var mStride = 5 * 4
 
     private val mVertexArray = intArrayOf(
         1

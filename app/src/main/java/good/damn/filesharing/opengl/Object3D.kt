@@ -103,9 +103,7 @@ class Object3D(
             val mVertices = FloatArray(faces.size * 5)
             val mIndices = ShortArray(faces.size)
 
-            var texIndex = 0
             var posIndex = 0
-            //var normIndex = 0
 
             for ((index, face) in faces.withIndex()) {
                 val parts = face.split("/")
@@ -118,8 +116,8 @@ class Object3D(
                 mVertices[posIndex++] = vertices[i]
 
                 i = 2 * (parts[1].toInt() - 1)
-                mVertices[texIndex++] = textures[i++]
-                mVertices[texIndex++] = 1 - textures[i]
+                mVertices[posIndex++] = textures[i++]
+                mVertices[posIndex++] = 1 - textures[i]
 
                 /*i = 3 * (parts[2].toInt() - 1)
                 mNormals[normIndex++] = normals[i++]

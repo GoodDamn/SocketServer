@@ -10,7 +10,7 @@ open class Entity(
     vertices: FloatArray,
     indices: ShortArray,
     program: Int
-) {
+): DimensionObject() {
 
     private val mAttrPosition: Int
     private val mAttrTexCoord: Int
@@ -19,8 +19,6 @@ open class Entity(
     private val mUniformModelView: Int
     private val mUniformProject: Int
     private val mUniformCamera: Int
-
-    private val model = FloatArray(16)
 
     private val mIndicesCount = indices.size
 

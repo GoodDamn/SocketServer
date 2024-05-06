@@ -17,13 +17,19 @@ import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.sin
 
 class TrafficRenderer
 : GLSurfaceView.Renderer {
 
     companion object {
+        private const val TAG = "TrafficRenderer"
         lateinit var CAMERA: BaseCamera
     }
+
+    private var mCurrentDelta = 0.0
+    private var mCurrentMillis: Long = 0
+    private var mPrevMillis: Long = 0
 
     private var mWidth = 0
     private var mHeight = 0
@@ -126,9 +132,17 @@ class TrafficRenderer
             width,
             height
         )
+
+        CAMERA.setPosition(
+            0f,
+            0f,
+            -3f
+        )
     }
 
     override fun onDrawFrame(p0: GL10?) {
+        mCurrentMillis = System.currentTimeMillis()
+
         glClear(
             GL_COLOR_BUFFER_BIT or
             GL_DEPTH_BUFFER_BIT
@@ -148,9 +162,20 @@ class TrafficRenderer
             mHeight
         )
 
+        val x = (sin(mCurrentDelta) * 3.0).toFloat()
         mEntities.forEach {
+            it.setPosition(
+                x,
+                0f,
+                0f
+            )
+
             it.draw()
         }
+
+        mCurrentDelta += (mCurrentMillis - mPrevMillis) / 4000.0
+        Log.d(TAG, "onDrawFrame: $mCurrentDelta $x")
+        mPrevMillis = mCurrentMillis
     }
 
     private fun createShader(

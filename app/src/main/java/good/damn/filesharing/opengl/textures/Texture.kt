@@ -7,7 +7,8 @@ import good.damn.filesharing.Application
 import good.damn.filesharing.utils.FileUtils
 
 class Texture(
-    assetPath: String
+    assetPath: String,
+    program: Int
 ) {
 
     private var mId = intArrayOf(
@@ -71,11 +72,6 @@ class Texture(
             0
         )
 
-    }
-
-    fun setUniformTo(
-        program: Int
-    ) {
         mUniformTexture = glGetUniformLocation(
             program,
             "texture"

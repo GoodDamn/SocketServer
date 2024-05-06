@@ -29,29 +29,35 @@ class TrafficRenderer
 
     private var mShaderFragment = """
         precision mediump float;
+        
+        uniform sampler2D texture;
+        
         varying lowp vec3 posOut;
+        varying lowp vec2 texCoordOut;
         
         void main() {
-            gl_FragColor = vec4(
-                1.0,
-                1.0,
-                0.0,
-                1.0);
+            gl_FragColor = texture2D(
+                texture,
+                texCoordOut
+            );
         }
     """.trimIndent()
 
     private var mShaderVertex = """
         attribute vec4 position;
+        attribute vec2 texCoord;
         
         uniform mat4 projection;
         uniform mat4 model;
         
         varying lowp vec3 posOut;
+        varying lowp vec2 texCoordOut;
         
         void main() {
             vec4 coord = model * position;
             gl_Position = coord;
             posOut = coord.xyz;
+            texCoordOut = texCoord;
         }
     """.trimIndent()
 
@@ -95,6 +101,7 @@ class TrafficRenderer
                 Object3D.createFromAssets(
                     "objs/Sphere.obj"
                 ),
+                "textures/box.png",
                 mProgram
             )
         )

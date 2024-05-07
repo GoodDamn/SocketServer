@@ -100,7 +100,10 @@ class Object3D(
                 }
             }
 
-            val mVertices = FloatArray(faces.size * 5)
+            // 3 - position
+            // 2 - texture coords
+            // 3 - normals
+            val mVertices = FloatArray(faces.size * 8)
             val mIndices = ShortArray(faces.size)
 
             var posIndex = 0
@@ -119,10 +122,10 @@ class Object3D(
                 mVertices[posIndex++] = textures[i++]
                 mVertices[posIndex++] = 1 - textures[i]
 
-                /*i = 3 * (parts[2].toInt() - 1)
-                mNormals[normIndex++] = normals[i++]
-                mNormals[normIndex++] = normals[i++]
-                mNormals[normIndex++] = normals[i]*/
+                i = 3 * (parts[2].toInt() - 1)
+                mVertices[posIndex++] = normals[i++]
+                mVertices[posIndex++] = normals[i++]
+                mVertices[posIndex++] = normals[i]
             }
 
             return Object3D(

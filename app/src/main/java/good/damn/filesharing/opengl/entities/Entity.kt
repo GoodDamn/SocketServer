@@ -14,7 +14,7 @@ open class Entity(
 
     private val mAttrPosition: Int
     private val mAttrTexCoord: Int
-    //private val mAttrNormal: Int
+    private val mAttrNormal: Int
 
     private val mUniformModelView: Int
     private val mUniformProject: Int
@@ -22,7 +22,7 @@ open class Entity(
 
     private val mIndicesCount = indices.size
 
-    private var mStride = 5 * 4
+    private var mStride = 8 * 4
 
     private val mVertexArray = intArrayOf(
         1
@@ -122,10 +122,10 @@ open class Entity(
             "texCoord"
         )
 
-        /*mAttrNormal = glGetAttribLocation(
+        mAttrNormal = glGetAttribLocation(
             program,
-            "normalIn"
-        )*/
+            "normal"
+        )
 
         mAttrPosition = glGetAttribLocation(
             program,
@@ -170,11 +170,11 @@ open class Entity(
             2
         )
 
-        /*enableVertex(
+        enableVertex(
             mAttrNormal,
             5 * 4,
             3
-        )*/
+        )
 
         glBindVertexArray(
             0

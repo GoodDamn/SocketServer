@@ -114,6 +114,13 @@ class TrafficRenderer
                 Object3D.createFromAssets(
                     "objs/sphere.obj"
                 ),
+                "textures/rock.jpg",
+                mProgram
+            ),
+            Mesh(
+                Object3D.createFromAssets(
+                    "objs/walls.obj"
+                ),
                 "textures/grass.jpg",
                 mProgram
             )
@@ -168,7 +175,7 @@ class TrafficRenderer
             0.1f,
             1f
         )
-git
+
         glViewport(
             0,
             0,

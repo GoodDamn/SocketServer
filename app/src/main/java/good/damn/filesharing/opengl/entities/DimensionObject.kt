@@ -19,12 +19,11 @@ open class DimensionObject {
         )
     }
 
-    fun setPosition(
+    open fun setPosition(
         x: Float,
         y: Float,
         z: Float
     ) {
-        Log.d(TAG, "setPosition: ${model[12]} ${model[13]} ${model[14]}")
         model[12] = x
         model[13] = y
         model[14] = z

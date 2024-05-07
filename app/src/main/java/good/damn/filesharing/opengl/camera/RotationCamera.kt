@@ -41,7 +41,6 @@ class RotationCamera(
         mVDegrees = y
 
         val ysin = sin(mVDegrees)
-        Log.d(TAG, "setRotation: $mHDegrees")
         
         setPosition(
             radius * cos(mHDegrees) * ysin,

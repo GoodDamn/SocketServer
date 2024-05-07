@@ -6,6 +6,8 @@ import good.damn.filesharing.opengl.Mesh
 import good.damn.filesharing.opengl.Object3D
 import good.damn.filesharing.opengl.camera.RotationCamera
 import good.damn.filesharing.opengl.entities.Entity
+import good.damn.filesharing.opengl.light.DirectionalLight
+import good.damn.filesharing.utils.AssetUtils
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -25,44 +27,10 @@ class TrafficRenderer
     private var mWidth = 0
     private var mHeight = 0
 
-    private var mShaderFragment = """
-        precision mediump float;
-        
-        uniform sampler2D texture;
-        
-        varying lowp vec3 posOut;
-        varying lowp vec2 texCoordOut;
-        
-        void main() {
-            gl_FragColor = texture2D(
-                texture,
-                texCoordOut
-            );
-        }
-    """.trimIndent()
-
-    private var mShaderVertex = """
-        attribute vec4 position;
-        attribute vec2 texCoord;
-        
-        uniform mat4 projection;
-        uniform mat4 model;
-        uniform mat4 camera;
-        
-        varying lowp vec3 posOut;
-        varying lowp vec2 texCoordOut;
-        
-        void main() {
-            vec4 coord = camera * model * position;
-            gl_Position = projection * coord;
-            posOut = coord.xyz;
-            texCoordOut = texCoord;
-        }
-    """.trimIndent()
-
     private var mProgram = 0
 
     private lateinit var mEntities: Array<Entity>
+    private lateinit var mDirectionalLight: DirectionalLight
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -75,7 +43,9 @@ class TrafficRenderer
             mProgram,
             createShader(
                 GL_VERTEX_SHADER,
-                mShaderVertex
+                AssetUtils.loadString(
+                    "shaders/vert.glsl"
+                )
             )
         )
 
@@ -83,7 +53,9 @@ class TrafficRenderer
             mProgram,
             createShader(
                 GL_FRAGMENT_SHADER,
-                mShaderFragment
+                AssetUtils.loadString(
+                    "shaders/frag.glsl"
+                )
             )
         )
 
@@ -92,6 +64,10 @@ class TrafficRenderer
         )
 
         glUseProgram(
+            mProgram
+        )
+
+        mDirectionalLight = DirectionalLight(
             mProgram
         )
 
@@ -182,6 +158,8 @@ class TrafficRenderer
             mWidth,
             mHeight
         )
+
+        mDirectionalLight.draw()
 
         mEntities.forEach {
             it.draw()

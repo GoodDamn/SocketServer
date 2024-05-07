@@ -1,24 +1,13 @@
 package good.damn.filesharing.opengl.renderer
 
-import android.content.Context
-import android.content.EntityIterator
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
-import android.opengl.Matrix
-import android.util.Log
 import good.damn.filesharing.opengl.Mesh
 import good.damn.filesharing.opengl.Object3D
-import good.damn.filesharing.opengl.camera.BaseCamera
 import good.damn.filesharing.opengl.camera.RotationCamera
 import good.damn.filesharing.opengl.entities.Entity
-import good.damn.filesharing.opengl.entities.primitives.Plane
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.FloatBuffer
-import java.nio.ShortBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.math.sin
 
 class TrafficRenderer
 : GLSurfaceView.Renderer {
@@ -109,11 +98,37 @@ class TrafficRenderer
         mEntities = arrayOf(
             Mesh(
                 Object3D.createFromAssets(
-                    "objs/Box.obj"
+                    "objs/plane.obj"
                 ),
-                "textures/box.png",
+                "textures/rock.jpg",
+                mProgram
+            ),
+            Mesh(
+                Object3D.createFromAssets(
+                    "objs/box.obj"
+                ),
+                "textures/rock.jpg",
+                mProgram
+            ),
+            Mesh(
+                Object3D.createFromAssets(
+                    "objs/sphere.obj"
+                ),
+                "textures/grass.jpg",
                 mProgram
             )
+        )
+
+        mEntities[1].setPosition(
+            0f,
+            0.5f,
+            0f
+        )
+
+        mEntities[2].setPosition(
+            1f,
+            0.5f,
+            0f
         )
 
         glEnable(
@@ -153,7 +168,7 @@ class TrafficRenderer
             0.1f,
             1f
         )
-
+git
         glViewport(
             0,
             0,
@@ -166,10 +181,10 @@ class TrafficRenderer
         }
 
         mTick = (mCurrentMillis - mPrevMillis) / 1000.0f
-        
-        CAMERA.setRotation(
-            15f * sin(mSumTick),
-            1f
+
+        CAMERA.rotateBy(
+            mTick * 0.25f,
+            0f
         )
 
         mSumTick += mTick

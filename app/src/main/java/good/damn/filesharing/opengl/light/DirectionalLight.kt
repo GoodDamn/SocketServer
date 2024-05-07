@@ -12,8 +12,8 @@ class DirectionalLight(
 ): DimensionObject() {
 
     private val mUniformColor: Int
-    //private val mUniformAmbient: Int
-    //private val mUniformDirection: Int
+    private val mUniformAmbient: Int
+    private val mUniformDirection: Int
     private val mUniformIntensity: Int
     /*private val mUniformSpecular: Int
     private val mShininess: Int*/
@@ -21,7 +21,7 @@ class DirectionalLight(
     private val mDirectionVector = Vector(
         1f,
         1f,
-        1f
+        -100f
     )
 
     init {
@@ -32,7 +32,7 @@ class DirectionalLight(
             "light.color"
         )
 
-        /*mUniformAmbient = glGetUniformLocation(
+        mUniformAmbient = glGetUniformLocation(
             program,
             "light.ambient"
         )
@@ -40,7 +40,7 @@ class DirectionalLight(
         mUniformDirection = glGetUniformLocation(
             program,
             "light.direction"
-        )*/
+        )
 
         mUniformIntensity = glGetUniformLocation(
             program,
@@ -69,9 +69,14 @@ class DirectionalLight(
             1f
         )
 
-        /*glUniform1f(
+        glUniform1f(
             mUniformAmbient,
             0.1f
+        )
+
+        glUniform1f(
+            mUniformIntensity,
+            0.8f
         )
 
         glUniform3f(
@@ -79,11 +84,6 @@ class DirectionalLight(
             mDirectionVector.x,
             mDirectionVector.y,
             mDirectionVector.z,
-        )*/
-
-        glUniform1f(
-            mUniformIntensity,
-            0.7f
         )
     }
 

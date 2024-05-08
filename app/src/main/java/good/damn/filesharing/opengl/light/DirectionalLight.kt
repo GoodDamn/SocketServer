@@ -15,8 +15,8 @@ class DirectionalLight(
     private val mUniformAmbient: Int
     private val mUniformDirection: Int
     private val mUniformIntensity: Int
-    /*private val mUniformSpecular: Int
-    private val mShininess: Int*/
+    private val mUniformSpecular: Int
+    private val mUniformShininess: Int
 
     private val mDirectionVector = Vector(
         1f,
@@ -45,6 +45,16 @@ class DirectionalLight(
         mUniformIntensity = glGetUniformLocation(
             program,
             "light.intensity"
+        )
+
+        mUniformSpecular = glGetUniformLocation(
+            program,
+            "specularIntensity"
+        )
+
+        mUniformShininess = glGetUniformLocation(
+            program,
+            "shine"
         )
 
     }
@@ -84,6 +94,16 @@ class DirectionalLight(
             mDirectionVector.x,
             mDirectionVector.y,
             mDirectionVector.z,
+        )
+
+        glUniform1f(
+            mUniformShininess,
+            1.0f
+        )
+
+        glUniform1f(
+            mUniformSpecular,
+            0.0f
         )
     }
 

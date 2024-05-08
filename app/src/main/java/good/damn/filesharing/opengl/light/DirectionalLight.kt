@@ -71,7 +71,6 @@ class DirectionalLight(
     }
 
     fun draw() {
-
         glUniform3f(
             mUniformColor,
             1f,
@@ -81,7 +80,7 @@ class DirectionalLight(
 
         glUniform1f(
             mUniformAmbient,
-            0.1f
+            0.3f
         )
 
         glUniform1f(
@@ -98,12 +97,12 @@ class DirectionalLight(
 
         glUniform1f(
             mUniformShininess,
-            1.0f
+            15.0f
         )
 
         glUniform1f(
             mUniformSpecular,
-            0.0f
+            2.0f
         )
     }
 

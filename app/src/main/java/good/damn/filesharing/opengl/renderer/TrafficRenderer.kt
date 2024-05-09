@@ -16,7 +16,6 @@ class TrafficRenderer
 
     companion object {
         private const val TAG = "TrafficRenderer"
-        lateinit var CAMERA: RotationCamera
     }
 
     private var mSumTick = 0f
@@ -31,6 +30,7 @@ class TrafficRenderer
 
     private lateinit var mEntities: Array<Entity>
     private lateinit var mDirectionalLight: DirectionalLight
+    private lateinit var mCamera: RotationCamera
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -77,28 +77,32 @@ class TrafficRenderer
                     "objs/plane.obj"
                 ),
                 "textures/rock.jpg",
-                mProgram
+                mProgram,
+                mCamera
             ),
             Mesh(
                 Object3D.createFromAssets(
                     "objs/box.obj"
                 ),
                 "textures/rock.jpg",
-                mProgram
+                mProgram,
+                mCamera
             ),
             Mesh(
                 Object3D.createFromAssets(
                     "objs/sphere.obj"
                 ),
                 "textures/rock.jpg",
-                mProgram
+                mProgram,
+                mCamera
             ),
             Mesh(
                 Object3D.createFromAssets(
                     "objs/walls.obj"
                 ),
                 "textures/grass.jpg",
-                mProgram
+                mProgram,
+                mCamera
             )
         )
 
@@ -129,12 +133,12 @@ class TrafficRenderer
         mWidth = width
         mHeight = height
 
-        CAMERA = RotationCamera(
+        mCamera = RotationCamera(
             width,
             height
         )
 
-        CAMERA.radius = 6f
+        mCamera.radius = 6f
     }
 
     override fun onDrawFrame(p0: GL10?) {
@@ -167,7 +171,7 @@ class TrafficRenderer
 
         mTick = (mCurrentMillis - mPrevMillis) / 1000.0f
 
-        CAMERA.rotateBy(
+        mCamera.rotateBy(
             mTick * 0.25f,
             0f
         )

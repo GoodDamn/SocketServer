@@ -3,13 +3,15 @@ package good.damn.filesharing.opengl.entities
 import android.opengl.GLES30.*
 import android.opengl.Matrix
 import good.damn.filesharing.Application
+import good.damn.filesharing.opengl.camera.BaseCamera
 import good.damn.filesharing.opengl.renderer.TrafficRenderer
 import java.nio.ByteBuffer
 
 open class Entity(
     vertices: FloatArray,
     indices: ShortArray,
-    program: Int
+    program: Int,
+    private val mCamera: BaseCamera
 ): DimensionObject() {
 
     private val mAttrPosition: Int
@@ -197,13 +199,12 @@ open class Entity(
     }
 
     open fun draw() {
-        TrafficRenderer
-            .CAMERA.draw(
-                mUniformProject,
-                mUniformModelView,
-                mUniformCamera,
-                model
-            )
+        mCamera.draw(
+            mUniformProject,
+            mUniformModelView,
+            mUniformCamera,
+            model
+        )
 
         glBindVertexArray(
             mVertexArray[0]

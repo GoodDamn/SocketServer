@@ -18,7 +18,7 @@ class TrafficView(
       )
 
       setRenderer(
-         LevelEditorRenderer()
+         TrafficRenderer()
       )
 
       renderMode = RENDERMODE_CONTINUOUSLY

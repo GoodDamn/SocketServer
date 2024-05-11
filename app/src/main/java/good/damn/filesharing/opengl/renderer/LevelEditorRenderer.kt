@@ -1,19 +1,13 @@
 package good.damn.filesharing.opengl.renderer
 
 import android.opengl.GLSurfaceView
-import good.damn.filesharing.opengl.camera.BaseCamera
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
-import android.util.Log
-import good.damn.filesharing.opengl.EditorMesh
-import good.damn.filesharing.opengl.Mesh
-import good.damn.filesharing.opengl.Object3D
 import good.damn.filesharing.opengl.camera.RotationCamera
 import good.damn.filesharing.opengl.light.DirectionalLight
 import good.damn.filesharing.utils.AssetUtils
 import good.damn.filesharing.utils.ShaderUtils
-import java.util.LinkedList
 
 class LevelEditorRenderer
 : GLSurfaceView.Renderer {
@@ -29,11 +23,7 @@ class LevelEditorRenderer
 
     private var mProgram = 0
 
-    private val meshesEditor = LinkedList<EditorMesh>()
-    private val meshes = LinkedList<Mesh>()
-
     private lateinit var mDirectionalLight: DirectionalLight
-    private lateinit var meshToDraw: Mesh
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -70,14 +60,6 @@ class LevelEditorRenderer
             mProgram
         )
 
-        meshToDraw = Mesh(
-            Object3D.createFromAssets(
-                "objs/plane.obj"
-            ),
-            "textures/grass.jpg",
-            mProgram,
-            mCamera
-        )
 
         mDirectionalLight = DirectionalLight(
             mProgram
@@ -130,14 +112,13 @@ class LevelEditorRenderer
         )
 
         glClearColor(
-            0.0f,
+            1.0f,
                 0.0f,
             0.0f,
             1.0f
         )
 
         mDirectionalLight.draw()
-        meshToDraw.draw()
     }
 
     fun onTouchDown(

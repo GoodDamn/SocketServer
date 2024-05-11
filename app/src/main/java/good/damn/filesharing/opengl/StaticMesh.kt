@@ -1,53 +1,32 @@
-package good.damn.filesharing.opengl.entities
+package good.damn.filesharing.opengl
 
 import android.opengl.GLES30.*
-import android.opengl.Matrix
-import good.damn.filesharing.Application
 import good.damn.filesharing.opengl.camera.BaseCamera
-import good.damn.filesharing.opengl.renderer.TrafficRenderer
+import good.damn.filesharing.opengl.entities.Mesh
+import good.damn.filesharing.opengl.textures.Texture
 import good.damn.filesharing.utils.BufferUtils
-import java.nio.ByteBuffer
 
-open class Entity(
-    vertices: FloatArray,
-    indices: ShortArray,
+class StaticMesh(
+    obj: Object3D,
+    texturePath: String,
     program: Int,
-    private val mCamera: BaseCamera
-): DimensionObject() {
+    camera: BaseCamera
+): Mesh(
+    program,
+    camera
+) {
 
-    private val mAttrPosition: Int
-    private val mAttrTexCoord: Int
-    private val mAttrNormal: Int
+    private val mTexture = Texture(
+        texturePath,
+        program
+    )
 
-    private val mUniformModelView: Int
-    private val mUniformProject: Int
-    private val mUniformCamera: Int
-
-    private val mIndicesCount = indices.size
-
-    private var mStride = 8 * 4
-
+    private val mIndicesCount = obj.indices.size
     private val mVertexArray = intArrayOf(
         1
     )
 
     init {
-
-        mUniformModelView = glGetUniformLocation(
-            program,
-            "model"
-        )
-
-        mUniformProject = glGetUniformLocation(
-            program,
-            "projection"
-        )
-
-        mUniformCamera = glGetUniformLocation(
-            program,
-            "camera"
-        )
-
         glGenVertexArrays(
             1,
             mVertexArray,
@@ -77,9 +56,9 @@ open class Entity(
 
         glBufferData(
             GL_ARRAY_BUFFER,
-            vertices.size * 4,
+            obj.vertices.size * 4,
             BufferUtils.createFloatBuffer(
-                vertices
+                obj.vertices
             ),
             GL_STATIC_DRAW
         )
@@ -118,9 +97,9 @@ open class Entity(
 
         glBufferData(
             GL_ELEMENT_ARRAY_BUFFER,
-            indices.size * 2,
+            obj.indices.size * 2,
             BufferUtils.createShortBuffer(
-                indices
+                obj.indices
             ),
             GL_STATIC_DRAW
         )
@@ -135,7 +114,7 @@ open class Entity(
 
         enableVertex(
             mAttrTexCoord,
-                3 * 4,
+            3 * 4,
             2
         )
 
@@ -158,21 +137,10 @@ open class Entity(
             GL_ELEMENT_ARRAY_BUFFER,
             0
         )
-
-        Matrix.setIdentityM(
-            model,
-            0
-        )
     }
 
-    open fun draw() {
-        mCamera.draw(
-            mUniformProject,
-            mUniformModelView,
-            mUniformCamera,
-            model
-        )
-
+    override fun draw() {
+        super.draw()
         glBindVertexArray(
             mVertexArray[0]
         )
@@ -187,28 +155,7 @@ open class Entity(
         glBindVertexArray(
             0
         )
-    }
-
-
-    private fun enableVertex(
-        attrib: Int,
-        offset: Int,
-        size: Int
-    ) {
-
-        glEnableVertexAttribArray(
-            attrib
-        )
-
-        glVertexAttribPointer(
-            attrib,
-            size,
-            GL_FLOAT,
-            false,
-            mStride,
-            offset
-        )
-
+        mTexture.draw()
     }
 
 }

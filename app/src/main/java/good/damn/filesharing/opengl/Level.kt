@@ -2,22 +2,17 @@ package good.damn.filesharing.opengl
 
 import android.util.Log
 import good.damn.filesharing.Application
-import good.damn.filesharing.controllers.msgrs.Messenger
 import good.damn.filesharing.opengl.camera.BaseCamera
 import good.damn.filesharing.opengl.light.DirectionalLight
-import good.damn.filesharing.opengl.textures.Texture
 import good.damn.filesharing.utils.FileUtils
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.io.OutputStream
-import kotlin.math.log
 
 class Level(
-    private val meshes: Array<Mesh>,
+    private val meshes: Array<StaticMesh>,
     private val directionalLight: DirectionalLight
 ) {
 
@@ -79,7 +74,7 @@ class Level(
                 val specIntensity = inp.readByte().toInt() and 0xff
                 val shine = inp.readByte().toInt() and 0xff
 
-                val mesh = Mesh(
+                val mesh = StaticMesh(
                     Object3D.createFromAssets(
                         "objs/$objName.obj"
                     ),

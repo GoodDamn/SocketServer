@@ -2,10 +2,10 @@ package good.damn.filesharing.opengl.renderer
 
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
-import good.damn.filesharing.opengl.Mesh
+import good.damn.filesharing.opengl.StaticMesh
 import good.damn.filesharing.opengl.Object3D
 import good.damn.filesharing.opengl.camera.RotationCamera
-import good.damn.filesharing.opengl.entities.Entity
+import good.damn.filesharing.opengl.entities.Mesh
 import good.damn.filesharing.opengl.light.DirectionalLight
 import good.damn.filesharing.utils.AssetUtils
 import good.damn.filesharing.utils.ShaderUtils
@@ -29,7 +29,7 @@ class TrafficRenderer
 
     private var mProgram = 0
 
-    private lateinit var mEntities: Array<Entity>
+    private lateinit var mEntities: Array<Mesh>
     private lateinit var mDirectionalLight: DirectionalLight
     private var mCamera = RotationCamera()
 
@@ -73,7 +73,7 @@ class TrafficRenderer
         )
 
         mEntities = arrayOf(
-            Mesh(
+            StaticMesh(
                 Object3D.createFromAssets(
                     "objs/plane.obj"
                 ),
@@ -81,7 +81,7 @@ class TrafficRenderer
                 mProgram,
                 mCamera
             ),
-            Mesh(
+            StaticMesh(
                 Object3D.createFromAssets(
                     "objs/box.obj"
                 ),
@@ -89,7 +89,7 @@ class TrafficRenderer
                 mProgram,
                 mCamera
             ),
-            Mesh(
+            StaticMesh(
                 Object3D.createFromAssets(
                     "objs/sphere.obj"
                 ),
@@ -97,7 +97,7 @@ class TrafficRenderer
                 mProgram,
                 mCamera
             ),
-            Mesh(
+            StaticMesh(
                 Object3D.createFromAssets(
                     "objs/walls.obj"
                 ),

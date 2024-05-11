@@ -1,15 +1,10 @@
 package good.damn.filesharing.opengl.entities
 
 import android.opengl.GLES30.*
-import android.util.FloatMath
-import good.damn.filesharing.opengl.Mesh
-import good.damn.filesharing.opengl.Vector
 import good.damn.filesharing.utils.BufferUtils
-import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import java.util.LinkedList
-import javax.mail.search.FlagTerm
 
 class Landscape(
     private val mProgram: Int

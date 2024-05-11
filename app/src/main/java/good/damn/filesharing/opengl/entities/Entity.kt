@@ -5,6 +5,7 @@ import android.opengl.Matrix
 import good.damn.filesharing.Application
 import good.damn.filesharing.opengl.camera.BaseCamera
 import good.damn.filesharing.opengl.renderer.TrafficRenderer
+import good.damn.filesharing.utils.BufferUtils
 import java.nio.ByteBuffer
 
 open class Entity(
@@ -31,44 +32,6 @@ open class Entity(
     )
 
     init {
-
-        val vertByte = ByteBuffer
-            .allocateDirect(
-                vertices.size * 4
-            )
-
-        val indexByte = ByteBuffer
-            .allocateDirect(
-                indices.size * 2
-            )
-
-        vertByte.order(
-            Application.BYTE_ORDER
-        )
-
-        indexByte.order(
-            Application.BYTE_ORDER
-        )
-
-        val bufVert = vertByte
-            .asFloatBuffer()
-
-        val bufIndex = indexByte
-            .asShortBuffer()
-
-        bufVert.put(
-            vertices
-        )
-        bufVert.position(
-            0
-        )
-
-        bufIndex.put(
-            indices
-        )
-        bufIndex.position(
-            0
-        )
 
         mUniformModelView = glGetUniformLocation(
             program,
@@ -115,7 +78,9 @@ open class Entity(
         glBufferData(
             GL_ARRAY_BUFFER,
             vertices.size * 4,
-            bufVert,
+            BufferUtils.createFloatBuffer(
+                vertices
+            ),
             GL_STATIC_DRAW
         )
 
@@ -154,7 +119,9 @@ open class Entity(
         glBufferData(
             GL_ELEMENT_ARRAY_BUFFER,
             indices.size * 2,
-            bufIndex,
+            BufferUtils.createShortBuffer(
+                indices
+            ),
             GL_STATIC_DRAW
         )
 

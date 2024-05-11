@@ -5,9 +5,11 @@ import good.damn.filesharing.opengl.camera.BaseCamera
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
+import android.util.Log
 import good.damn.filesharing.opengl.EditorMesh
 import good.damn.filesharing.opengl.Mesh
 import good.damn.filesharing.opengl.Object3D
+import good.damn.filesharing.opengl.camera.RotationCamera
 import good.damn.filesharing.opengl.light.DirectionalLight
 import good.damn.filesharing.utils.AssetUtils
 import good.damn.filesharing.utils.ShaderUtils
@@ -16,7 +18,11 @@ import java.util.LinkedList
 class LevelEditorRenderer
 : GLSurfaceView.Renderer {
 
-    private val mCamera = BaseCamera()
+    companion object {
+        private const val TAG = "LevelEditorRenderer"
+    }
+
+    private val mCamera = RotationCamera()
 
     private var mWidth = 0
     private var mHeight = 0
@@ -95,12 +101,18 @@ class LevelEditorRenderer
             height
         )
 
-        mCamera.setPosition(
+        mCamera.radius = 30f
+
+        mCamera.setRotation(
             0f,
-            0f,
-            -0.5f
+            0.01f
         )
 
+        mDirectionalLight.setPosition(
+            10f,
+            -100f,
+            0f
+        )
     }
 
     override fun onDrawFrame(
@@ -139,11 +151,7 @@ class LevelEditorRenderer
         x: Float,
         y: Float
     ) {
-        mCamera.setPosition(
-            x / mWidth,
-            y / mHeight,
-            0f
-        )
+
     }
 
     fun onTouchUp(

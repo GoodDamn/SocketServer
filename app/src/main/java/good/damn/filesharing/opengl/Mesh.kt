@@ -24,10 +24,7 @@ class Mesh(
 
     override fun draw() {
         super.draw()
-
         mTexture.draw()
     }
-
-
 
 }

@@ -57,4 +57,25 @@ class LevelEditorRenderer
         )
     }
 
+    fun onTouchDown(
+        x: Float,
+        y: Float
+    ) {
+
+    }
+
+    fun onTouchMove(
+        x: Float,
+        y: Float
+    ) {
+
+    }
+
+    fun onTouchUp(
+        x: Float,
+        y: Float
+    ) {
+
+    }
+
 }

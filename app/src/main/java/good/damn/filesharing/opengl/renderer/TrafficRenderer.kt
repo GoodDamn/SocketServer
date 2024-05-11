@@ -30,7 +30,7 @@ class TrafficRenderer
 
     private lateinit var mEntities: Array<Entity>
     private lateinit var mDirectionalLight: DirectionalLight
-    private lateinit var mCamera: RotationCamera
+    private var mCamera = RotationCamera()
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -132,13 +132,12 @@ class TrafficRenderer
     ) {
         mWidth = width
         mHeight = height
+        mCamera.radius = 6f
 
-        mCamera = RotationCamera(
+        mCamera.setPerspective(
             width,
             height
         )
-
-        mCamera.radius = 6f
     }
 
     override fun onDrawFrame(p0: GL10?) {

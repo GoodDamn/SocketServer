@@ -6,13 +6,8 @@ import kotlin.math.cos
 import kotlin.math.log
 import kotlin.math.sin
 
-class RotationCamera(
-    width: Int,
-    height: Int
-): BaseCamera(
-    width,
-    height
-) {
+class RotationCamera
+: BaseCamera() {
     companion object{
         private const val TAG = "RotationCamera"
     }

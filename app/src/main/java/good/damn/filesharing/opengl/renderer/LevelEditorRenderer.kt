@@ -9,7 +9,7 @@ import android.opengl.GLES30.*
 class LevelEditorRenderer
 : GLSurfaceView.Renderer {
 
-    private lateinit var mCamera: BaseCamera
+    private val mCamera = BaseCamera()
 
     private var mWidth = 0
     private var mHeight = 0
@@ -29,7 +29,7 @@ class LevelEditorRenderer
         mWidth = width
         mHeight = height
 
-        mCamera = BaseCamera(
+        mCamera.setPerspective(
             width,
             height
         )

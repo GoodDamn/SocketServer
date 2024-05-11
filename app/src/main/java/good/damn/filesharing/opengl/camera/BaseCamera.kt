@@ -4,16 +4,17 @@ import android.opengl.GLES30.*
 import android.opengl.Matrix
 import good.damn.filesharing.opengl.entities.DimensionObject
 
-open class BaseCamera(
-    width: Int,
-    height: Int
-): DimensionObject() {
+open class BaseCamera
+: DimensionObject() {
 
     private val mProjection = FloatArray(
         16
     )
 
-    init {
+    fun setPerspective(
+        width: Int,
+        height: Int
+    ) {
         Matrix.perspectiveM(
             mProjection,
             0,

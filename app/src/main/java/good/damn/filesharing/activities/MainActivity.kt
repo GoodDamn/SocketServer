@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import good.damn.filesharing.activities.other.opengl.LevelEditorActivity
 import good.damn.filesharing.views.TrafficView
 
 class MainActivity
@@ -38,6 +39,12 @@ class MainActivity
         createServerButton(
             "SSH Server",
             SSHServerActivity::class.java,
+            layout
+        )
+
+        createServerButton(
+            "Level Editor",
+            LevelEditorActivity::class.java,
             layout
         )
 

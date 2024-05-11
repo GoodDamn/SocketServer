@@ -3,6 +3,7 @@ package good.damn.filesharing.opengl
 import android.util.Log
 import good.damn.filesharing.Application
 import good.damn.filesharing.controllers.msgrs.Messenger
+import good.damn.filesharing.opengl.camera.BaseCamera
 import good.damn.filesharing.opengl.light.DirectionalLight
 import good.damn.filesharing.opengl.textures.Texture
 import good.damn.filesharing.utils.FileUtils
@@ -26,7 +27,8 @@ class Level(
 
         fun createFromAssets(
             path: String,
-            program: Int
+            program: Int,
+            camera: BaseCamera
         ): Level {
 
             val inp = DataInputStream(
@@ -82,7 +84,8 @@ class Level(
                         "objs/$objName.obj"
                     ),
                     "textures/$textureName",
-                    program
+                    program,
+                    camera
                 )
 
                 mesh.setPosition(

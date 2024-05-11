@@ -5,6 +5,7 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
 import good.damn.filesharing.opengl.camera.RotationCamera
+import good.damn.filesharing.opengl.entities.Landscape
 import good.damn.filesharing.opengl.light.DirectionalLight
 import good.damn.filesharing.utils.AssetUtils
 import good.damn.filesharing.utils.ShaderUtils
@@ -24,6 +25,7 @@ class LevelEditorRenderer
     private var mProgram = 0
 
     private lateinit var mDirectionalLight: DirectionalLight
+    private lateinit var mLandscape: Landscape
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -65,6 +67,11 @@ class LevelEditorRenderer
             mProgram
         )
 
+        mLandscape = Landscape(
+            mProgram,
+            mCamera
+        )
+
         glEnable(
             GL_DEPTH_TEST
         )
@@ -83,7 +90,7 @@ class LevelEditorRenderer
             height
         )
 
-        mCamera.radius = 30f
+        mCamera.radius = 5f
 
         mCamera.setRotation(
             0f,
@@ -119,6 +126,7 @@ class LevelEditorRenderer
         )
 
         mDirectionalLight.draw()
+        mLandscape.draw()
     }
 
     fun onTouchDown(

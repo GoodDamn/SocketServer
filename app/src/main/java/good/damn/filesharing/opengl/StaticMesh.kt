@@ -158,4 +158,25 @@ class StaticMesh(
         mTexture.draw()
     }
 
+    private fun enableVertex(
+        attrib: Int,
+        offset: Int,
+        size: Int
+    ) {
+
+        glEnableVertexAttribArray(
+            attrib
+        )
+
+        glVertexAttribPointer(
+            attrib,
+            size,
+            GL_FLOAT,
+            false,
+            mStride,
+            offset
+        )
+
+    }
+
 }

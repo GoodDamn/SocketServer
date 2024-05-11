@@ -1,13 +1,18 @@
 package good.damn.filesharing.opengl.entities
 
 import android.opengl.GLES30.*
+import good.damn.filesharing.opengl.camera.BaseCamera
 import good.damn.filesharing.utils.BufferUtils
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import java.util.LinkedList
 
 class Landscape(
-    private val mProgram: Int
+    private val mProgram: Int,
+    camera: BaseCamera
+): Mesh(
+    mProgram,
+    camera
 ) {
 
     private val mVertexBuffer: FloatBuffer
@@ -16,24 +21,9 @@ class Landscape(
     private val mVertices = LinkedList<Float>()
     private val mIndices = LinkedList<Short>()
 
-    private val mAttrPosition: Int = glGetAttribLocation(
-        mProgram,
-        "position"
-    )
-
-    private val mAttrNormal: Int = glGetAttribLocation(
-        mProgram,
-        "normal"
-    )
-
-    private val mAttrTexCoord: Int = glGetAttribLocation(
-        mProgram,
-        "texCoord"
-    )
-
     init {
 
-        val gridX = 10
+        val gridX = 20
         val dgx = 1.0f / gridX
 
         var tx = 0.0f
@@ -96,45 +86,37 @@ class Landscape(
             )
     }
 
-    fun draw() {
+    override fun draw() {
+        super.draw()
 
-        glEnableVertexAttribArray(
-            mAttrPosition
+        mAttrPosition = glGetAttribLocation(
+            mProgram,
+            "position"
         )
 
-        glVertexAttribPointer(
+        mAttrTexCoord = glGetAttribLocation(
+            mProgram,
+            "texCoord"
+        )
+
+        mAttrNormal = glGetAttribLocation(
+            mProgram,
+            "normal"
+        )
+
+        enableVertex(
             mAttrPosition,
-            3,
-            GL_FLOAT,
-            false,
-            32,
-            mVertexBuffer
+            3
         )
 
-        glEnableVertexAttribArray(
-            mAttrTexCoord
-        )
-
-        glVertexAttribPointer(
+        enableVertex(
             mAttrTexCoord,
-            2,
-            GL_FLOAT,
-            false,
-            12,
-            mVertexBuffer
+            2
         )
 
-        glEnableVertexAttribArray(
-            mAttrNormal
-        )
-
-        glVertexAttribPointer(
+        enableVertex(
             mAttrNormal,
-            3,
-            GL_FLOAT,
-            false,
-            20,
-            mVertexBuffer
+            3
         )
 
         glDrawElements(
@@ -177,6 +159,24 @@ class Landscape(
         mVertices.add(0.0f)
         mVertices.add(1.0f)
         mVertices.add(0.0f)
+    }
+
+    private fun enableVertex(
+        attr: Int,
+        size: Int
+    ) {
+        glEnableVertexAttribArray(
+            attr
+        )
+
+        glVertexAttribPointer(
+            attr,
+            size,
+            GL_FLOAT,
+            false,
+            mStride,
+            mVertexBuffer
+        )
     }
 
 }

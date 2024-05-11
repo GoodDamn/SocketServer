@@ -29,7 +29,7 @@ class Landscape(
 
     init {
 
-        val gridX = 20
+        val gridX = 1
         val dgx = 1.0f / gridX
 
         var tx = 0.0f
@@ -40,7 +40,7 @@ class Landscape(
         var rightBottom: Short
 
 
-        for (x in 0 until gridX) {
+        for (x in 0..gridX) {
 
             if (x >= 1) {
                 rightTop = (x * 2).toShort()
@@ -63,7 +63,7 @@ class Landscape(
                 0.0f,
                 0.0f,
                 tx,
-                0.0f
+                -1.0f
             )
 
             createVertex(
@@ -71,7 +71,7 @@ class Landscape(
                 0.0f,
                 1.0f,
                 tx,
-                1.0f
+                0.0f
             )
 
             tx += dgx

@@ -8,6 +8,7 @@ import good.damn.filesharing.opengl.camera.RotationCamera
 import good.damn.filesharing.opengl.entities.Entity
 import good.damn.filesharing.opengl.light.DirectionalLight
 import good.damn.filesharing.utils.AssetUtils
+import good.damn.filesharing.utils.ShaderUtils
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -41,7 +42,7 @@ class TrafficRenderer
 
         glAttachShader(
             mProgram,
-            createShader(
+            ShaderUtils.createShader(
                 GL_VERTEX_SHADER,
                 AssetUtils.loadString(
                     "shaders/vert.glsl"
@@ -51,7 +52,7 @@ class TrafficRenderer
 
         glAttachShader(
             mProgram,
-            createShader(
+            ShaderUtils.createShader(
                 GL_FRAGMENT_SHADER,
                 AssetUtils.loadString(
                     "shaders/frag.glsl"
@@ -178,25 +179,4 @@ class TrafficRenderer
         mSumTick += mTick
         mPrevMillis = mCurrentMillis
     }
-
-    private fun createShader(
-        type: Int,
-        source: String
-    ): Int {
-        val shader = glCreateShader(
-            type
-        )
-
-        glShaderSource(
-            shader,
-            source
-        )
-
-        glCompileShader(
-            shader
-        )
-
-        return shader
-    }
-
 }

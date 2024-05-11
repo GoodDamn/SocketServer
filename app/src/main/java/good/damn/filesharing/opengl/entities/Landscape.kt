@@ -2,6 +2,7 @@ package good.damn.filesharing.opengl.entities
 
 import android.opengl.GLES30.*
 import good.damn.filesharing.opengl.camera.BaseCamera
+import good.damn.filesharing.opengl.textures.Texture
 import good.damn.filesharing.utils.BufferUtils
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
@@ -14,6 +15,11 @@ class Landscape(
     mProgram,
     camera
 ) {
+
+    var texture = Texture(
+        "textures/grass.jpg",
+        mProgram
+    )
 
     private val mVertexBuffer: FloatBuffer
     private val mIndicesBuffer: ShortBuffer
@@ -125,6 +131,8 @@ class Landscape(
             GL_UNSIGNED_SHORT,
             mIndicesBuffer
         )
+
+        texture.draw()
 
         glDisableVertexAttribArray(
             mAttrPosition

@@ -34,8 +34,8 @@ class Landscape(
 
     init {
 
-        val width = 2
-        val height = 2
+        val width = 64
+        val height = 64
         val dgx = 1.0f / width
         val dgy = 1.0f / height
 

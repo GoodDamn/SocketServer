@@ -19,6 +19,9 @@ class LevelEditorRenderer
 
     private val mCamera = RotationCamera()
 
+    private var mPrevX = 0f
+    private var mPrevY = 0f
+
     private var mWidth = 0
     private var mHeight = 0
 
@@ -119,9 +122,9 @@ class LevelEditorRenderer
         )
 
         glClearColor(
-            1.0f,
-                1.0f,
-            1.0f,
+            0.0f,
+                0.0f,
+            0.0f,
             1.0f
         )
 
@@ -133,6 +136,8 @@ class LevelEditorRenderer
         x: Float,
         y: Float
     ) {
+        mPrevX = x
+        mPrevY = y
 
     }
 
@@ -141,6 +146,13 @@ class LevelEditorRenderer
         y: Float
     ) {
 
+        mCamera.rotateBy(
+            (mPrevX - x) * 0.004f,
+            (y - mPrevY) * 0.004f
+        )
+
+        mPrevX = x
+        mPrevY = y
     }
 
     fun onTouchUp(

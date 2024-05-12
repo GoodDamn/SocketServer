@@ -13,6 +13,10 @@ class RotationCamera
     }
 
     var radius: Float = 6f
+        set(v) {
+            setRotation(mHDegrees, mVDegrees)
+            field = v
+        }
 
     private var mHDegrees: Float = 1f
     private var mVDegrees: Float = 1f

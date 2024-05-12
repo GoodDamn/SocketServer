@@ -8,6 +8,7 @@ import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import java.util.LinkedList
+import kotlin.random.Random
 
 class Landscape(
     private val mProgram: Int,
@@ -163,6 +164,19 @@ class Landscape(
         glDisableVertexAttribArray(
             mAttrNormal
         )
+    }
+
+    fun randomizeY() {
+        val c = mPositionBuffer.capacity()
+
+        var i = 1
+
+        while(i < c) {
+            mPositionBuffer.put(
+                i, Random.nextFloat() * 3f
+            )
+            i += 3
+        }
     }
 
     private fun createVertex(

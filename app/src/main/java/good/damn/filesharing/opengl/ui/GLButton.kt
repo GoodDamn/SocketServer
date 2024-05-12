@@ -20,15 +20,15 @@ class GLButton(
     ): Boolean {
         Log.d(TAG, "intercept: $mX $x ${mX+mWidth};;;;;$mY $y ${mY+mHeight}")
         if (mX > x || x > mX + mWidth) {
-            return true
+            return false
         }
 
         if (mY > y || y > mY + mHeight) {
-            return true
+            return false
         }
 
         mAction()
-        return false
+        return true
     }
 
 }

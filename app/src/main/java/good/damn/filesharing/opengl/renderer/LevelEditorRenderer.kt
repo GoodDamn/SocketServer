@@ -18,7 +18,9 @@ class LevelEditorRenderer
         private const val TAG = "LevelEditorRenderer"
     }
 
-    private lateinit var mButton: GLButton
+    private lateinit var mBtnZoomOut: GLButton
+    private lateinit var mBtnZoomIn: GLButton
+    private lateinit var mBtnRandomizeLand: GLButton
 
     private var isUi = false
 
@@ -111,14 +113,33 @@ class LevelEditorRenderer
             0f
         )
 
+        val btnLen = mWidth * 0.1f
 
-        mButton = GLButton(
+        mBtnZoomOut = GLButton(
             0f,
             0f,
-            mWidth * 0.1f,
-            mHeight * 0.1f
+            btnLen,
+            btnLen
         ) {
             mCamera.radius += 2
+        }
+
+        mBtnZoomIn = GLButton(
+            btnLen,
+            0f,
+            btnLen,
+            btnLen
+        ) {
+            mCamera.radius -= 2
+        }
+
+        mBtnRandomizeLand = GLButton(
+            mWidth - btnLen,
+            0f,
+            btnLen,
+            btnLen
+        ) {
+            mLandscape.randomizeY()
         }
     }
 
@@ -151,12 +172,16 @@ class LevelEditorRenderer
         x: Float,
         y: Float
     ) {
-        if (mButton.intercept(x, y)) {
-            mPrevX = x
-            mPrevY = y
+        if (mBtnZoomOut.intercept(x, y) ||
+            mBtnZoomIn.intercept(x,y) ||
+            mBtnRandomizeLand.intercept(x,y)
+        ) {
+            isUi = true
             return
         }
-        isUi = true
+
+        mPrevX = x
+        mPrevY = y
     }
 
     fun onTouchMove(

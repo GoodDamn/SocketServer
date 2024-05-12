@@ -4,7 +4,9 @@ import android.opengl.GLES30.*
 import good.damn.filesharing.opengl.camera.BaseCamera
 import good.damn.filesharing.opengl.textures.Texture
 import good.damn.filesharing.utils.BufferUtils
+import java.nio.Buffer
 import java.nio.FloatBuffer
+import java.nio.IntBuffer
 import java.nio.ShortBuffer
 import java.util.LinkedList
 
@@ -21,15 +23,19 @@ class Landscape(
         mProgram
     )
 
-    private val mVertexBuffer: FloatBuffer
+    private val mNormalBuffer: FloatBuffer
+    private val mTexCoordBuffer: FloatBuffer
+    private val mPositionBuffer: FloatBuffer
     private val mIndicesBuffer: ShortBuffer
 
-    private val mVertices = LinkedList<Float>()
+    private val mPositions = LinkedList<Float>()
+    private val mTexCoords = LinkedList<Float>()
+    private val mNormals = LinkedList<Float>()
     private val mIndices = LinkedList<Short>()
 
     init {
 
-        val gridX = 1
+        val gridX = 2
         val dgx = 1.0f / gridX
 
         var tx = 0.0f
@@ -59,17 +65,17 @@ class Landscape(
             val fx = x.toFloat()
 
             createVertex(
+                0.0f,
+                0.0f,
                 fx,
-                0.0f,
-                0.0f,
                 tx,
-                -1.0f
+                1.0f
             )
 
             createVertex(
-                fx,
-                0.0f,
                 1.0f,
+                0.0f,
+                fx,
                 tx,
                 0.0f
             )
@@ -77,18 +83,24 @@ class Landscape(
             tx += dgx
         }
 
-        val arrVert = mVertices.toFloatArray()
-
-        mVertexBuffer = BufferUtils
+        mPositionBuffer = BufferUtils
             .createFloatBuffer(
-                arrVert
+                mPositions.toFloatArray()
             )
 
-        val arrIndex = mIndices.toShortArray()
+        mNormalBuffer = BufferUtils
+            .createFloatBuffer(
+                mNormals.toFloatArray()
+            )
+
+        mTexCoordBuffer = BufferUtils
+            .createFloatBuffer(
+                mTexCoords.toFloatArray()
+            )
 
         mIndicesBuffer = BufferUtils
             .createShortBuffer(
-                arrIndex
+                mIndices.toShortArray()
             )
     }
 
@@ -112,17 +124,20 @@ class Landscape(
 
         enableVertex(
             mAttrPosition,
-            3
+            3,
+            mPositionBuffer
         )
 
         enableVertex(
             mAttrTexCoord,
-            2
+            2,
+            mTexCoordBuffer
         )
 
         enableVertex(
             mAttrNormal,
-            3
+            3,
+            mNormalBuffer
         )
 
         glDrawElements(
@@ -155,23 +170,24 @@ class Landscape(
         ty: Float
     ) {
         // Position
-        mVertices.add(x)
-        mVertices.add(y)
-        mVertices.add(z)
+        mPositions.add(x)
+        mPositions.add(y)
+        mPositions.add(z)
 
         // TexCoords
-        mVertices.add(tx)
-        mVertices.add(ty)
+        mTexCoords.add(tx)
+        mTexCoords.add(ty)
 
         // Normal
-        mVertices.add(0.0f)
-        mVertices.add(1.0f)
-        mVertices.add(0.0f)
+        mNormals.add(0.0f)
+        mNormals.add(1.0f)
+        mNormals.add(0.0f)
     }
 
     private fun enableVertex(
         attr: Int,
-        size: Int
+        size: Int,
+        buffer: Buffer
     ) {
         glEnableVertexAttribArray(
             attr
@@ -182,8 +198,8 @@ class Landscape(
             size,
             GL_FLOAT,
             false,
-            mStride,
-            mVertexBuffer
+            size * 4,
+            buffer
         )
     }
 

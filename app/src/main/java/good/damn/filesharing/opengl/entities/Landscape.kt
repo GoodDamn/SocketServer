@@ -34,8 +34,8 @@ class Landscape(
 
     init {
 
-        val width = 3
-        val height = 3
+        val width = 2
+        val height = 2
         val dgx = 1.0f / width
         val dgy = 1.0f / height
 
@@ -67,10 +67,13 @@ class Landscape(
         var rightTop: Short
         var rightBottom: Short
 
-        for (y in 1..height) {
-            for (x in 1..width) {
-                leftBottom = (x + y * width).toShort()
-                leftTop = (leftBottom - width - 1).toShort()
+        val ww = width + 1
+
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                leftTop = (x + y * ww).toShort()
+                leftBottom = (leftTop + ww).toShort()
+
                 rightTop = (leftTop + 1).toShort()
                 rightBottom = (leftBottom + 1).toShort()
 

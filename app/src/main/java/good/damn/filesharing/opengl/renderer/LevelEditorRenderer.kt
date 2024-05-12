@@ -7,6 +7,7 @@ import android.opengl.GLES30.*
 import good.damn.filesharing.opengl.camera.RotationCamera
 import good.damn.filesharing.opengl.entities.Landscape
 import good.damn.filesharing.opengl.light.DirectionalLight
+import good.damn.filesharing.opengl.ui.GLButton
 import good.damn.filesharing.utils.AssetUtils
 import good.damn.filesharing.utils.ShaderUtils
 
@@ -16,6 +17,10 @@ class LevelEditorRenderer
     companion object {
         private const val TAG = "LevelEditorRenderer"
     }
+
+    private lateinit var mButton: GLButton
+
+    private var isUi = false
 
     private val mCamera = RotationCamera()
 
@@ -105,6 +110,16 @@ class LevelEditorRenderer
             -100f,
             0f
         )
+
+
+        mButton = GLButton(
+            0f,
+            0f,
+            mWidth * 0.1f,
+            mHeight * 0.1f
+        ) {
+            mCamera.radius += 2
+        }
     }
 
     override fun onDrawFrame(
@@ -136,19 +151,25 @@ class LevelEditorRenderer
         x: Float,
         y: Float
     ) {
-        mPrevX = x
-        mPrevY = y
-
+        if (mButton.intercept(x, y)) {
+            mPrevX = x
+            mPrevY = y
+            return
+        }
+        isUi = true
     }
 
     fun onTouchMove(
         x: Float,
         y: Float
     ) {
+        if (isUi) {
+            return
+        }
 
         mCamera.rotateBy(
-            (mPrevX - x) * 0.004f,
-            (y - mPrevY) * 0.004f
+            (mPrevX - x) * 0.001f,
+            (y - mPrevY) * 0.001f
         )
 
         mPrevX = x
@@ -159,7 +180,7 @@ class LevelEditorRenderer
         x: Float,
         y: Float
     ) {
-
+        isUi = false
     }
 
 }

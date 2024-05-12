@@ -6,7 +6,6 @@ import good.damn.filesharing.opengl.textures.Texture
 import good.damn.filesharing.utils.BufferUtils
 import java.nio.Buffer
 import java.nio.FloatBuffer
-import java.nio.IntBuffer
 import java.nio.ShortBuffer
 import java.util.LinkedList
 
@@ -35,24 +34,45 @@ class Landscape(
 
     init {
 
-        val gridX = 2
-        val dgx = 1.0f / gridX
+        val width = 3
+        val height = 3
+        val dgx = 1.0f / width
+        val dgy = 1.0f / height
 
-        var tx = 0.0f
+        var tx: Float
+        var ty = 0f
+
+        for (z in 0..height) {
+            tx = 0f
+            val fz = z.toFloat()
+            for (x in 0..width) {
+                val fx = x.toFloat()
+
+                createVertex(
+                    fz,
+                    0.0f,
+                    fx,
+                    tx,
+                    ty
+                )
+
+                tx += dgx
+            }
+
+            ty += dgy
+        }
 
         var leftTop: Short
         var leftBottom: Short
         var rightTop: Short
         var rightBottom: Short
 
-
-        for (x in 0..gridX) {
-
-            if (x >= 1) {
-                rightTop = (x * 2).toShort()
-                rightBottom = (rightTop + 1).toShort()
-                leftTop = (rightTop - 2).toShort()
-                leftBottom = (rightTop - 1).toShort()
+        for (y in 1..height) {
+            for (x in 1..width) {
+                leftBottom = (x + y * width).toShort()
+                leftTop = (leftBottom - width - 1).toShort()
+                rightTop = (leftTop + 1).toShort()
+                rightBottom = (leftBottom + 1).toShort()
 
                 mIndices.add(leftTop)
                 mIndices.add(leftBottom)
@@ -61,26 +81,6 @@ class Landscape(
                 mIndices.add(rightTop)
                 mIndices.add(rightBottom)
             }
-
-            val fx = x.toFloat()
-
-            createVertex(
-                0.0f,
-                0.0f,
-                fx,
-                tx,
-                1.0f
-            )
-
-            createVertex(
-                1.0f,
-                0.0f,
-                fx,
-                tx,
-                0.0f
-            )
-
-            tx += dgx
         }
 
         mPositionBuffer = BufferUtils

@@ -2,43 +2,19 @@ package good.damn.filesharing.opengl.camera
 
 import android.opengl.GLES30.*
 import android.opengl.Matrix
+import good.damn.filesharing.opengl.entities.DimensionObject
 
-class BaseCamera(
-    width: Int,
-    height: Int
-) {
+open class BaseCamera
+: DimensionObject() {
 
-    private var mProjection = FloatArray(
+    private val mProjection = FloatArray(
         16
     )
 
-    private var model = FloatArray(
-        16
-    )
-
-    init {
-        Matrix.setIdentityM(
-            model,
-            0
-        )
-
-        Matrix.translateM(
-            model,
-            0,
-            0f,
-            0f,
-            -3f
-        )
-
-        Matrix.rotateM(
-            model,
-            0,
-            35f,
-            0f,
-            1f,
-            1f
-        )
-
+    fun setPerspective(
+        width: Int,
+        height: Int
+    ) {
         Matrix.perspectiveM(
             mProjection,
             0,

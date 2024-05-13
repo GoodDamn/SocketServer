@@ -72,13 +72,10 @@ class Texture(
             program,
             "texture"
         )
+
     }
 
     fun draw() {
-        glActiveTexture(
-            GL_TEXTURE_2D
-        )
-
         glBindTexture(
             GL_TEXTURE_2D,
             mId[0]

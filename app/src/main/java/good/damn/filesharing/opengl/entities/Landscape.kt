@@ -23,6 +23,9 @@ class Landscape(
         mProgram
     )
 
+    val width = 64
+    val height = 64
+
     private val mNormalBuffer: FloatBuffer
     private val mTexCoordBuffer: FloatBuffer
     private val mPositionBuffer: FloatBuffer
@@ -35,8 +38,6 @@ class Landscape(
 
     init {
 
-        val width = 64
-        val height = 64
         val dgx = 1.0f / width
         val dgy = 1.0f / height
 
@@ -163,6 +164,15 @@ class Landscape(
 
         glDisableVertexAttribArray(
             mAttrNormal
+        )
+    }
+
+    fun setPositionAxis(
+        index: Int,
+        v: Float
+    ) {
+        mPositionBuffer.put(
+            index, v
         )
     }
 

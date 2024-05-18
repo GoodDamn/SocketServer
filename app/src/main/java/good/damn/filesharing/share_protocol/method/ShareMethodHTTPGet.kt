@@ -3,24 +3,23 @@ package good.damn.filesharing.share_protocol.method
 import good.damn.filesharing.Application
 import good.damn.filesharing.services.network.request.HTTPResponseService
 import java.io.File
+import java.io.OutputStream
 
 class ShareMethodHTTPGet
-: ShareMethod(
+: ShareMethodStream(
     byteArrayOf(0x47,0x45,0x54) // GET - ASCII Codes
 ) {
-    override fun response(
+    override fun responseStream(
+        out: OutputStream,
         request: ByteArray,
         argsCount: Int,
-        argsPosition: Int,
-        userFolder: File
-    ): ByteArray {
+        argsPosition: Int
+    ) {
 
         val httpMessage = String(
             request,
             Application.CHARSET
         )
-
-        //delegate?.onHttpGet(httpMessage)
 
         val path = httpMessage
             .substring(
@@ -32,7 +31,7 @@ class ShareMethodHTTPGet
             )
 
         val response = HTTPResponseService()
-        return response.execute(
+        response.execute(
             path
         )
     }

@@ -2,7 +2,6 @@ package good.damn.filesharing.servers
 
 import android.util.Log
 import good.damn.filesharing.Application
-import good.damn.filesharing.listeners.network.server.ServerListener
 import good.damn.filesharing.listeners.network.server.TCPServerListener
 import good.damn.filesharing.services.network.request.ResponseService
 import java.io.ByteArrayOutputStream
@@ -80,13 +79,19 @@ open class TCPServer(
 
             var n: Int
 
-            Thread.sleep(500)
+            var attempts = 0
+
             while (true) {
                 Log.d(TAG, "listen: READ ${inp.available()} ${outArr.size()}")
                 if (inp.available() == 0) {
-                    break
+                    if (attempts >= 1000) {
+                        break
+                    }
+                    attempts++
+                    continue
                 }
 
+                attempts = 0
                 n = inp.read(buffer)
                 Log.d(TAG, "listen: READ $n ${outArr.size()}")
 
@@ -106,17 +111,13 @@ open class TCPServer(
 
             Log.d(TAG, "listen: DATA: ${data.size}")
 
-            val response = mResponseService
-                .manage(data)
+            mResponseService
+                .responseStream(out,data)
 
-            if (mServer == null || response.isEmpty()) {
+            if (mServer == null) {
                 out.close()
                 return false
             }
-
-            out.write(
-                response
-            )
 
             delegate?.onDisconnectClient(
                 clientSocket

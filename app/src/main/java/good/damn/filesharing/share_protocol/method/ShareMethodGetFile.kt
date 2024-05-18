@@ -4,22 +4,22 @@ import good.damn.filesharing.Application
 import good.damn.filesharing.utils.ByteUtils
 import good.damn.filesharing.utils.FileUtils
 import good.damn.filesharing.utils.ResponseUtils
-import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.OutputStream
 
 class ShareMethodGetFile
-: ShareMethod(
+: ShareMethodStream(
     byteArrayOf(
         0x67, 0x66 // gf
     )
 ) {
 
-    override fun response(
+    override fun responseStream(
+        out: OutputStream,
         request: ByteArray,
         argsCount: Int,
-        argsPosition: Int,
-        userFolder: File
-    ): ByteArray {
+        argsPosition: Int
+    ) {
         val pathLength = request[argsPosition]
             .toInt()
 
@@ -32,27 +32,26 @@ class ShareMethodGetFile
 
         val file = FileUtils.fromDoc(
             path
-        ) ?: return ResponseUtils.responseMessageId(
-            "$path not exists"
         )
 
-        val baos = ByteArrayOutputStream()
+        if (file == null) {
+            ResponseUtils.responseMessageIdStream(
+                out,
+                "$path not exists"
+            )
+            return
+        }
 
-        baos.write(ByteUtils.integer(
+        out.write(ByteUtils.integer(
             hashCode()
         ))
 
-        baos.write(ByteUtils.integer(
+        out.write(ByteUtils.integer(
             file.size
         ))
 
-        baos.write(
+        out.write(
             file
         )
-
-        val result = baos.toByteArray()
-        baos.close()
-
-        return result
     }
 }

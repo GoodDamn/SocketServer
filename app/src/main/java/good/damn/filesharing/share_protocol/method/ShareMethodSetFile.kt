@@ -6,20 +6,21 @@ import good.damn.filesharing.utils.ByteUtils
 import good.damn.filesharing.utils.FileUtils
 import good.damn.filesharing.utils.ResponseUtils
 import java.io.File
+import java.io.OutputStream
 
 class ShareMethodSetFile
-: ShareMethod(
+: ShareMethodStream(
     "sf".toByteArray(
         Application.CHARSET_ASCII
     )
 ) {
 
-    override fun response(
+    override fun responseStream(
+        out: OutputStream,
         request: ByteArray,
         argsCount: Int,
-        argsPosition: Int,
-        userFolder: File
-    ): ByteArray {
+        argsPosition: Int
+    ) {
 
         // TO DO: Capture a input stream to safe RAM
         // If it has a large file
@@ -54,7 +55,9 @@ class ShareMethodSetFile
             position,
             dataLen
         )
-        return ResponseUtils.responseMessageId(
+
+        ResponseUtils.responseMessageIdStream(
+            out,
             "File $fileName has been saved"
         )
     }

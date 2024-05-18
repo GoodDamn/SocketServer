@@ -1,15 +1,16 @@
 package good.damn.filesharing.share_protocol.method
 
 import android.util.Log
-import good.damn.filesharing.share_protocol.interfaces.Responsible
+import good.damn.filesharing.share_protocol.interfaces.ResponseStreamable
 import good.damn.filesharing.utils.ResponseUtils
 import java.io.File
+import java.io.OutputStream
 
-open class ShareMethod(
+open class ShareMethodStream(
     method: ByteArray,
     offset: Int = 0,
     length: Int = method.size
-): Responsible {
+): ResponseStreamable {
     
     companion object {
         private const val TAG = "ShareMethod"
@@ -19,14 +20,15 @@ open class ShareMethod(
             method.sum(method,offset, length) shl 1
             else -1
 
-    override fun response(
+    override fun responseStream(
+        out: OutputStream,
         request: ByteArray,
         argsCount: Int,
-        argsPosition: Int,
-        userFolder: File
-    ):ByteArray {
+        argsPosition: Int
+    ) {
         Log.d(TAG, "response: NO IMPLEMENTATION")
-        return ResponseUtils.responseMessageId(
+        ResponseUtils.responseMessageIdStream(
+            out,
             "No implementation for this method"
         )
     }

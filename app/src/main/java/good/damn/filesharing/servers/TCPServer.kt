@@ -15,7 +15,9 @@ open class TCPServer(
     port
 ), Runnable {
 
-    private val TAG = "TCPServer"
+    companion object {
+        private const val TAG = "TCPServer"
+    }
 
     private var mServer: ServerSocket? = null
 

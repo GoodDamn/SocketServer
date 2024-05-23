@@ -30,6 +30,17 @@ class ByteUtils {
                 (inp[offset+3].toInt() and 0xff)
         }
 
+        fun integer(
+            i: Int,
+            copyTo: ByteArray,
+            offset: Int = 0
+        ) {
+            copyTo[offset] = ((i shr 24) and 0xff).toByte()
+            copyTo[offset + 1] = ((i shr 16) and 0xff).toByte()
+            copyTo[offset + 2] = ((i shr 8) and 0xff).toByte()
+            copyTo[offset + 3] = (i and 0xff).toByte()
+        }
+
         fun integer(i: Int): ByteArray {
             return byteArrayOf(
                 ((i shr 24) and 0xff).toByte(),

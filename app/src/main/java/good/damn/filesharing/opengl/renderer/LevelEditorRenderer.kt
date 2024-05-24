@@ -7,6 +7,7 @@ import android.opengl.GLES30.*
 import good.damn.filesharing.opengl.camera.RotationCamera
 import good.damn.filesharing.opengl.entities.Landscape
 import good.damn.filesharing.opengl.light.DirectionalLight
+import good.damn.filesharing.opengl.maps.DisplacementMap
 import good.damn.filesharing.opengl.ui.GLButton
 import good.damn.filesharing.utils.AssetUtils
 import good.damn.filesharing.utils.ShaderUtils
@@ -79,6 +80,9 @@ class LevelEditorRenderer
 
         mLandscape = Landscape(
             mProgram,
+            DisplacementMap(
+                "maps/displace.png"
+            ),
             mCamera
         )
 

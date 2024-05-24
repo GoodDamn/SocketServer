@@ -2,6 +2,7 @@ package good.damn.filesharing.opengl.entities
 
 import android.opengl.GLES30.*
 import good.damn.filesharing.opengl.camera.BaseCamera
+import good.damn.filesharing.opengl.maps.DisplacementMap
 import good.damn.filesharing.opengl.textures.Texture
 import good.damn.filesharing.utils.BufferUtils
 import java.nio.Buffer
@@ -12,6 +13,7 @@ import kotlin.random.Random
 
 class Landscape(
     private val mProgram: Int,
+    displace: DisplacementMap,
     camera: BaseCamera
 ): Mesh(
     mProgram,
@@ -41,27 +43,30 @@ class Landscape(
         val dgx = 1.0f / width
         val dgy = 1.0f / height
 
-        var tx: Float
-        var ty = 0f
+        var textureX: Float
+        var textureY = 0f
 
         for (z in 0..height) {
-            tx = 0f
+            textureX = 0f
             val fz = z.toFloat()
             for (x in 0..width) {
                 val fx = x.toFloat()
 
                 createVertex(
                     fz,
-                    0.0f,
+                    displace.getHeight(
+                        x,
+                        z
+                    ),
                     fx,
-                    tx,
-                    ty
+                    textureX,
+                    textureY
                 )
 
-                tx += dgx
+                textureX += dgx
             }
 
-            ty += dgy
+            textureY += dgy
         }
 
         var leftTop: Short

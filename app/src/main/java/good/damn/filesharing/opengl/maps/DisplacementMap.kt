@@ -8,8 +8,7 @@ import good.damn.filesharing.opengl.factories.SKBitmapFactory
 import good.damn.filesharing.utils.ByteUtils
 
 class DisplacementMap(
-    assetPath: String,
-    context: Context
+    assetPath: String
 ) {
     companion object {
         private const val TAG = "DisplacementMap"
@@ -17,7 +16,7 @@ class DisplacementMap(
     }
 
     private val mBitmap = SKBitmapFactory
-        .createFromAssets(assetPath,context)
+        .createFromAssets(assetPath)
 
     private val mColorBytes = ByteArray(4)
     fun getHeight(

@@ -190,11 +190,13 @@ class LevelEditorRenderer(
         x: Float,
         y: Float
     ) {
-        if (mBtnRandomizeLand.intercept(x,y)) {
-            return
-        }
         mPrevX = x
         mPrevY = y
+        if (mBtnRandomizeLand.intercept(x,y) ||
+            mBtnLoadDisplacementMap.intercept(x,y)
+        ) {
+            return
+        }
     }
 
     fun onTouchMove(

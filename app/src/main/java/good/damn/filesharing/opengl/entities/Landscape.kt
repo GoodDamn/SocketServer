@@ -197,7 +197,7 @@ class Landscape(
 
         while(i < c) {
             mPositionBuffer.put(
-                i, Random.nextFloat() * 3.7f
+                i, mPositionBuffer[i] + Random.nextFloat() * 3.7f
             )
             i += 3
         }

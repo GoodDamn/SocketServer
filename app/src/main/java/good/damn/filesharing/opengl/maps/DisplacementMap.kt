@@ -22,8 +22,6 @@ class DisplacementMap(
     private val mBitmapWidth = mBitmap.width
     private val mBitmapHeight = mBitmap.height
 
-    private val mColorBytes = ByteArray(4)
-
     fun getHeightRatio(
         x: Int,
         y: Int,
@@ -47,12 +45,7 @@ class DisplacementMap(
         val color = mBitmap
             .getPixel(xx,yy)
 
-        ByteUtils.integer(
-            color,
-            mColorBytes
-        )
-        val digitalHeight = mColorBytes[1]
-            .toInt() and 0xff
+        val digitalHeight = color and 0xff
 
         val height = (digitalHeight / 255f) * MAX_HEIGHT
         return height

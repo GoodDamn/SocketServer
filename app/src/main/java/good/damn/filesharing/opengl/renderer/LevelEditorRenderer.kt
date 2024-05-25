@@ -23,8 +23,6 @@ class LevelEditorRenderer
     private lateinit var mBtnZoomIn: GLButton
     private lateinit var mBtnRandomizeLand: GLButton
 
-    private var isUi = false
-
     private val mCamera = RotationCamera()
 
     private var mPrevX = 0f
@@ -176,14 +174,9 @@ class LevelEditorRenderer
         x: Float,
         y: Float
     ) {
-        if (mBtnZoomOut.intercept(x, y) ||
-            mBtnZoomIn.intercept(x,y) ||
-            mBtnRandomizeLand.intercept(x,y)
-        ) {
-            isUi = true
+        if (mBtnRandomizeLand.intercept(x,y)) {
             return
         }
-
         mPrevX = x
         mPrevY = y
     }
@@ -192,7 +185,9 @@ class LevelEditorRenderer
         x: Float,
         y: Float
     ) {
-        if (isUi) {
+        if (mBtnZoomOut.intercept(x, y) ||
+            mBtnZoomIn.intercept(x,y)
+        ) {
             return
         }
 
@@ -209,7 +204,7 @@ class LevelEditorRenderer
         x: Float,
         y: Float
     ) {
-        isUi = false
+
     }
 
 }

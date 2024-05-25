@@ -6,18 +6,38 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import good.damn.filesharing.opengl.factories.SKBitmapFactory
 import good.damn.filesharing.utils.ByteUtils
+import java.io.InputStream
 import kotlin.math.roundToInt
 
 class DisplacementMap(
-    assetPath: String
+    private val mBitmap: Bitmap
 ) {
     companion object {
+        fun createFromStream(
+            inp: InputStream
+        ): DisplacementMap {
+            val b = BitmapFactory
+                .decodeStream(inp)
+
+            inp.close()
+
+            return DisplacementMap(
+                b
+            )
+        }
+
+        fun createFromAssets(
+            assetPath: String
+        ): DisplacementMap {
+            return DisplacementMap(
+                SKBitmapFactory
+                    .createFromAssets(assetPath)
+            )
+        }
+
         private const val TAG = "DisplacementMap"
         private const val MAX_HEIGHT = 15.0f
     }
-
-    private val mBitmap = SKBitmapFactory
-        .createFromAssets(assetPath)
 
     private val mBitmapWidth = mBitmap.width
     private val mBitmapHeight = mBitmap.height

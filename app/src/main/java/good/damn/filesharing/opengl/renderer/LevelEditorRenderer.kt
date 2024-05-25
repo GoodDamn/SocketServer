@@ -1,9 +1,11 @@
 package good.damn.filesharing.opengl.renderer
 
+import android.content.Context
 import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
+import good.damn.filesharing.activities.other.opengl.LevelEditorActivity
 import good.damn.filesharing.opengl.camera.RotationCamera
 import good.damn.filesharing.opengl.entities.Landscape
 import good.damn.filesharing.opengl.light.DirectionalLight
@@ -11,9 +13,11 @@ import good.damn.filesharing.opengl.maps.DisplacementMap
 import good.damn.filesharing.opengl.ui.GLButton
 import good.damn.filesharing.utils.AssetUtils
 import good.damn.filesharing.utils.ShaderUtils
+import java.io.InputStream
 
-class LevelEditorRenderer
-: GLSurfaceView.Renderer {
+class LevelEditorRenderer(
+    var context: LevelEditorActivity
+): GLSurfaceView.Renderer {
 
     companion object {
         private const val TAG = "LevelEditorRenderer"
@@ -22,6 +26,7 @@ class LevelEditorRenderer
     private lateinit var mBtnZoomOut: GLButton
     private lateinit var mBtnZoomIn: GLButton
     private lateinit var mBtnRandomizeLand: GLButton
+    private lateinit var mBtnLoadDisplacementMap: GLButton
 
     private val mCamera = RotationCamera()
 
@@ -78,7 +83,7 @@ class LevelEditorRenderer
 
         mLandscape = Landscape(
             mProgram,
-            DisplacementMap(
+            DisplacementMap.createFromAssets(
                 "maps/displace.png"
             ),
             mCamera
@@ -143,6 +148,17 @@ class LevelEditorRenderer
         ) {
             mLandscape.randomizeY()
         }
+
+        mBtnLoadDisplacementMap = GLButton(
+            mWidth - btnLen*2,
+            0f,
+            btnLen,
+            btnLen
+        ) {
+            context.loadFromUserDisk(
+                "*/*"
+            )
+        }
     }
 
     override fun onDrawFrame(
@@ -205,6 +221,16 @@ class LevelEditorRenderer
         y: Float
     ) {
 
+    }
+
+    fun onLoadFromUserDisk(
+        inp: InputStream
+    ) {
+        mLandscape.displace(
+            DisplacementMap.createFromStream(
+                inp
+            )
+        )
     }
 
 }

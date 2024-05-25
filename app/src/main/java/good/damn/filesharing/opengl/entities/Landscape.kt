@@ -190,6 +190,32 @@ class Landscape(
         )
     }
 
+    fun displace(
+        map: DisplacementMap
+    ) {
+        val c = mPositionBuffer.capacity()
+
+        var i = 1
+
+        var x: Int
+        var z: Int
+
+        while(i < c) {
+            x = mPositionBuffer[i-1].toInt()
+            z = mPositionBuffer[i+1].toInt()
+
+            mPositionBuffer.put(
+                i, map.getHeightRatio(
+                    x,
+                    z,
+                    width,
+                    height
+                )
+            )
+            i += 3
+        }
+    }
+
     fun randomizeY() {
         val c = mPositionBuffer.capacity()
 

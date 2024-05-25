@@ -44,8 +44,6 @@ class DisplacementMap(
             else x
         val yy = if (y == mBitmapHeight) y-1
             else y
-
-        Log.d(TAG, "getHeight: COORDS: $xx;$mBitmapWidth $yy $mBitmapHeight")
         val color = mBitmap
             .getPixel(xx,yy)
 
@@ -57,7 +55,6 @@ class DisplacementMap(
             .toInt() and 0xff
 
         val height = (digitalHeight / 255f) * MAX_HEIGHT
-        Log.d(TAG, "getHeight: $color $digitalHeight $height")
         return height
     }
 }

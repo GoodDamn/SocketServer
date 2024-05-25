@@ -1,6 +1,7 @@
 package good.damn.filesharing.opengl.entities
 
 import android.opengl.GLES30.*
+import android.util.Log
 import good.damn.filesharing.opengl.camera.BaseCamera
 import good.damn.filesharing.opengl.maps.DisplacementMap
 import good.damn.filesharing.opengl.textures.Texture
@@ -19,6 +20,9 @@ class Landscape(
     mProgram,
     camera
 ) {
+    companion object {
+        private const val TAG = "Landscape"
+    }
 
     var texture = Texture(
         "textures/grass.jpg",
@@ -46,6 +50,8 @@ class Landscape(
         var textureX: Float
         var textureY = 0f
 
+        val time = System.currentTimeMillis()
+        Log.d(TAG, "init: $time")
         for (z in 0..height) {
             textureX = 0f
             val fz = z.toFloat()
@@ -70,6 +76,7 @@ class Landscape(
 
             textureY += dgy
         }
+        Log.d(TAG, "init: DELTA_TIME: ${System.currentTimeMillis() - time}")
 
         var leftTop: Short
         var leftBottom: Short

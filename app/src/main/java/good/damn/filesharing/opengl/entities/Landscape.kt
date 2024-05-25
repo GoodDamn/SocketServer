@@ -25,8 +25,8 @@ class Landscape(
         mProgram
     )
 
-    val width = 64
-    val height = 64
+    val width = 100
+    val height = 100
 
     private val mNormalBuffer: FloatBuffer
     private val mTexCoordBuffer: FloatBuffer
@@ -54,9 +54,11 @@ class Landscape(
 
                 createVertex(
                     fz,
-                    displace.getHeight(
+                    displace.getHeightRatio(
                         x,
-                        z
+                        z,
+                        width,
+                        height
                     ),
                     fx,
                     textureX,

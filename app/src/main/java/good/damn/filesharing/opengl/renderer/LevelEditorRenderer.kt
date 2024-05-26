@@ -214,9 +214,10 @@ class LevelEditorRenderer(
             0.2f,
             1.0f
         )
-        mDirectionalLight.draw()
+
         mLandscape.draw()
         mSky.draw()
+        mDirectionalLight.draw()
     }
 
     fun onTouchDown(

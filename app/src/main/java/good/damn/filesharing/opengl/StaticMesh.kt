@@ -141,6 +141,8 @@ class StaticMesh(
 
     override fun draw() {
         super.draw()
+
+        mTexture.draw()
         glBindVertexArray(
             mVertexArray[0]
         )
@@ -151,8 +153,6 @@ class StaticMesh(
             GL_UNSIGNED_SHORT,
             0
         )
-
-        mTexture.draw()
 
         glBindVertexArray(
             0

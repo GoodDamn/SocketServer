@@ -44,6 +44,8 @@ class Landscape(
     override fun draw() {
         super.draw()
 
+        texture.draw()
+
         mAttrPosition = glGetAttribLocation(
             mProgram,
             "position"
@@ -83,8 +85,6 @@ class Landscape(
             GL_UNSIGNED_INT,
             mIndicesBuffer
         )
-
-        texture.draw()
 
         glDisableVertexAttribArray(
             mAttrPosition

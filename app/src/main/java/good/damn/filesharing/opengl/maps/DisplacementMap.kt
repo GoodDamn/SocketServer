@@ -36,7 +36,7 @@ class DisplacementMap(
         }
 
         private const val TAG = "DisplacementMap"
-        private const val MAX_HEIGHT = 15.0f
+        private const val MAX_HEIGHT = 30.0f
     }
 
     private val mBitmapWidth = mBitmap.width

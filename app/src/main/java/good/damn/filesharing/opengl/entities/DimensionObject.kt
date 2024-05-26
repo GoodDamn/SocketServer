@@ -28,4 +28,18 @@ open class DimensionObject {
         model[13] = y
         model[14] = z
     }
+
+    open fun setScale(
+        x: Float,
+        y: Float,
+        z: Float
+    ) {
+        scaleM(
+            model,
+            0,
+            x,
+            y,
+            z
+        )
+    }
 }

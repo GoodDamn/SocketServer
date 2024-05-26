@@ -181,15 +181,6 @@ class Landscape(
         )
     }
 
-    fun setPositionAxis(
-        index: Int,
-        v: Float
-    ) {
-        mPositionBuffer.put(
-            index, v
-        )
-    }
-
     fun displace(
         map: DisplacementMap
     ) {
@@ -227,6 +218,19 @@ class Landscape(
             )
             i += 3
         }
+    }
+
+    override fun setScale(
+        x: Float,
+        y: Float,
+        z: Float
+    ) {
+        super.setScale(x, y, z)
+        setPosition(
+            width * -0.5f * x,
+            0f,
+            height * -0.5f * z
+        )
     }
 
     private fun createVertex(

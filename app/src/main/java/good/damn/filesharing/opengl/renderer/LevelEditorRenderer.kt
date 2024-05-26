@@ -76,7 +76,6 @@ class LevelEditorRenderer(
             mProgram
         )
 
-
         mDirectionalLight = DirectionalLight(
             mProgram
         )
@@ -87,6 +86,12 @@ class LevelEditorRenderer(
                 "maps/displace.png"
             ),
             mCamera
+        )
+
+        mLandscape.setScale(
+            10.0f,
+            10.0f,
+            10.0f
         )
 
         glEnable(
@@ -107,7 +112,7 @@ class LevelEditorRenderer(
             height
         )
 
-        mCamera.radius = 5f
+        mCamera.radius = 100f
 
         mCamera.setRotation(
             0f,

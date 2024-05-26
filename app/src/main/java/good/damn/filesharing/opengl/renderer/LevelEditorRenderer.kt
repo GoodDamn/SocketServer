@@ -6,6 +6,8 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
 import good.damn.filesharing.activities.other.opengl.LevelEditorActivity
+import good.damn.filesharing.opengl.Object3D
+import good.damn.filesharing.opengl.StaticMesh
 import good.damn.filesharing.opengl.camera.RotationCamera
 import good.damn.filesharing.opengl.entities.Landscape
 import good.damn.filesharing.opengl.light.DirectionalLight
@@ -40,6 +42,8 @@ class LevelEditorRenderer(
 
     private lateinit var mDirectionalLight: DirectionalLight
     private lateinit var mLandscape: Landscape
+
+    private lateinit var mSky: StaticMesh
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -86,8 +90,8 @@ class LevelEditorRenderer(
         )
 
         mLandscape.setResolution(
-            250,
-            250
+            200,
+            200
         )
 
         mLandscape.displace(
@@ -100,6 +104,15 @@ class LevelEditorRenderer(
             5.0f,
             5.0f,
             5.0f
+        )
+
+        mSky = StaticMesh(
+            Object3D.createFromAssets(
+                "objs/sphere.obj"
+            ),
+            "textures/sky/skysphere_light.jpg",
+            mProgram,
+            mCamera
         )
 
         glEnable(
@@ -132,6 +145,12 @@ class LevelEditorRenderer(
             10f,
             -100f,
             0f
+        )
+
+        mSky.setScale(
+            1000000f,
+            1000000f,
+            1000000f
         )
 
         val btnLen = mWidth * 0.1f
@@ -190,14 +209,14 @@ class LevelEditorRenderer(
         )
 
         glClearColor(
-            0.0f,
-                0.0f,
-            0.0f,
+            0.2f,
+                0.2f,
+            0.2f,
             1.0f
         )
-
         mDirectionalLight.draw()
         mLandscape.draw()
+        mSky.draw()
     }
 
     fun onTouchDown(

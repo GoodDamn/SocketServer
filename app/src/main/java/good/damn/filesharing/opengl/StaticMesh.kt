@@ -152,10 +152,11 @@ class StaticMesh(
             0
         )
 
+        mTexture.draw()
+
         glBindVertexArray(
             0
         )
-        mTexture.draw()
     }
 
     private fun enableVertex(

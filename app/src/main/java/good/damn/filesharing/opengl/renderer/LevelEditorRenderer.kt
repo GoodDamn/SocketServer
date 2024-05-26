@@ -82,21 +82,30 @@ class LevelEditorRenderer(
 
         mLandscape = Landscape(
             mProgram,
-            /*DisplacementMap.createFromAssets(
-                "maps/displace.png"
-            ),*/
             mCamera
         )
 
+        mLandscape.setResolution(
+            250,
+            250
+        )
+
+        mLandscape.displace(
+            DisplacementMap.createFromAssets(
+                "maps/displace.png"
+            )
+        )
+
         mLandscape.setScale(
-            10.0f,
-            10.0f,
-            10.0f
+            5.0f,
+            5.0f,
+            5.0f
         )
 
         glEnable(
             GL_DEPTH_TEST
         )
+
     }
 
     override fun onSurfaceChanged(
@@ -112,7 +121,7 @@ class LevelEditorRenderer(
             height
         )
 
-        mCamera.radius = 100f
+        mCamera.radius = 20f
 
         mCamera.setRotation(
             0f,

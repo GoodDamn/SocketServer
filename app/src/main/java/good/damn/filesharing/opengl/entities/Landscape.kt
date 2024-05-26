@@ -1,6 +1,7 @@
 package good.damn.filesharing.opengl.entities
 
 import android.opengl.GLES30.*
+import android.opengl.GLES32
 import android.util.Log
 import good.damn.filesharing.opengl.camera.BaseCamera
 import good.damn.filesharing.opengl.maps.DisplacementMap
@@ -37,7 +38,7 @@ class Landscape(
     private lateinit var mIndicesBuffer: IntBuffer
 
     init {
-        setResolution(500,500)
+        setResolution(5,5)
     }
 
     override fun draw() {

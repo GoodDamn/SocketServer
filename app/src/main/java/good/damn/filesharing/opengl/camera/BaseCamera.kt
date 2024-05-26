@@ -21,7 +21,7 @@ open class BaseCamera
             85.0f,
             width.toFloat() / height.toFloat(),
             0.1f,
-            2000f
+            100000f
         )
     }
 

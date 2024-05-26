@@ -8,13 +8,12 @@ import good.damn.filesharing.opengl.textures.Texture
 import good.damn.filesharing.utils.BufferUtils
 import java.nio.Buffer
 import java.nio.FloatBuffer
+import java.nio.IntBuffer
 import java.nio.ShortBuffer
-import java.util.LinkedList
 import kotlin.random.Random
 
 class Landscape(
     private val mProgram: Int,
-    displace: DisplacementMap,
     camera: BaseCamera
 ): Mesh(
     mProgram,
@@ -29,98 +28,16 @@ class Landscape(
         mProgram
     )
 
-    val width = 100
-    val height = 100
+    private var mWidth = 1
+    private var mHeight = 1
 
-    private val mNormalBuffer: FloatBuffer
-    private val mTexCoordBuffer: FloatBuffer
-    private val mPositionBuffer: FloatBuffer
-    private val mIndicesBuffer: ShortBuffer
-
-    private val mPositions = LinkedList<Float>()
-    private val mTexCoords = LinkedList<Float>()
-    private val mNormals = LinkedList<Float>()
-    private val mIndices = LinkedList<Short>()
+    private lateinit var mNormalBuffer: FloatBuffer
+    private lateinit var mTexCoordBuffer: FloatBuffer
+    private lateinit var mPositionBuffer: FloatBuffer
+    private lateinit var mIndicesBuffer: IntBuffer
 
     init {
-
-        val dgx = 1.0f / width
-        val dgy = 1.0f / height
-
-        var textureX: Float
-        var textureY = 0f
-
-        val time = System.currentTimeMillis()
-        Log.d(TAG, "init: $time")
-        for (z in 0..height) {
-            textureX = 0f
-            val fz = z.toFloat()
-            for (x in 0..width) {
-                val fx = x.toFloat()
-
-                createVertex(
-                    fz,
-                    displace.getHeightRatio(
-                        x,
-                        z,
-                        width,
-                        height
-                    ),
-                    fx,
-                    textureX,
-                    textureY
-                )
-
-                textureX += dgx
-            }
-
-            textureY += dgy
-        }
-        Log.d(TAG, "init: DELTA_TIME: ${System.currentTimeMillis() - time}")
-
-        var leftTop: Short
-        var leftBottom: Short
-        var rightTop: Short
-        var rightBottom: Short
-
-        val ww = width + 1
-
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                leftTop = (x + y * ww).toShort()
-                leftBottom = (leftTop + ww).toShort()
-
-                rightTop = (leftTop + 1).toShort()
-                rightBottom = (leftBottom + 1).toShort()
-
-                mIndices.add(leftTop)
-                mIndices.add(leftBottom)
-                mIndices.add(rightBottom)
-                mIndices.add(leftTop)
-                mIndices.add(rightTop)
-                mIndices.add(rightBottom)
-            }
-        }
-
-        mPositionBuffer = BufferUtils
-            .createFloatBuffer(
-                mPositions.toFloatArray()
-            )
-
-        mNormalBuffer = BufferUtils
-            .createFloatBuffer(
-                mNormals.toFloatArray()
-            )
-
-        mTexCoordBuffer = BufferUtils
-            .createFloatBuffer(
-                mTexCoords.toFloatArray()
-            )
-
-        mIndicesBuffer = BufferUtils
-            .createShortBuffer(
-                mIndices.toShortArray()
-            )
+        setResolution(500,500)
     }
 
     override fun draw() {
@@ -162,7 +79,7 @@ class Landscape(
         glDrawElements(
             GL_TRIANGLES,
             mIndicesBuffer.capacity(),
-            GL_UNSIGNED_SHORT,
+            GL_UNSIGNED_INT,
             mIndicesBuffer
         )
 
@@ -179,6 +96,94 @@ class Landscape(
         glDisableVertexAttribArray(
             mAttrNormal
         )
+    }
+
+    fun setResolution(
+        width: Int,
+        height: Int
+    ) {
+        mWidth = width
+        mHeight = height
+
+        val dgx = 1.0f / mWidth
+        val dgy = 1.0f / mHeight
+
+        var textureX: Float
+        var textureY = 0f
+
+        val gridLen = (width+1) * (height+1)
+
+        mPositionBuffer = BufferUtils
+            .allocateFloat(
+                gridLen * 3
+            )
+
+        mNormalBuffer = BufferUtils
+            .allocateFloat(
+                gridLen * 3
+            )
+
+        mTexCoordBuffer = BufferUtils
+            .allocateFloat(
+                gridLen * 2
+            )
+
+        mIndicesBuffer = BufferUtils
+            .allocateInt(
+                gridLen * 6
+            )
+
+        val time = System.currentTimeMillis()
+        Log.d(TAG, "init: $time")
+        for (z in 0..mHeight) {
+            textureX = 0f
+            val fz = z.toFloat()
+            for (x in 0..mWidth) {
+                val fx = x.toFloat()
+
+                createVertex(
+                    fz,
+                    0.0f,
+                    fx,
+                    textureX,
+                    textureY
+                )
+
+                textureX += dgx
+            }
+
+            textureY += dgy
+        }
+        Log.d(TAG, "init: DELTA_TIME: ${System.currentTimeMillis() - time}")
+
+        var leftTop: Int
+        var leftBottom: Int
+        var rightTop: Int
+        var rightBottom: Int
+
+        val ww = mWidth + 1
+
+        for (y in 0 until mHeight) {
+            for (x in 0 until mWidth) {
+                leftTop = x + y * ww
+                leftBottom = leftTop + ww
+
+                rightTop = leftTop + 1
+                rightBottom = leftBottom + 1
+
+                mIndicesBuffer.put(leftTop)
+                mIndicesBuffer.put(leftBottom)
+                mIndicesBuffer.put(rightBottom)
+                mIndicesBuffer.put(leftTop)
+                mIndicesBuffer.put(rightTop)
+                mIndicesBuffer.put(rightBottom)
+            }
+        }
+
+        mPositionBuffer.position(0)
+        mNormalBuffer.position(0)
+        mTexCoordBuffer.position(0)
+        mIndicesBuffer.position(0)
     }
 
     fun displace(
@@ -199,8 +204,8 @@ class Landscape(
                 i, map.getHeightRatio(
                     x,
                     z,
-                    width,
-                    height
+                    mWidth,
+                    mHeight
                 )
             )
             i += 3
@@ -227,9 +232,9 @@ class Landscape(
     ) {
         super.setScale(x, y, z)
         setPosition(
-            width * -0.5f * x,
+            mWidth * -0.5f * x,
             0f,
-            height * -0.5f * z
+            mHeight * -0.5f * z
         )
     }
 
@@ -241,18 +246,18 @@ class Landscape(
         ty: Float
     ) {
         // Position
-        mPositions.add(x)
-        mPositions.add(y)
-        mPositions.add(z)
+        mPositionBuffer.put(x)
+        mPositionBuffer.put(y)
+        mPositionBuffer.put(z)
 
         // TexCoords
-        mTexCoords.add(tx)
-        mTexCoords.add(ty)
+        mTexCoordBuffer.put(tx)
+        mTexCoordBuffer.put(ty)
 
         // Normal
-        mNormals.add(0.0f)
-        mNormals.add(1.0f)
-        mNormals.add(0.0f)
+        mNormalBuffer.put(0.0f)
+        mNormalBuffer.put(1.0f)
+        mNormalBuffer.put(0.0f)
     }
 
     private fun enableVertex(

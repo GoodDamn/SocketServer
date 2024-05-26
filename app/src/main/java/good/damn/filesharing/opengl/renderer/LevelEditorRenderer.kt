@@ -82,9 +82,9 @@ class LevelEditorRenderer(
 
         mLandscape = Landscape(
             mProgram,
-            DisplacementMap.createFromAssets(
+            /*DisplacementMap.createFromAssets(
                 "maps/displace.png"
-            ),
+            ),*/
             mCamera
         )
 

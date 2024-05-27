@@ -5,10 +5,12 @@ import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import good.damn.filesharing.activities.other.opengl.LevelEditorActivity
 import good.damn.filesharing.opengl.renderer.LevelEditorRenderer
+import java.io.InputStream
 
 class LevelEditorView(
-    context: Context
+    context: LevelEditorActivity
 ): GLSurfaceView(
     context
 ) {
@@ -17,11 +19,15 @@ class LevelEditorView(
         private const val TAG = "LevelEditorView"
     }
 
-    private val mRenderer = LevelEditorRenderer()
+    private val mRenderer: LevelEditorRenderer
 
     init {
         setEGLContextClientVersion(
             3
+        )
+
+        mRenderer = LevelEditorRenderer(
+            context
         )
 
         setRenderer(
@@ -63,6 +69,18 @@ class LevelEditorView(
         }
 
         return true
+    }
+
+    fun onLoadFromUserDisk(
+        inp: InputStream?
+    ) {
+        if (inp == null) {
+            return
+        }
+
+        mRenderer.onLoadFromUserDisk(
+            inp
+        )
     }
 
 }

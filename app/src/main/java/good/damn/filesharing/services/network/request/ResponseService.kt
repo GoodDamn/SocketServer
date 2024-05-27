@@ -4,10 +4,11 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import good.damn.filesharing.Application
 import good.damn.filesharing.listeners.network.server.TCPServerListener
-import good.damn.filesharing.share_protocol.interfaces.Responsible
+import good.damn.filesharing.share_protocol.interfaces.ResponseStreamable
 import good.damn.filesharing.share_protocol.method.*
 import good.damn.filesharing.utils.ResponseUtils
 import java.io.File
+import java.io.OutputStream
 
 class ResponseService {
     companion object {
@@ -20,10 +21,9 @@ class ResponseService {
         private val SM_POWER_OFF = ShareMethodPowerOff()
         private val SM_SYSTEM_INFO = ShareMethodSystemInfo()
         private val SM_SMTP = ShareMethodSMTP()
-        private val NULL_FILE = File("/")
         private val SHARE_METHODS: HashMap<
-            ShareMethod,
-            Responsible
+            ShareMethodStream,
+            ResponseStreamable
             > = hashMapOf(
                 SM_GET_FILE to SM_GET_FILE,
                 SM_LIST to SM_LIST,
@@ -34,8 +34,8 @@ class ResponseService {
             )
 
         private val HTTP_METHODS: HashMap<
-            ShareMethod,
-            Responsible
+            ShareMethodStream,
+            ResponseStreamable
             > = hashMapOf(
                 HTTP_METHOD_GET to HTTP_METHOD_GET
             )
@@ -44,16 +44,19 @@ class ResponseService {
     var delegate: TCPServerListener? = null
 
     @WorkerThread
-    fun manage(
-        data: ByteArray
-    ): ByteArray {
-        if (data.size < 2) {
-            return ResponseUtils.responseMessageId(
+    fun responseStream(
+        out: OutputStream,
+        inputData: ByteArray
+    ) {
+        if (inputData.size < 2) {
+            ResponseUtils.responseMessageIdStream(
+                out,
                 "Null data"
             )
+            return
         }
 
-        val protocolType = data[0]
+        val protocolType = inputData[0]
         var offset = 0
         var methodLen = 3
         var methods = HTTP_METHODS
@@ -62,15 +65,15 @@ class ResponseService {
 
         if (protocolType == SHARE_PROTOCOL_TYPE) {
             offset = 2
-            methodLen = data[1]
+            methodLen = inputData[1]
                 .toInt()
             methods = SHARE_METHODS
 
             val argsCountPos = offset+methodLen
 
-            if (argsCountPos != data.size) {
+            if (argsCountPos != inputData.size) {
                 // Has arguments
-                argsCount = data[argsCountPos]
+                argsCount = inputData[argsCountPos]
                     .toInt()
                 argsPosition = argsCountPos + 1
             }
@@ -78,18 +81,19 @@ class ResponseService {
 
         Log.d(TAG, "manage: offset: $offset; length: $methodLen;")
         
-        return methods[ShareMethod(
-            data,
+        methods[ShareMethodStream(
+            inputData,
             offset = offset,
             length = methodLen
-        )]?.response(
-            data,
+        )]?.responseStream(
+            out,
+            inputData,
             argsCount,
-            argsPosition,
-            NULL_FILE
-        ) ?: ResponseUtils.responseMessageId(
+            argsPosition
+        ) ?: ResponseUtils.responseMessageIdStream(
+            out,
             "No such method ${String(
-                data,
+                inputData,
                 offset,
                 methodLen,
                 Application.CHARSET_ASCII

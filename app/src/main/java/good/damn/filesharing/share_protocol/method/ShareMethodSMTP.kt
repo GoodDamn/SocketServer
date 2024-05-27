@@ -1,13 +1,13 @@
 package good.damn.filesharing.share_protocol.method
 
-import android.util.Log
 import good.damn.filesharing.Application
 import good.damn.filesharing.services.network.smtp.SMTPService
 import good.damn.filesharing.utils.ResponseUtils
 import java.io.File
+import java.io.OutputStream
 
 class ShareMethodSMTP
-: ShareMethod(
+: ShareMethodStream(
     "mail".toByteArray(
         Application.CHARSET_ASCII
     )
@@ -19,64 +19,61 @@ class ShareMethodSMTP
 
     private val mSmtpService = SMTPService()
 
-    override fun response(
+    override fun responseStream(
+        out: OutputStream,
         request: ByteArray,
         argsCount: Int,
-        argsPosition: Int,
-        userFolder: File
-    ): ByteArray {
+        argsPosition: Int
+    ) {
 
-        var email = ""
-        var subject = ""
-        var body = ""
+        val email: String
+        val subject: String
+        val body: String
 
-        if (argsCount >= 3) {
-            var pos = argsPosition
-            val emailLen = request[pos]
-                .toInt()
-            pos++
-            email = String(
-                request,
-                pos,
-                emailLen,
-                Application.CHARSET_ASCII
-            )
-
-            pos += emailLen
-
-            val subjectLen = request[pos]
-                .toInt()
-
-            pos++
-            subject = String(
-                request,
-                pos,
-                subjectLen,
-                Application.CHARSET_ASCII
-            )
-
-            pos += subjectLen
-
-            val bodyLen = request[pos]
-                .toInt()
-
-            pos++
-            body = String(
-                request,
-                pos,
-                bodyLen,
-                Application.CHARSET_ASCII
-            )
-
-        } else {
-            return ResponseUtils.responseMessageId(
+        if (argsCount < 3) {
+            ResponseUtils.responseMessageIdStream(
+                out,
                 "Not enough arguments. At least 3 (email, subject, body)"
             )
+            return
         }
 
-        if (argsCount >= 4) {
-            // With attachment
-        }
+        var pos = argsPosition
+        val emailLen = request[pos]
+            .toInt()
+        pos++
+        email = String(
+            request,
+            pos,
+            emailLen,
+            Application.CHARSET_ASCII
+        )
+
+        pos += emailLen
+
+        val subjectLen = request[pos]
+            .toInt()
+
+        pos++
+        subject = String(
+            request,
+            pos,
+            subjectLen,
+            Application.CHARSET_ASCII
+        )
+
+        pos += subjectLen
+
+        val bodyLen = request[pos]
+            .toInt()
+
+        pos++
+        body = String(
+            request,
+            pos,
+            bodyLen,
+            Application.CHARSET_ASCII
+        )
 
         mSmtpService.send(
             email,
@@ -84,7 +81,8 @@ class ShareMethodSMTP
             body
         )
 
-        return ResponseUtils.responseMessageId(
+        return ResponseUtils.responseMessageIdStream(
+            out,
             "Email sent"
         )
     }

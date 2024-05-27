@@ -77,7 +77,7 @@ class TrafficRenderer
                 Object3D.createFromAssets(
                     "objs/plane.obj"
                 ),
-                "textures/rock.jpg",
+                "textures/grass.jpg",
                 mProgram,
                 mCamera
             ),
@@ -101,7 +101,7 @@ class TrafficRenderer
                 Object3D.createFromAssets(
                     "objs/walls.obj"
                 ),
-                "textures/grass.jpg",
+                "textures/rock.jpg",
                 mProgram,
                 mCamera
             )

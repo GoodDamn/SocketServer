@@ -1,15 +1,16 @@
 package good.damn.filesharing.services.network.request
 
-import good.damn.filesharing.share_protocol.interfaces.Responsible
+import good.damn.filesharing.share_protocol.interfaces.ResponseSSH
+import good.damn.filesharing.share_protocol.interfaces.ResponseStreamable
 import good.damn.filesharing.utils.FileUtils
-import good.damn.filesharing.share_protocol.method.ShareMethod
+import good.damn.filesharing.share_protocol.method.ShareMethodStream
 import good.damn.filesharing.share_protocol.method.ssh.ShareMethodMakeDir
 import good.damn.filesharing.share_protocol.ssh.SSHAuth
 import good.damn.filesharing.utils.ResponseUtils
 
 class SSHService {
 
-    private val mRequests: Array<Responsible> = arrayOf(
+    private val mRequests: Array<ResponseSSH> = arrayOf(
         ShareMethodMakeDir()
     )
 
@@ -32,7 +33,7 @@ class SSHService {
 
         val cmdPos = offset + 2
 
-        val index = ShareMethod(request,cmdPos,cmdLen)
+        val index = ShareMethodStream(request,cmdPos,cmdLen)
             .hashCode() % mRequests.size
 
         if (index >= mRequests.size) {

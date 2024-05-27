@@ -80,7 +80,7 @@ class DirectionalLight(
 
         glUniform1f(
             mUniformAmbient,
-            0.3f
+            1.0f
         )
 
         glUniform1f(
@@ -97,12 +97,12 @@ class DirectionalLight(
 
         glUniform1f(
             mUniformShininess,
-            15.0f
+            1.0f
         )
 
         glUniform1f(
             mUniformSpecular,
-            2.0f
+            0.0f
         )
     }
 

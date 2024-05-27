@@ -1,18 +1,25 @@
 package good.damn.filesharing.opengl.renderer
 
+import android.content.Context
 import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES30.*
+import good.damn.filesharing.activities.other.opengl.LevelEditorActivity
+import good.damn.filesharing.opengl.Object3D
+import good.damn.filesharing.opengl.StaticMesh
 import good.damn.filesharing.opengl.camera.RotationCamera
 import good.damn.filesharing.opengl.entities.Landscape
 import good.damn.filesharing.opengl.light.DirectionalLight
+import good.damn.filesharing.opengl.maps.DisplacementMap
 import good.damn.filesharing.opengl.ui.GLButton
 import good.damn.filesharing.utils.AssetUtils
 import good.damn.filesharing.utils.ShaderUtils
+import java.io.InputStream
 
-class LevelEditorRenderer
-: GLSurfaceView.Renderer {
+class LevelEditorRenderer(
+    var context: LevelEditorActivity
+): GLSurfaceView.Renderer {
 
     companion object {
         private const val TAG = "LevelEditorRenderer"
@@ -21,8 +28,7 @@ class LevelEditorRenderer
     private lateinit var mBtnZoomOut: GLButton
     private lateinit var mBtnZoomIn: GLButton
     private lateinit var mBtnRandomizeLand: GLButton
-
-    private var isUi = false
+    private lateinit var mBtnLoadDisplacementMap: GLButton
 
     private val mCamera = RotationCamera()
 
@@ -36,6 +42,8 @@ class LevelEditorRenderer
 
     private lateinit var mDirectionalLight: DirectionalLight
     private lateinit var mLandscape: Landscape
+
+    private lateinit var mSky: StaticMesh
 
     override fun onSurfaceCreated(
         gl: GL10?,
@@ -72,7 +80,6 @@ class LevelEditorRenderer
             mProgram
         )
 
-
         mDirectionalLight = DirectionalLight(
             mProgram
         )
@@ -82,9 +89,36 @@ class LevelEditorRenderer
             mCamera
         )
 
+        mLandscape.setResolution(
+            200,
+            200
+        )
+
+        mLandscape.displace(
+            DisplacementMap.createFromAssets(
+                "maps/displace.png"
+            )
+        )
+
+        mLandscape.setScale(
+            5.0f,
+            5.0f,
+            5.0f
+        )
+
+        mSky = StaticMesh(
+            Object3D.createFromAssets(
+                "objs/sphere.obj"
+            ),
+            "textures/sky/skysphere_light.jpg",
+            mProgram,
+            mCamera
+        )
+
         glEnable(
             GL_DEPTH_TEST
         )
+
     }
 
     override fun onSurfaceChanged(
@@ -100,7 +134,7 @@ class LevelEditorRenderer
             height
         )
 
-        mCamera.radius = 5f
+        mCamera.radius = 20f
 
         mCamera.setRotation(
             0f,
@@ -111,6 +145,12 @@ class LevelEditorRenderer
             10f,
             -100f,
             0f
+        )
+
+        mSky.setScale(
+            1000000f,
+            1000000f,
+            1000000f
         )
 
         val btnLen = mWidth * 0.1f
@@ -141,6 +181,17 @@ class LevelEditorRenderer
         ) {
             mLandscape.randomizeY()
         }
+
+        mBtnLoadDisplacementMap = GLButton(
+            mWidth - btnLen*2,
+            0f,
+            btnLen,
+            btnLen
+        ) {
+            context.loadFromUserDisk(
+                "*/*"
+            )
+        }
     }
 
     override fun onDrawFrame(
@@ -158,37 +209,37 @@ class LevelEditorRenderer
         )
 
         glClearColor(
-            0.0f,
-                0.0f,
-            0.0f,
+            0.2f,
+                0.2f,
+            0.2f,
             1.0f
         )
 
-        mDirectionalLight.draw()
         mLandscape.draw()
+        mSky.draw()
+        mDirectionalLight.draw()
     }
 
     fun onTouchDown(
         x: Float,
         y: Float
     ) {
-        if (mBtnZoomOut.intercept(x, y) ||
-            mBtnZoomIn.intercept(x,y) ||
-            mBtnRandomizeLand.intercept(x,y)
-        ) {
-            isUi = true
-            return
-        }
-
         mPrevX = x
         mPrevY = y
+        if (mBtnRandomizeLand.intercept(x,y) ||
+            mBtnLoadDisplacementMap.intercept(x,y)
+        ) {
+            return
+        }
     }
 
     fun onTouchMove(
         x: Float,
         y: Float
     ) {
-        if (isUi) {
+        if (mBtnZoomOut.intercept(x, y) ||
+            mBtnZoomIn.intercept(x,y)
+        ) {
             return
         }
 
@@ -205,7 +256,17 @@ class LevelEditorRenderer
         x: Float,
         y: Float
     ) {
-        isUi = false
+
+    }
+
+    fun onLoadFromUserDisk(
+        inp: InputStream
+    ) {
+        mLandscape.displace(
+            DisplacementMap.createFromStream(
+                inp
+            )
+        )
     }
 
 }

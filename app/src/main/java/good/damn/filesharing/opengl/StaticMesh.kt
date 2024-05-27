@@ -57,7 +57,7 @@ class StaticMesh(
         glBufferData(
             GL_ARRAY_BUFFER,
             obj.vertices.size * 4,
-            BufferUtils.createFloatBuffer(
+            BufferUtils.createFloat(
                 obj.vertices
             ),
             GL_STATIC_DRAW
@@ -98,7 +98,7 @@ class StaticMesh(
         glBufferData(
             GL_ELEMENT_ARRAY_BUFFER,
             obj.indices.size * 2,
-            BufferUtils.createShortBuffer(
+            BufferUtils.createShort(
                 obj.indices
             ),
             GL_STATIC_DRAW
@@ -141,6 +141,8 @@ class StaticMesh(
 
     override fun draw() {
         super.draw()
+
+        mTexture.draw()
         glBindVertexArray(
             mVertexArray[0]
         )
@@ -155,7 +157,6 @@ class StaticMesh(
         glBindVertexArray(
             0
         )
-        mTexture.draw()
     }
 
     private fun enableVertex(

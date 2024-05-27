@@ -1,13 +1,12 @@
 package good.damn.filesharing.share_protocol.method.ssh
 
-import android.util.Log
 import good.damn.filesharing.Application
-import good.damn.filesharing.share_protocol.method.ShareMethod
+import good.damn.filesharing.share_protocol.method.ShareMethodStream
 import good.damn.filesharing.utils.ResponseUtils
 import java.io.File
 
 class ShareMethodMakeDir
-: ShareMethod(
+: SSHMethod (
     byteArrayOf(
         0x6D, 0x6B, 0x64 // mkd
     )

@@ -2,13 +2,46 @@ package good.damn.filesharing.utils
 
 import good.damn.filesharing.Application
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.nio.FloatBuffer
+import java.nio.IntBuffer
 import java.nio.ShortBuffer
 
 class BufferUtils {
     companion object {
-        fun createFloatBuffer(
+        fun allocateFloat(
+            size: Int
+        ): FloatBuffer {
+             return ByteBuffer
+                .allocateDirect(
+                    size * 4
+                ).order(
+                     Application.BYTE_ORDER
+                ).asFloatBuffer()
+        }
+
+        fun allocateInt(
+            size: Int
+        ): IntBuffer {
+            return ByteBuffer
+                .allocateDirect(
+                    size * 4
+                ).order(
+                    Application.BYTE_ORDER
+                ).asIntBuffer()
+        }
+
+        fun allocateShort(
+            size: Int
+        ): ShortBuffer {
+            return ByteBuffer
+                .allocateDirect(
+                    size * 2
+                ).order(
+                    Application.BYTE_ORDER
+                ).asShortBuffer()
+        }
+
+        fun createFloat(
             i: FloatArray
         ): FloatBuffer {
             val b = ByteBuffer
@@ -22,7 +55,7 @@ class BufferUtils {
             return b
         }
 
-        fun createShortBuffer(
+        fun createShort(
             i: ShortArray
         ): ShortBuffer {
             val b = ByteBuffer

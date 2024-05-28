@@ -134,7 +134,7 @@ class LevelEditorRenderer(
             height
         )
 
-        mCamera.radius = 20f
+        mCamera.radius = 150f
 
         mCamera.setRotation(
             0f,

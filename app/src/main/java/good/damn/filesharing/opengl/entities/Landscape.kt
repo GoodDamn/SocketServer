@@ -29,6 +29,10 @@ class Landscape(
         mProgram
     )
 
+    var material = Material(
+        mProgram
+    )
+
     private var mWidth = 1
     private var mHeight = 1
 
@@ -45,6 +49,7 @@ class Landscape(
         super.draw()
 
         texture.draw()
+        material.draw()
 
         mAttrPosition = glGetAttribLocation(
             mProgram,

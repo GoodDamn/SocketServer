@@ -11,12 +11,11 @@ class DirectionalLight(
     program: Int
 ): DimensionObject() {
 
+    var ambient = 0.8f
+
     private val mUniformColor: Int
     private val mUniformAmbient: Int
     private val mUniformDirection: Int
-    private val mUniformIntensity: Int
-    private val mUniformSpecular: Int
-    private val mUniformShininess: Int
 
     private val mDirectionVector = Vector(
         1f,
@@ -41,22 +40,6 @@ class DirectionalLight(
             program,
             "light.direction"
         )
-
-        mUniformIntensity = glGetUniformLocation(
-            program,
-            "light.intensity"
-        )
-
-        mUniformSpecular = glGetUniformLocation(
-            program,
-            "specularIntensity"
-        )
-
-        mUniformShininess = glGetUniformLocation(
-            program,
-            "shine"
-        )
-
     }
 
     override fun setPosition(
@@ -80,12 +63,7 @@ class DirectionalLight(
 
         glUniform1f(
             mUniformAmbient,
-            1.0f
-        )
-
-        glUniform1f(
-            mUniformIntensity,
-            0.8f
+            ambient
         )
 
         glUniform3f(
@@ -93,16 +71,6 @@ class DirectionalLight(
             mDirectionVector.x,
             mDirectionVector.y,
             mDirectionVector.z,
-        )
-
-        glUniform1f(
-            mUniformShininess,
-            1.0f
-        )
-
-        glUniform1f(
-            mUniformSpecular,
-            0.0f
         )
     }
 

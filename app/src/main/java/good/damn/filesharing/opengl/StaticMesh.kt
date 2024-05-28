@@ -2,6 +2,7 @@ package good.damn.filesharing.opengl
 
 import android.opengl.GLES30.*
 import good.damn.filesharing.opengl.camera.BaseCamera
+import good.damn.filesharing.opengl.entities.Material
 import good.damn.filesharing.opengl.entities.Mesh
 import good.damn.filesharing.opengl.textures.Texture
 import good.damn.filesharing.utils.BufferUtils
@@ -15,6 +16,10 @@ class StaticMesh(
     program,
     camera
 ) {
+
+    var material = Material(
+        program
+    )
 
     private val mTexture = Texture(
         texturePath,
@@ -143,6 +148,8 @@ class StaticMesh(
         super.draw()
 
         mTexture.draw()
+        material.draw()
+
         glBindVertexArray(
             mVertexArray[0]
         )

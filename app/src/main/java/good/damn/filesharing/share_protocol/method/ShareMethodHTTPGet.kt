@@ -1,5 +1,6 @@
 package good.damn.filesharing.share_protocol.method
 
+import android.util.Log
 import good.damn.filesharing.Application
 import good.damn.filesharing.services.network.request.HTTPResponseService
 import java.io.File
@@ -9,13 +10,16 @@ class ShareMethodHTTPGet
 : ShareMethodStream(
     byteArrayOf(0x47,0x45,0x54) // GET - ASCII Codes
 ) {
+    companion object {
+        private const val TAG = "ShareMethodHTTPGet"
+    }
+
     override fun responseStream(
         out: OutputStream,
         request: ByteArray,
         argsCount: Int,
         argsPosition: Int
     ) {
-
         val httpMessage = String(
             request,
             Application.CHARSET
@@ -30,8 +34,8 @@ class ShareMethodHTTPGet
                 )
             )
 
-        val response = HTTPResponseService()
-        response.execute(
+        HTTPResponseService.executeStream(
+            out,
             path
         )
     }

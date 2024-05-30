@@ -84,9 +84,8 @@ open class TCPServer(
             var attempts = 0
 
             while (true) {
-                Log.d(TAG, "listen: READ ${inp.available()} ${outArr.size()}")
                 if (inp.available() == 0) {
-                    if (attempts >= 1000) {
+                    if (attempts >= 10000) {
                         break
                     }
                     attempts++

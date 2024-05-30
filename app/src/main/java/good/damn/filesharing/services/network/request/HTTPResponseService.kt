@@ -2,6 +2,8 @@ package good.damn.filesharing.services.network.request
 
 import good.damn.filesharing.Application
 import good.damn.filesharing.utils.FileUtils
+import java.io.File
+import java.io.FileInputStream
 import java.io.OutputStream
 
 class HTTPResponseService {
@@ -13,12 +15,13 @@ class HTTPResponseService {
             out: OutputStream,
             path: String
         ) {
-            val data = FileUtils
-                .fromDoc(
-                    path.ifEmpty { "welcome" }
-                )
+            val doc = FileUtils
+                .getDocumentsFolder()
 
-            if (data == null) {
+            val file = File("$doc/$path")
+            val fileLen = file.length()
+
+            if (file.isDirectory || !file.exists() || fileLen == 0L) {
                 out.write(
                     getHeaderError()
                 )
@@ -28,22 +31,30 @@ class HTTPResponseService {
             if (path.contains(".")) {
                 out.write(
                     getHeaderFile(
-                        data.size,
+                        fileLen.toInt(),
                         path
                     )
                 )
-                out.write(data)
+                FileUtils.copyStream(
+                    FileInputStream(
+                        file
+                    ),
+                    out
+                )
                 return
             }
 
             out.write(
                 getHeaderDocument(
-                    data.size
+                    fileLen.toInt()
                 )
             )
 
-            out.write(
-                data
+            FileUtils.copyStream(
+                FileInputStream(
+                    file
+                ),
+                out
             )
         }
 

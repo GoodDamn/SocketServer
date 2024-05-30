@@ -7,10 +7,8 @@ import java.io.FileInputStream
 import java.io.OutputStream
 
 class HTTPResponseService {
-
-    private val TAG = "HTTPResponseManager"
-
     companion object {
+        private const val TAG = "HTTPResponseManager"
         fun executeStream(
             out: OutputStream,
             path: String

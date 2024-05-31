@@ -2,12 +2,9 @@ package good.damn.filesharing.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import good.damn.filesharing.activities.other.opengl.LevelEditorActivity
-import good.damn.filesharing.views.TrafficView
 
 class MainActivity
 : AppCompatActivity() {
@@ -40,18 +37,6 @@ class MainActivity
             "SSH Server",
             SSHServerActivity::class.java,
             layout
-        )
-
-        createServerButton(
-            "Level Editor",
-            LevelEditorActivity::class.java,
-            layout
-        )
-
-        layout.addView(
-            TrafficView(context),
-            -1,
-            -1
         )
 
         setContentView(

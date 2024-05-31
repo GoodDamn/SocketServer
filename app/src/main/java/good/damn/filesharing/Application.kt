@@ -25,12 +25,6 @@ class Application
 
     companion object {
 
-        lateinit var ASSETS: AssetManager
-        lateinit var RESOURCES: Resources
-        lateinit var CONTENT_RESOLVER: ContentResolver
-
-        val BYTE_ORDER = ByteOrder
-            .nativeOrder()
         val BUFFER_MB = ByteArray(1024*1024)
         val CHARSET = Charset.forName("UTF-8")
         val CHARSET_ASCII = Charset.forName("US-ASCII")
@@ -51,17 +45,6 @@ class Application
     }
 
     override fun onCreate() {
-        val context = applicationContext
-
-        ASSETS = context
-            .assets
-
-        RESOURCES = context
-            .resources
-
-        CONTENT_RESOLVER = context
-            .contentResolver
-
         super.onCreate()
     }
 

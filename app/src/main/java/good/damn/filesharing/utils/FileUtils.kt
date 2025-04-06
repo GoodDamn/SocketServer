@@ -5,12 +5,14 @@ import android.net.Uri
 import android.os.Environment
 import android.util.Log
 import good.damn.filesharing.Application
+import good.damn.filesharing.results.Result
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
 import java.nio.charset.Charset
 
 class FileUtils {
@@ -50,6 +52,27 @@ class FileUtils {
             fis.close()
 
             return d
+        }
+
+        fun documentsStream(
+            out: OutputStream,
+            localPathFile: String
+        ): Result<File> {
+            val docPath = getDocumentsFolder()
+                .path
+
+            val file = File("$docPath/$localPathFile")
+
+            if (!file.exists()) {
+                return Result(null)
+            }
+
+            copyStream(
+                FileInputStream(file),
+                out
+            )
+
+            return Result(file)
         }
 
         fun fromDoc(
@@ -226,6 +249,27 @@ class FileUtils {
             return data
         }
 
+        fun copyStream(
+            from: InputStream,
+            to: OutputStream,
+            buffer: ByteArray = Application.BUFFER_MB
+        ) {
+            var n: Int
+            while (true) {
+                n = from.read(
+                    buffer
+                )
+                if (n == -1) {
+                    break
+                }
+                to.write(
+                    buffer,
+                    0,
+                    n
+                )
+            }
+            from.close()
+        }
     }
 
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
+import good.damn.filesharing.extensions.extractFileName
 import good.damn.filesharing.listeners.activityResult.ActivityResultCopyListener
 import good.damn.filesharing.utils.FileUtils
 
@@ -16,42 +17,44 @@ class ActivityResultCopyToDoc(
     override fun onActivityResult(
         uri: Uri?
     ) {
-        val data = FileUtils
-            .read(uri,
-                context
-            )
-
-        if (data == null) {
+        if (uri == null) {
             delegate?.onErrorCopyFile(
-                "data == null"
+                "uri == null"
             )
             return
         }
 
-        val p = uri!!.path!!
-        val t = "primary:"
-        val filePath = p.substring(
-            p.indexOf(t) + t.length
+        val resolver = context.contentResolver
+        val extractedFileName = resolver.extractFileName(
+            uri
         )
 
-        val nameIndex = filePath.lastIndexOf(
-            "/"
+        if (extractedFileName == null) {
+            delegate?.onErrorCopyFile(
+                "extracted file name == null"
+            )
+            return
+        }
+
+        val stream = resolver.openInputStream(
+            uri
         )
 
-        val fileName = if (nameIndex == -1)
-            filePath
-        else filePath.substring(
-            nameIndex + 1
-        )
+        if (stream == null) {
+            delegate?.onErrorCopyFile(
+                "copy stream == null"
+            )
+            return
+        }
 
         val msg = FileUtils.writeToDoc(
-            fileName,
-            data
+            extractedFileName,
+            stream
         )
 
         if (msg == null) {
             delegate?.onSuccessCopyFile(
-                fileName
+                extractedFileName
             )
             return
         }
